@@ -1,0 +1,64 @@
+.container-crud {
+    
+}
+
+.filmes-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 5 10px;
+    margin: 30px auto;
+}
+
+.filmes-container header button:hover {
+    border-color: #510BAC;
+}
+
+.filmes-container header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filmes-container header img {
+    height: 80px;
+}
+
+.filmes-container header button {
+    height: 50px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #DCDCE6;
+    background: green;
+    margin-left: 16px;
+    transition: border-color 0.5s;
+}
+
+table,
+th,
+td {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 20px;
+    text-align: left;
+}
+
+.input-group-text {
+    margin: 0px 10px;
+}
+
+.btn-adicionar {
+    padding: 0px 10px;
+    font-size: 18px;
+}
+
+.btn-adicionar strong {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+.botaoBusca {
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid #DCDCE6;
+}

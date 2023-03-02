@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translate(0, 10%)
+}
+
+.imagemLogin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.container-login {
+    background-color: #747474;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.botaoEntrar {
+    display: flex;
+    justify-content: center;
+}
+
+.botaoEntrar button {
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+.botaoEntrar button:hover {
+    color: #000;
+}
+
+form .form-group input{
+    font-size: 15px;
+    height: 45px;
+    border: 0;
+    color: #fff;
+}
+
+label {
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: bold;
+}
