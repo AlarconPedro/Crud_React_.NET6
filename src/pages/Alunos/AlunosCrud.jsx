@@ -2,141 +2,138 @@ import React, { useState, useEffect } from "react";
 
 import Mestre from "../../layout/Mestre/Mestre";
 
-import axios from "axios";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import Api from "../../services/Api";
 
 import "./AlunosCrud.css";
 
 export default function FilmesCrud() {
 
-    const baseUrl = "https://localhost:7106/filme";
+    const [alunosData, setAlunosData] = useState([]);
 
-    const [filmesData, setFilmesData] = useState([]);
-
-    const [filme, setFilme] = useState({
+    const [aluno, setAlunos] = useState({
         id: '',
-        titulo: '',
-        genero: '',
-        duracao: '',
-        sessao: ''
+        nome: '',
+        email: '',
+        idade: ''
     });
 
-    const [tituloBusca, setTituloBusca] = useState({
-        titulo: ""
+    const [nomeBusca, setNomeBusca] = useState({
+        nome: ''
     });
 
-    const [abrirCadastroFilmes, setAbrirCadastroFilmes] = useState(false);
-    const [abrirEditarFilmes, setAbrirEditarFilmes] = useState(false);
-    const [abrirExcluirFilmes, setAbrirExcluirFilmes] = useState(false);
-    const [updateFilmes, setUpdateFilmes] = useState(true);
+    const [abrirCadastroAlunos, setAbrirCadastroAlunos] = useState(false);
+    const [abrirEditarAlunos, setAbrirEditarAlunos] = useState(false);
+    const [abrirExcluirAlunos, setAbrirExcluirAlunos] = useState(false);
+    const [updateAlunos, setUpdateAlunos] = useState(true);
 
-    const abrirFecharCadastroFilmes = () => {
-        setAbrirCadastroFilmes(!abrirCadastroFilmes);
+    const abrirFecharCadastroAlunos = () => {
+        setAbrirCadastroAlunos(!abrirCadastroAlunos);
     }
 
-    const abrirFecharEditarFilmes = () => {
-        setAbrirEditarFilmes(!abrirEditarFilmes);
+    const abrirFecharEditarAlunos = () => {
+        setAbrirEditarAlunos(!abrirEditarAlunos);
     }
 
-    const abrirFecharExcluirFilmes = () => {
-        setAbrirExcluirFilmes(!abrirExcluirFilmes);
+    const abrirFecharExcluirAlunos = () => {
+        setAbrirExcluirAlunos(!abrirExcluirAlunos);
     }
 
-    const selecionarFilme = (filme, opcao) => {
-        setFilme(filme);
-        (opcao === "Editar") ? abrirFecharEditarFilmes() : abrirFecharExcluirFilmes();
+    const selecionarAluno = (aluno, opcao) => {
+        setAlunos(aluno);
+        (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
     }
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
-        setFilme({
-            ...filme,
+        setAlunos({
+            ...aluno,
             [name]: value
         });
     }
 
     const atualizaCampoBusca = e => {
         const { name, value } = e.target;
-        setTituloBusca({
-            ...tituloBusca,
+        setNomeBusca({
+            ...nomeBusca,
             [name]: value
         });
     }
 
-    const getFilmes = async () => {
-        await axios.get(baseUrl).then(response => {
-            setFilmesData(response.data);
+    const getAlunos = async () => {
+        await Api.get("aluno").then(response => {
+            setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const postFilmes = async () => {
-        delete filme.Id;
-        filme.duracao = parseInt(filme.duracao);
-        await axios.post(baseUrl, filme).then(response => {
-            setFilme(response.data);
-            setUpdateFilmes(true);
-            abrirFecharCadastroFilmes();
+    const postAluno = async () => {
+        delete aluno.id;
+        aluno.idade = parseInt(aluno.idade);
+        await Api.post("aluno/", aluno).then(response => {
+            setAlunos(response.data);
+            setUpdateAlunos(true);
+            abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const putFilmes = async () => {
-        filme.duracao = parseInt(filme.duracao);
-        await axios.put(baseUrl + "/" + filme.id, filme).then(response => {
-            var filmesAuxiliar = filmesData;
+    const putAluno = async () => {
+        aluno.idade = parseInt(aluno.idade);
+        await Api.put("aluno/" + aluno.id, aluno).then(response => {
+            var filmesAuxiliar = alunosData;
             filmesAuxiliar.map(filmeMap => {
-                if (filmeMap.id === filme.id) {
-                    filmeMap.titulo = filme.titulo;
-                    filmeMap.genero = filme.genero;
-                    filmeMap.duracao = filme.duracao;
+                if (filmeMap.id === aluno.id) {
+                    filmeMap.nome = aluno.nome;
+                    filmeMap.email = aluno.email;
+                    filmeMap.idade = aluno.idade;
                 }
             });
-            setFilme(response.data);
-            setUpdateFilmes(true);
-            abrirFecharEditarFilmes();
+            setAlunos(response.data);
+            setUpdateAlunos(true);
+            abrirFecharEditarAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const deleteFilmes = async () => {
-        await axios.delete(baseUrl + "/" + filme.id).then(response => {
-            setUpdateFilmes(true);
-            abrirFecharExcluirFilmes();
+    const deleteAluno = async () => {
+        await Api.delete("aluno/" + aluno.id).then(response => {
+            setUpdateAlunos(true);
+            abrirFecharExcluirAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const getFilmesTitulo = async () => {
-        await axios.get(baseUrl + "/" + filme.titulo).then(response => {
-            setFilmesData(response.data);
+    const getAlunoNome = async () => {
+        await Api.get("aluno/" + nomeBusca.nome).then(response => {
+            setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
         });
     }
 
     useEffect(() => {
-        if (updateFilmes) {
-            getFilmes();
-            setUpdateFilmes(false);
+        if (updateAlunos) {
+            getAlunos();
+            setUpdateAlunos(false);
         }
-    }, [updateFilmes]);
+    }, [updateAlunos]);
 
     return (
         <Mestre icon="user" title="Cadastro Alunos" subtitle="Painel Sou+Fit">
             <div className="filmes-container ">
                 <header>
-                    <h3>Filmes</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroFilmes()}><strong>+</strong> Adicionar Filme</button>
+                    <h3>Alunos</h3>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Alunos</button>
                 </header>
                 <hr />
                 <div className="input-group rounded">
-                    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                    <button className="botaoBusca" onClick={() => getFilmesTitulo()}>
+                    <input type="search" className="form-control rounded" name="nome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
+                    <button className="botaoBusca" onClick={() => getAlunoNome()}>
                         <span className="input-group-text border-0" id="search-addon">
                             <i className="fa fa-search"></i>
                         </span>
@@ -148,23 +145,23 @@ export default function FilmesCrud() {
                         <tr>
                             <th>Id</th>
                             <th>Nome</th>
-                            <th>Gênero</th>
-                            <th>Duração</th>
+                            <th>Email</th>
+                            <th>Idade</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filmesData.map((filme) => (
-                            <tr key={filme.id}>
-                                <td>{filme.id}</td>
-                                <td>{filme.titulo}</td>
-                                <td>{filme.genero}</td>
-                                <td>{filme.duracao}</td>
+                        {alunosData.map((aluno) => (
+                            <tr key={aluno.id}>
+                                <td>{aluno.id}</td>
+                                <td>{aluno.nome}</td>
+                                <td>{aluno.email}</td>
+                                <td>{aluno.idade}</td>
                                 <td>
-                                    <button className="btn btn-warning" onClick={() => selecionarFilme(filme, "Editar")}>
+                                    <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
                                         <i className="fa fa-pencil"></i>
                                     </button>{" "}
-                                    <button className="btn btn-danger" onClick={() => selecionarFilme(filme, "Excluir")}>
+                                    <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
                                         <i className="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -173,67 +170,67 @@ export default function FilmesCrud() {
                     </tbody>
                 </table>
 
-                <Modal isOpen={abrirCadastroFilmes}>
-                    <ModalHeader>Incluir Filme</ModalHeader>
+                <Modal isOpen={abrirCadastroAlunos}>
+                    <ModalHeader>Incluir Aluno</ModalHeader>
                     <ModalBody>
                         <div className="form-group" name="titulo">
-                            <label>Titulo</label>
+                            <label>Nome</label>
                             <br />
-                            <input type="text" className="form-control" name="titulo" onChange={atualizaCampo} />
+                            <input type="text" className="form-control" name="nome" onChange={atualizaCampo} />
                             <br />
-                            <label>Genero</label>
+                            <label>Email</label>
                             <br />
-                            <input type="text" className="form-control" name="genero" onChange={atualizaCampo} />
+                            <input type="text" className="form-control" name="email" onChange={atualizaCampo} />
                             <br />
-                            <label>Duração</label>
+                            <label>Idade</label>
                             <br />
-                            <input type="number" className="form-control" name="duracao" onChange={atualizaCampo} />
+                            <input type="number" className="form-control" name="idade" onChange={atualizaCampo} />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn btn-success" onClick={() => postFilmes()}>Salvar</button>{" "}
-                        <button className="btn btn-danger" onClick={() => abrirFecharCadastroFilmes()}>Cancelar</button>
+                        <button className="btn btn-success" onClick={() => postAluno()}>Salvar</button>{" "}
+                        <button className="btn btn-danger" onClick={() => abrirFecharCadastroAlunos()}>Cancelar</button>
                     </ModalFooter>
                 </Modal>
 
-                <Modal isOpen={abrirEditarFilmes}>
-                    <ModalHeader>Editar Filme</ModalHeader>
+                <Modal isOpen={abrirEditarAlunos}>
+                    <ModalHeader>Editar Aluno</ModalHeader>
                     <ModalBody>
                         <div className="form-group" name="titulo">
                             <label>Id: </label>
                             <br />
                             <input type="number" className="form-control" readOnly disabled
-                                value={filme && filme.id} />
-                            <label>Titulo: </label>
+                                value={aluno && aluno.id} />
+                            <label>Nome: </label>
                             <br />
-                            <input type="text" className="form-control" name="titulo"
-                                value={filme && filme.titulo} onChange={atualizaCampo} />
+                            <input type="text" className="form-control" name="nome"
+                                value={aluno && aluno.nome} onChange={atualizaCampo} />
                             <br />
-                            <label>Genero: </label>
+                            <label>Email: </label>
                             <br />
-                            <input type="text" className="form-control" name="genero"
-                                value={filme && filme.genero} onChange={atualizaCampo} />
+                            <input type="text" className="form-control" name="email"
+                                value={aluno && aluno.email} onChange={atualizaCampo} />
                             <br />
-                            <label>Duração: </label>
+                            <label>Idade: </label>
                             <br />
-                            <input type="number" className="form-control" name="duracao"
-                                value={filme && filme.duracao} onChange={atualizaCampo} />
+                            <input type="number" className="form-control" name="idade"
+                                value={aluno && aluno.idade} onChange={atualizaCampo} />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn btn-success" onClick={() => putFilmes()}>Salvar</button>{" "}
-                        <button className="btn btn-danger" onClick={() => abrirFecharEditarFilmes()}>Cancelar</button>
+                        <button className="btn btn-success" onClick={() => putAluno()}>Salvar</button>{" "}
+                        <button className="btn btn-danger" onClick={() => abrirFecharEditarAlunos()}>Cancelar</button>
                     </ModalFooter>
                 </Modal>
 
-                <Modal isOpen={abrirExcluirFilmes}>
-                    <ModalHeader>Excluir Filme</ModalHeader>
+                <Modal isOpen={abrirExcluirAlunos}>
+                    <ModalHeader>Excluir Aluno</ModalHeader>
                     <ModalBody>
-                        Deseja excluir o Filme : {filme && filme.titulo}?
+                        Deseja excluir o Aluno : {aluno && aluno.nome}?
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn btn-danger" onClick={() => deleteFilmes()}>Sim</button>
-                        <button className="btn btn-secondary" onClick={() => abrirFecharExcluirFilmes()}>Não</button>
+                        <button className="btn btn-danger" onClick={() => deleteAluno()}>Sim</button>
+                        <button className="btn btn-secondary" onClick={() => abrirFecharExcluirAlunos()}>Não</button>
                     </ModalFooter>
                 </Modal>
             </div>

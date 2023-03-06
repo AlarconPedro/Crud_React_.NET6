@@ -1,7 +1,6 @@
-.container-crud {
-    
+.form-group label{
+    color: #000;
 }
-
 .filmes-container {
     width: 100%;
     max-width: 1200px;
