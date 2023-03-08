@@ -1,28 +1,31 @@
-.form-group label{
+.form-group label {
     color: #000;
+    font-size: 16px;
+    padding-bottom: 0;
 }
-.filmes-container {
+
+.alunos-container {
     width: 100%;
     max-width: 1200px;
     padding: 5 10px;
     margin: 30px auto;
 }
 
-.filmes-container header button:hover {
+.alunos-container header button:hover {
     border-color: #510BAC;
 }
 
-.filmes-container header {
+.alunos-container header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.filmes-container header img {
+.alunos-container header img {
     height: 80px;
 }
 
-.filmes-container header button {
+.alunos-container header button {
     height: 50px;
     width: 200px;
     border-radius: 5px;
@@ -40,6 +43,13 @@ td {
     margin-right: 10px;
     padding: 20px;
     text-align: left;
+}
+
+tbody tr td {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
 }
 
 .input-group-text {
@@ -60,4 +70,47 @@ td {
     margin-left: 10px;
     border-radius: 5px;
     border: 1px solid #DCDCE6;
+}
+
+label {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+select {
+    border-radius: 5px;
+    border-color: #ccc;   
+}
+
+.paginacao button {
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid #DCDCE6;
+    background: #cececece;
+    transition: border-color 0.5s;
+}
+
+.pagina p{
+    text-align: center;
+    margin-top: 5px;
+}
+
+.modal-incluir {
+    width: 100%;
+    max-width: 900px;
+    padding: 5 10px;
+    margin: 30px auto;
+}
+
+.modal-excluir {
+
+}
+
+.modal-editar {
+
 }
