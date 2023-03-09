@@ -7,7 +7,7 @@ import Api from "../../services/Api";
 
 import "./AlunosCrud.css";
 
-export default function FilmesCrud() {
+export default function AlunosCrud() {
 
     const [alunosData, setAlunosData] = useState([]);
 
@@ -76,9 +76,9 @@ export default function FilmesCrud() {
         });
     }
 
-    const getAlunos = async () => {
-        await Api.get("aluno").then(response => {
-            setAlunosData(response.data);
+    const getAlunos = async (skip = 0) => {
+        await Api.get(`aluno?skip=${skip}` ).then(response => {
+        setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -157,9 +157,20 @@ export default function FilmesCrud() {
     }
 
     const alterarPagina = (e) => {
-        e == "&gt;" ? alunosData.length / 10 < pagina ? setPagina(pagina + 1) :
-            setPagina(1) : pagina > 1 ? setPagina(pagina - 1) : 
-                setPagina(1);
+        e === "&gt;" ? avancarPagina(pagina * 10) : voltarPagina(pagina * 10);
+    }
+
+    const avancarPagina = async (skip) => {
+        getAlunos(skip);
+        pagina > alunosData.length ? setPagina(1) :
+        // alunosData.length / 10 < pagina ? setPagina(pagina) : 
+        setPagina(pagina + 1);
+    }
+
+    const voltarPagina = async (skip) => {
+        skip = skip - 10;
+        getAlunos(skip);
+        pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
     }
 
     return (
@@ -197,7 +208,7 @@ export default function FilmesCrud() {
                                 <td>{aluno.aluCodigo}</td>
                                 <td>{aluno.aluNome}</td>
                                 <td>{aluno.aluEmail}</td>
-                                <td>{converterDataToIdade(aluno.aluDataNasc)}</td>
+                                {/* <td>{converterDataToIdade(aluno.aluDataNasc)}</td> */}
                                 <td>
                                     <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
                                         <i className="fa fa-pencil"></i>
