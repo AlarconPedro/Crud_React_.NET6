@@ -4,30 +4,30 @@
     padding-bottom: 0;
 }
 
-.alunos-container {
+.treinadores-container {
     width: 100%;
     max-width: 1200px;
     padding: 5 10px;
     margin: 30px auto;
 }
 
-.alunos-container header button:hover {
+.treinadores-container header button:hover {
     border-color: #510BAC;
 }
 
-.alunos-container header {
+.treinadores-container header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.alunos-container header img {
+.treinadores-container header img {
     height: 80px;
 }
 
-.alunos-container header button {
+.treinadores-container header button {
     height: 50px;
-    width: 200px;
+    width: 250px;
     border-radius: 5px;
     border: 1px solid #DCDCE6;
     background: green;

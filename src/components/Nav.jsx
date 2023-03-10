@@ -14,6 +14,9 @@ export default props => {
                 <Link to={"/alunos"}>
                     <i className="fa fa-users"></i> Alunos
                 </Link>
+                <Link to={"/treinadores"}>
+                    <i className="fa fa-graduation-cap"></i> Treinadores
+                </Link>
             </nav>
         </aside>
     )

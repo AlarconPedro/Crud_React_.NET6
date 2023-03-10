@@ -5,39 +5,25 @@ import Mestre from "../../layout/Mestre/Mestre";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../services/Api";
 
-import "./AlunosCrud.css";
+import "./TreinadoresCrud.css";
 
-export default function AlunosCrud() {
+export default function TreinadoresCrud() {
 
-    const [alunosData, setAlunosData] = useState([]);
 
-    const [treinadoresData, setTreinadoresData] = useState([]);
+    const [treinadoresData, setTreinadorData] = useState([]);
 
-    const [aluno, setAlunos] = useState({
-        aluCodigo: '',
-        aluNome: '',
-        aluDataNasc: '',
-        aluEmail: '',
-        aluSenha: '',
+    const [treinador, setTreinador] = useState({
         treCodigo: '',
-        aluOneSignalId: '',
-        aluImagem: '',
-        aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: '',
-        aluObs: '',
-        aluStravaCode: '',
-        tbAlunoAtividades: '',
-        tbAlunoDesafios: '',
-        tbAlunoEventos: '',
-        treCodigoNavigation: '',
+        treNome: '',
+        treEmail: '',
+        treSenha: '',
+        treOneSignalId: '',
+        treImagem: '',
+        treId: '',
+        treFone: '',
+        treAtivo: '',
+        treBio: '',
     });
-
-    const sexo = [
-        { id: "M", nome: 'Masculino' },
-        { id: "F", nome: 'Feminino' },
-    ];
 
     const [nomeBusca, setNomeBusca] = useState({
         aluNome: ''
@@ -45,32 +31,32 @@ export default function AlunosCrud() {
 
     const [pagina, setPagina] = useState(1);
 
-    const [abrirCadastroAlunos, setAbrirCadastroAlunos] = useState(false);
-    const [abrirEditarAlunos, setAbrirEditarAlunos] = useState(false);
-    const [abrirExcluirAlunos, setAbrirExcluirAlunos] = useState(false);
-    const [updateAlunos, setUpdateAlunos] = useState(true);
+    const [abrirCadastroTreinadores, setAbrirCadastroTreinadores] = useState(false);
+    const [abrirEditarTreinadores, setAbrirEditarTreinadores] = useState(false);
+    const [abrirExcluirTreinadores, setAbrirExcluirTreinadores] = useState(false);
+    const [updateTreinadores, setUpdateTreinadores] = useState(true);
 
-    const abrirFecharCadastroAlunos = () => {
-        setAbrirCadastroAlunos(!abrirCadastroAlunos);
+    const abrirFecharCadastroTreinadores = () => {
+        setAbrirCadastroTreinadores(!abrirCadastroTreinadores);
     }
 
-    const abrirFecharEditarAlunos = () => {
-        setAbrirEditarAlunos(!abrirEditarAlunos);
+    const abrirFecharEditarTreinadores = () => {
+        setAbrirEditarTreinadores(!abrirEditarTreinadores);
     }
 
-    const abrirFecharExcluirAlunos = () => {
-        setAbrirExcluirAlunos(!abrirExcluirAlunos);
+    const abrirFecharExcluirTreinadores = () => {
+        setAbrirExcluirTreinadores(!abrirExcluirTreinadores);
     }
 
-    const selecionarAluno = (aluno, opcao) => {
-        setAlunos(aluno);
-        (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
+    const selecionarTreinador = (treinador, opcao) => {
+        setTreinador(treinador);
+        (opcao === "Editar") ? abrirFecharEditarTreinadores() : abrirFecharExcluirTreinadores();
     }
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
-        setAlunos({
-            ...aluno,
+        setTreinador({
+            ...treinador,
             [name]: value
         });
     }
@@ -83,77 +69,58 @@ export default function AlunosCrud() {
         });
     }
 
-    const getAlunos = async (skip = 0) => {
-        await Api.get(`aluno?skip=${skip}`).then(response => {
-            setAlunosData(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
-    }
-
     const getTreinadores = async (skip = 0) => {
         await Api.get(`treinador?skip=${skip}`).then(response => {
-            setTreinadoresData(response.data);
+            setTreinadorData(response.data);
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const getTreinadorId = async (id) => {
-        await Api.get(`treinador/${id}`).then(response => {
-            setAlunos({
-                ...aluno,
-                treCodigo: response.data.treCodigo
-            });
-        }).catch(error => {
-            console.log(error);
-        });
-    }
-
-    const postAluno = async () => {
-        delete aluno.aluCodigo;
+    const postTreinador = async () => {
+        delete treinador.aluCodigo;
         // aluno.idade = parseInt(aluno.idade);
-        await Api.post("aluno/", aluno).then(response => {
-            setAlunos(response.data);
-            setUpdateAlunos(true);
-            abrirFecharCadastroAlunos();
+        await Api.post("treinador/", treinador).then(response => {
+            setTreinador(response.data);
+            setUpdateTreinadores(true);
+            abrirFecharCadastroTreinadores();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const putAluno = async () => {
+    const putTreinador = async () => {
         // aluno.idade = parseInt(aluno.idade);
-        await Api.put("aluno/" + aluno.aluCodigo, aluno).then(response => {
-            var alunosAuxiliar = alunosData;
-            alunosAuxiliar.map(alunoMap => {
-                if (alunoMap.aluCodigo === aluno.aluCodigo) {
-                    alunoMap.aluNome = aluno.aluNome;
-                    alunoMap.aluEmail = aluno.aluEmail;
-                    alunoMap.aluDataNasc = aluno.aluDataNasc;
+        await Api.put("treinador/" + treinador.treCodigo, treinador).then(response => {
+            var treinadorAuxiliar = treinadoresData;
+            treinadorAuxiliar.map(treinadorMap => {
+                if (treinadorMap.aluCodigo === treinador.aluCodigo) {
+                    treinadorMap.aluNome = treinador.aluNome;
+                    treinadorMap.aluEmail = treinador.aluEmail;
+                    treinadorMap.aluDataNasc = treinador.aluDataNasc;
                 }
-                return alunoMap;
+                return treinadorMap;
             });
-            setAlunos(response.data);
-            setUpdateAlunos(true);
-            abrirFecharEditarAlunos();
+            setTreinador(response.data);
+            setUpdateTreinadores(true);
+            abrirFecharEditarTreinadores();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const deleteAluno = async () => {
-        await Api.delete("aluno/" + aluno.aluCodigo).then(response => {
-            setUpdateAlunos(true);
-            abrirFecharExcluirAlunos();
+    const deleteTreinador = async () => {
+        await Api.delete("treinador/" + treinador.treCodigo).then(response => {
+            setUpdateTreinadores(true);
+            abrirFecharExcluirTreinadores();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const getAlunoNome = async () => {
-        await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
-            setAlunosData(response.data);
+    const getTreinadorNome = async () => {
+        await Api.get("treinador/" + nomeBusca.treNome).then(response => {
+            setTreinadorData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -173,35 +140,31 @@ export default function AlunosCrud() {
     }
 
     useEffect(() => {
-        if (updateAlunos) {
-            getAlunos();
-            setUpdateAlunos(false);
+        if (updateTreinadores) {
+            getTreinadores();
+            setUpdateTreinadores(false);
         }
-    }, [updateAlunos]);
-
-    useEffect(() => {
-        getTreinadores();
-    }, [setAbrirCadastroAlunos]);
+    }, [updateTreinadores]);
 
     function handleDefault(e) {
         e.preventDefault();
     }
 
     const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > alunosData.length ? avancarPagina()
+        e === "&gt;" ? pagina > treinadoresData.length ? avancarPagina()
             : avancarPagina(pagina * 10)
             : voltarPagina(pagina * 10);
     }
 
     const avancarPagina = async (skip) => {
-        getAlunos(skip);
-        pagina > alunosData.length ? setPagina(1) :
+        getTreinadores(skip);
+        pagina > treinadoresData.length ? setPagina(1) :
             setPagina(pagina + 1);
     }
 
     const voltarPagina = async (skip) => {
         skip = skip - 20;
-        getAlunos(skip);
+        getTreinadores(skip);
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
     }
 
@@ -216,17 +179,17 @@ export default function AlunosCrud() {
     }
 
     return (
-        <Mestre icon="user" title="Cadastro Alunos" subtitle="Painel Sou+Fit">
-            <div className="alunos-container">
+        <Mestre icon="user" title="Cadastro Treinadores" subtitle="Painel Sou+Fit">
+            <div className="treinadores-container">
                 <header>
-                    <h3>Alunos</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Alunos</button>
+                    <h3>Treinadores</h3>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroTreinadores()}><strong>+</strong> Adicionar Treinadores</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
                     <div className="input-group rounded">
                         <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getAlunoNome()} type="submit">
+                        <button className="botaoBusca" onClick={() => getTreinadorNome()} type="submit">
                             <span className="input-group-text border-0" id="search-addon">
                                 <i className="fa fa-search"></i>
                             </span>
@@ -245,23 +208,27 @@ export default function AlunosCrud() {
                             <th>Ações</th>
                         </tr>
                     </thead>
+                    {/* <div class="spinner-border m-5" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div> */}
                     <tbody>
-                        {alunosData.map((aluno) => (
-                            <tr key={aluno.aluCodigo}>
-                                <td>{aluno.aluCodigo}</td>
-                                <td>{aluno.aluNome}</td>
-                                <td>{aluno.aluFone}</td>
-                                <td><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
+                        {treinadoresData.map((treinador) => (
+                            console.log(treinador),
+                            <tr key={treinador.treCodigo}>
+                                <td>{treinador.treCodigo}</td>
+                                <td>{treinador.treNome}</td>
+                                <td>{treinador.treFone}</td>
+                                <td><div className="idade">{converterDataToIdade(treinador.aluDataNasc ?? "")}</div></td>
                                 <td>
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} />
+                                        <input className="form-check-input" type="checkbox" checked={treinador.treAtivo} />
                                     </div>
                                 </td>
                                 <td>
-                                    <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
+                                    <button className="btn btn-warning" onClick={() => selecionarTreinador(treinador, "Editar")}>
                                         <i className="fa fa-pencil"></i>
                                     </button>{" "}
-                                    <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
+                                    <button className="btn btn-danger" onClick={() => selecionarTreinador(treinador, "Excluir")}>
                                         <i className="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -287,8 +254,8 @@ export default function AlunosCrud() {
                     </div>
                 </div>
 
-                <Modal isOpen={abrirCadastroAlunos} className="modal-incluir">
-                    <ModalHeader>Incluir Aluno</ModalHeader>
+                <Modal isOpen={abrirCadastroTreinadores} className="modal-incluir">
+                    <ModalHeader>Incluir Treinador</ModalHeader>
                     <ModalBody>
                         <form class="row g-3 form-group">
                             <div class="col-md-6">
@@ -303,28 +270,17 @@ export default function AlunosCrud() {
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label mb-0">Sexo:</label>
-                                <select class="form-select w-100 h-50"
-                                    name="aluSexo">
-                                    {
-                                        sexo.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.id}>{item.nome}</option>
-                                            )
-                                        })
-                                    }
+                                <select class="form-select w-100 h-50" >
+                                    <option selected>Prefiro não informar</option>
+                                    <option>Masculino</option>
+                                    <option>Feminino</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputName" class="form-label mb-0 mt-2">Treinador:</label>
-                                <select class="form-select w-100 h-50"
-                                    name="treCodigo" value={treinadoresData} onChange={atualizaCampo}>
-                                    {
-                                        treinadoresData.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                            )
-                                        })
-                                    }
+                                <select class="form-select w-100 h-50" >
+                                    <option selected>Escolha um Treinador</option>
+                                    <option>Roni</option>
                                 </select>
                             </div>
                             <div class="col-6">
@@ -379,84 +335,74 @@ export default function AlunosCrud() {
                         </div> */}
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn btn-success" onClick={() => postAluno()}>Salvar</button>{" "}
-                        <button className="btn btn-danger" onClick={() => abrirFecharCadastroAlunos()}>Cancelar</button>
+                        <button className="btn btn-success" onClick={() => postTreinador()}>Salvar</button>{" "}
+                        <button className="btn btn-danger" onClick={() => abrirFecharCadastroTreinadores()}>Cancelar</button>
                     </ModalFooter>
                 </Modal>
 
-                <Modal isOpen={abrirEditarAlunos} className="modal-editar">
-                    <ModalHeader>Editar Aluno</ModalHeader>
+                <Modal isOpen={abrirEditarTreinadores} className="modal-editar">
+                    <ModalHeader>Editar Treinador</ModalHeader>
                     <ModalBody>
                         <form class="row g-3 form-group">
                             <div className="col-md-12">
                                 <label className="mb-0">Id: </label>
                                 <input type="number" className="form-control mb-2" readOnly disabled
-                                    value={aluno && aluno.aluCodigo} />
+                                    value={treinador && treinador.aluCodigo} />
                             </div>
                             <div className="col-md-6">
                                 <label for="inputName" class="form-label mb-0">Nome:</label>
                                 <input type="text" class="form-control" placeholder="Nome Sobrenome"
-                                    name="aluNome" onChange={atualizaCampo} value={aluno && aluno.aluNome} />
+                                    name="aluNome" onChange={atualizaCampo} value={treinador && treinador.aluNome} />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label mb-0">Data Nascimento:</label>
                                 <input type="date" class="form-control"
-                                    name="aluDataNasc" onChange={atualizaCampo} value={aluno && aluno.aluDataNasc} />
+                                    name="aluDataNasc" onChange={atualizaCampo} value={treinador && treinador.aluDataNasc} />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label mb-0">Sexo:</label>
-                                <select class="form-select w-100 h-50" value={verificaSexo(aluno && aluno.aluSexo)} onChange={atualizaCampo}>
-                                    {
-                                        sexo.map((item, index) => {
-                                            return (
-                                                <option key={index} value={verificaSexo(aluno && item.id)}>{item.nome}</option>
-                                            )
-                                        })
-                                    }
+                                <select class="form-select w-100 h-50" value={verificaSexo(treinador && treinador.aluSexo)} onChange={atualizaCampo}>
+                                    <option></option>
+                                    <option>Masculino</option>
+                                    <option>Feminino</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputName" class="form-label mb-0 mt-2">Treinador:</label>
-                                <select class="form-select w-100 h-50"
-                                    value={treinadoresData}>
-                                    {
-                                        treinadoresData.map((item, index) => {
-                                            return (
-                                                <option key={item.treCodigo} value={item.treCodigo}>{item.treNome}</option>
-                                            )
-                                        })
-                                    }
+                                <select class="form-select w-100 h-50" >
+                                    <option selected>Escolha um Treinador</option>
+                                    <option>Roni</option>
                                 </select>
                             </div>
                             <div class="col-6">
                                 <label for="tel" class="form-label mb-0 mt-2">Telefone:</label>
                                 <input type="tel" class="form-control" name="aluFone"
-                                    onChange={atualizaCampo} value={aluno && aluno.aluFone} />
+                                    onChange={atualizaCampo} value={treinador && treinador.aluFone} />
                             </div>
                             <div class="col-md-6">
                                 <label for="inputEmail4" class="form-label mb-0 mt-2">Email:</label>
                                 <input type="email" class="form-control" name="aluEmail"
-                                    onChange={atualizaCampo} value={aluno && aluno.aluEmail} />
+                                    onChange={atualizaCampo} value={treinador && treinador.aluEmail} />
                             </div>
                             <div class="col-md-3">
                                 <label for="inputPassword4" class="form-label mb-0 mt-2">Senha:</label>
                                 <input type="password" class="form-control" name="aluSenha"
-                                    onChange={atualizaCampo} value={aluno && aluno.aluSenha} />
+                                    onChange={atualizaCampo} value={treinador && treinador.aluSenha} />
                             </div>
                             <div class="col-md-3">
                                 <label for="inputPassword4" class="form-label mb-0 mt-2">Confirmar Senha:</label>
                                 <input type="password" class="form-control" name="aluNome"
-                                    onChange={atualizaCampo} value={aluno && aluno.aluSenha} />
+                                    onChange={atualizaCampo} value={treinador && treinador.aluSenha} />
                             </div>
                             <div class="col-md-6">
                                 <label for="inputName" class="form-label mb-0">Observação:</label>
                                 <input type="text" class="form-control" name="aluObs"
-                                    onChange={atualizaCampo} value={aluno && aluno.aluObs} />
+                                    onChange={atualizaCampo} value={treinador && treinador.aluObs} />
                             </div>
                             <div class="col-2 mt-5">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="gridCheck"
-                                        name="aluAtivo" onChange={atualizaCampo} checked={aluno && aluno.aluAtivo} />
+                                        name="aluAtivo" onChange={atualizaCampo} checked={treinador && treinador.aluAtivo} />
                                     <label class="form-check-label" for="gridCheck">Ativo</label>
                                 </div>
                             </div>
@@ -487,68 +433,22 @@ export default function AlunosCrud() {
                         </div> */}
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn btn-success" onClick={() => putAluno()}>Salvar</button>{" "}
-                        <button className="btn btn-danger" onClick={() => abrirFecharEditarAlunos()}>Cancelar</button>
+                        <button className="btn btn-success" onClick={() => putTreinador()}>Salvar</button>{" "}
+                        <button className="btn btn-danger" onClick={() => abrirFecharEditarTreinadores()}>Cancelar</button>
                     </ModalFooter>
                 </Modal>
 
-                <Modal isOpen={abrirExcluirAlunos}>
-                    <ModalHeader>Excluir Aluno</ModalHeader>
+                <Modal isOpen={abrirExcluirTreinadores}>
+                    <ModalHeader>Excluir Treinador</ModalHeader>
                     <ModalBody>
-                        Deseja excluir o Aluno : {aluno && aluno.aluNome}?
+                        Deseja excluir o Aluno : {treinador && treinador.aluNome}?
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn btn-danger" onClick={() => deleteAluno()}>Sim</button>
-                        <button className="btn btn-secondary" onClick={() => abrirFecharExcluirAlunos()}>Não</button>
+                        <button className="btn btn-danger" onClick={() => deleteTreinador()}>Sim</button>
+                        <button className="btn btn-secondary" onClick={() => abrirFecharExcluirTreinadores()}>Não</button>
                     </ModalFooter>
                 </Modal>
             </div>
         </Mestre>
-    );
+    )
 }
-
-// export default props => (
-//     <Main icon="user" title="Filmes" subtitle="Painel Sou+Fit">
-//         <div className="filmes-container ">
-//             <header>
-//                 <h3>Filmes</h3>
-//                 <button className="btn btn-success" >+ Adicionar Filme</button>
-//             </header>
-//             <hr />
-//             <div class="input-group rounded">
-//                 <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-//                 <span class="input-group-text border-0" id="search-addon">
-//                     <i class="fa fa-search"></i>
-//                 </span>
-//             </div>
-//             <br />
-//             <table className="table table-striped">
-//                 <thead>
-//                     <tr>
-//                         <th>Id</th>
-//                         <th>Nome</th>
-//                         <th>Gênero</th>
-//                         <th>Duração</th>
-//                         <th>Ações</th>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     <tr>
-//                         <td>1</td>
-//                         <td>Nome do Filme</td>
-//                         <td>Gênero do Filme</td>
-//                         <td>Duração do Filme</td>
-//                         <td>
-//                             <button className="btn btn-warning">
-//                                 <i className="fa fa-pencil"></i>
-//                             </button>{" "}
-//                             <button className="btn btn-danger">
-//                                 <i className="fa fa-trash"></i>
-//                             </button>
-//                         </td>
-//                     </tr>
-//                 </tbody>
-//             </table>
-//         </div>
-//     </Main>
-// );
