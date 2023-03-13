@@ -9,29 +9,32 @@ import "./AlunosCrud.css";
 
 export default function AlunosCrud() {
 
+    const [carregando, setCarregando] = useState(false);
+    const [ativo, setAtivo] = useState(false);
+
     const [alunosData, setAlunosData] = useState([]);
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
     const [aluno, setAlunos] = useState({
-        aluCodigo: '',
+        aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: '',
+        aluDataNasc: '1974-05-13T00:00:00',
         aluEmail: '',
         aluSenha: '',
         treCodigo: '',
-        aluOneSignalId: '',
+        aluOneSignalId: null,
         aluImagem: '',
         aluId: '',
         aluFone: '',
         aluSexo: '',
-        aluAtivo: '',
+        aluAtivo: false,
         aluObs: '',
-        aluStravaCode: '',
-        tbAlunoAtividades: '',
-        tbAlunoDesafios: '',
-        tbAlunoEventos: '',
-        treCodigoNavigation: '',
+        aluStravaCode: null,
+        tbAlunoAtividades: [],
+        tbAlunoDesafios: [],
+        tbAlunoEventos: [],
+        treCodigoNavigation: null,
     });
 
     const sexo = [
@@ -69,6 +72,7 @@ export default function AlunosCrud() {
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
+        console.log(name, value);
         setAlunos({
             ...aluno,
             [name]: value
@@ -83,20 +87,32 @@ export default function AlunosCrud() {
         });
     }
 
+    const atualizaCampoAtivo = e => {
+        const { name, value } = e.target;
+        setAlunos({
+            ...aluno,
+            [name]: value === "true" ? true : false
+        });
+    }
+
     const getAlunos = async (skip = 0) => {
+        setCarregando(true);
         await Api.get(`aluno?skip=${skip}`).then(response => {
             setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
         });
+        setCarregando(false);
     }
 
     const getTreinadores = async (skip = 0) => {
+        setCarregando(true);
         await Api.get(`treinador?skip=${skip}`).then(response => {
             setTreinadoresData(response.data);
         }).catch(error => {
             console.log(error);
         });
+        setCarregando(false);
     }
 
     const getTreinadorId = async (id) => {
@@ -111,8 +127,6 @@ export default function AlunosCrud() {
     }
 
     const postAluno = async () => {
-        delete aluno.aluCodigo;
-        // aluno.idade = parseInt(aluno.idade);
         await Api.post("aluno/", aluno).then(response => {
             setAlunos(response.data);
             setUpdateAlunos(true);
@@ -123,7 +137,6 @@ export default function AlunosCrud() {
     }
 
     const putAluno = async () => {
-        // aluno.idade = parseInt(aluno.idade);
         await Api.put("aluno/" + aluno.aluCodigo, aluno).then(response => {
             var alunosAuxiliar = alunosData;
             alunosAuxiliar.map(alunoMap => {
@@ -152,11 +165,13 @@ export default function AlunosCrud() {
     }
 
     const getAlunoNome = async () => {
+        setCarregando(true);
         await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
             setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
         });
+        setCarregando(false);
     }
 
     const converterDataToIdade = (data) => {
@@ -234,44 +249,56 @@ export default function AlunosCrud() {
                     </div>
                 </form>
                 <br />
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Nome</th>
-                            <th>Telefone</th>
-                            <th>Idade</th>
-                            <th>Ativo</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {alunosData.map((aluno) => (
-                            <tr key={aluno.aluCodigo}>
-                                <td>{aluno.aluCodigo}</td>
-                                <td>{aluno.aluNome}</td>
-                                <td>{aluno.aluFone}</td>
-                                <td><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
-                                <td>
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} />
-                                    </div>
-                                </td>
-                                <td>
-                                    <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
-                                        <i className="fa fa-pencil"></i>
-                                    </button>{" "}
-                                    <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
-                                        <i className="fa fa-trash"></i>
-                                    </button>
-                                </td>
+                {carregando ? <div className="spinner-border loader" role="status">
+                </div>
+                    : <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>Idade</th>
+                                <th>Ativo</th>
+                                <th>Ações</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {alunosData.map((aluno) => (
+                                <tr key={aluno.aluCodigo}>
+                                    <td>{aluno.aluCodigo}</td>
+                                    <td>{aluno.aluNome}</td>
+                                    <td>{aluno.aluFone}</td>
+                                    <td><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
+                                    <td>
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
+                                            <i className="fa fa-pencil"></i>
+                                        </button>{" "}
+                                        <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
+                                            <i className="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                }
                 <hr />
                 <br />
-                <div className="w-100">
+                <div className="d-flex justify-content-center">
+                    <nav aria-label="Page navigation example">
+                        <ul className="pagination">
+                            <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
+                            <li className="page-item active"><p className="page-link">{pagina}</p></li>
+                            <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                {/* <div className="w-100">
                     <div className="d-flex justify-content-center">
                         <div className="row">
                             <div className="col-4 paginacao">
@@ -285,26 +312,27 @@ export default function AlunosCrud() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <Modal isOpen={abrirCadastroAlunos} className="modal-incluir">
                     <ModalHeader>Incluir Aluno</ModalHeader>
                     <ModalBody>
-                        <form class="row g-3 form-group">
-                            <div class="col-md-6">
-                                <label for="inputName" class="form-label mb-0">Nome:</label>
-                                <input type="text" class="form-control" placeholder="Nome Sobrenome"
+                        <form className="row g-3 form-group">
+                            <div className="col-md-6">
+                                <label className="form-label mb-0">Nome:</label>
+                                <input type="text" className="form-control" placeholder="Nome Sobrenome"
                                     name="aluNome" onChange={atualizaCampo} />
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label mb-0">Data Nascimento:</label>
-                                <input type="date" class="form-control"
+                            <div className="col-md-3">
+                                <label className="form-label mb-0">Data Nascimento:</label>
+                                <input type="date" className="form-control"
                                     name="aluDataNasc" onChange={atualizaCampo} />
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label mb-0">Sexo:</label>
-                                <select class="form-select w-100 h-50"
-                                    name="aluSexo">
+                            <div className="col-md-3">
+                                <label className="form-label mb-0">Sexo:</label>
+                                <select className="form-select w-100 h-50"
+                                    name="aluSexo" onChange={atualizaCampo}>
+                                    <option value=""></option>
                                     {
                                         sexo.map((item, index) => {
                                             return (
@@ -314,53 +342,58 @@ export default function AlunosCrud() {
                                     }
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputName" class="form-label mb-0 mt-2">Treinador:</label>
-                                <select class="form-select w-100 h-50"
-                                    name="treCodigo" value={treinadoresData} onChange={atualizaCampo}>
+                            <div className="col-md-6">
+                                <label className="form-label mb-0 mt-2">Treinador:</label>
+                                <select className="form-select w-100 h-50"
+                                    name="treCodigo" onChange={atualizaCampo}>
                                     {
                                         treinadoresData.map((item, index) => {
                                             return (
-                                                <option key={index} value={item.treCodigo}>{item.treNome}</option>
+                                                <React.Fragment>
+                                                    <option value=""></option>
+                                                    <option key={index} value={item.treCodigo}>{item.treNome}</option>
+                                                </React.Fragment>
                                             )
                                         })
                                     }
                                 </select>
                             </div>
-                            <div class="col-6">
-                                <label for="tel" class="form-label mb-0 mt-2">Telefone:</label>
-                                <input type="tel" class="form-control" placeholder="(00) 00000-0000"
+                            <div className="col-6">
+                                <label className="form-label mb-0 mt-2">Telefone:</label>
+                                <input type="tel" className="form-control" placeholder="(00) 00000-0000"
                                     name="aluFone" onChange={atualizaCampo} />
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputEmail4" class="form-label mb-0 mt-2">Email:</label>
-                                <input type="email" class="form-control" placeholder="exemplo@gmail.com"
+                            <div className="col-md-6">
+                                <label className="form-label mb-0 mt-2">Email:</label>
+                                <input type="email" className="form-control" placeholder="exemplo@gmail.com"
                                     name="aluEmail" onChange={atualizaCampo} />
                             </div>
-                            <div class="col-md-3">
-                                <label for="inputPassword4" class="form-label mb-0 mt-2">Senha:</label>
-                                <input type="password" class="form-control" placeholder="****"
+                            <div className="col-md-3">
+                                <label className="form-label mb-0 mt-2">Senha:</label>
+                                <input type="password" className="form-control" placeholder="****"
                                     name="aluSenha" onChange={atualizaCampo} />
                             </div>
-                            <div class="col-md-3">
-                                <label for="inputPassword4" class="form-label mb-0 mt-2">Confirmar Senha:</label>
-                                <input type="password" class="form-control" placeholder="****"
-                                    name="aluNome" onChange={atualizaCampo} />
+                            <div className="col-md-3">
+                                <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
+                                <input type="password" className="form-control" placeholder="****"
+                                    name="aluSenha" onChange={atualizaCampo} />
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputName" class="form-label mb-0">Observação:</label>
-                                <input type="text" class="form-control" placeholder="Obs."
+                            <div className="col-md-6">
+                                <label className="form-label mb-0">Observação:</label>
+                                <input type="text" className="form-control" placeholder="Obs."
                                     name="aluObs" onChange={atualizaCampo} />
                             </div>
-                            <div class="col-2 mt-5">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="gridCheck"
-                                        name="aluAtivo" onChange={atualizaCampo} />
-                                    <label class="form-check-label" for="gridCheck">Ativo</label>
+                            <div className="col-2 mt-5">
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" id="gridCheck"
+                                        name="aluAtivo"
+                                        onChange={atualizaCampoAtivo}
+                                        value={true} />
+                                    <label className="form-check-label">Ativo</label>
                                 </div>
                             </div>
-                            <div class="col-md-4 mt-5">
-                                <label for="inputState" class="form-label mb-0">Imagem:</label>
+                            <div className="col-md-4 mt-5">
+                                <label className="form-label mb-0">Imagem:</label>
                                 <input type="image" alt="imagem" className="container border-dark" />
                             </div>
                         </form>
@@ -387,25 +420,25 @@ export default function AlunosCrud() {
                 <Modal isOpen={abrirEditarAlunos} className="modal-editar">
                     <ModalHeader>Editar Aluno</ModalHeader>
                     <ModalBody>
-                        <form class="row g-3 form-group">
+                        <form className="row g-3 form-group">
                             <div className="col-md-12">
                                 <label className="mb-0">Id: </label>
                                 <input type="number" className="form-control mb-2" readOnly disabled
                                     value={aluno && aluno.aluCodigo} />
                             </div>
                             <div className="col-md-6">
-                                <label for="inputName" class="form-label mb-0">Nome:</label>
-                                <input type="text" class="form-control" placeholder="Nome Sobrenome"
+                                <label className="form-label mb-0">Nome:</label>
+                                <input type="text" className="form-control" placeholder="Nome Sobrenome"
                                     name="aluNome" onChange={atualizaCampo} value={aluno && aluno.aluNome} />
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label mb-0">Data Nascimento:</label>
-                                <input type="date" class="form-control"
+                            <div className="col-md-3">
+                                <label className="form-label mb-0">Data Nascimento:</label>
+                                <input type="date" className="form-control"
                                     name="aluDataNasc" onChange={atualizaCampo} value={aluno && aluno.aluDataNasc} />
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label mb-0">Sexo:</label>
-                                <select class="form-select w-100 h-50" value={verificaSexo(aluno && aluno.aluSexo)} onChange={atualizaCampo}>
+                            <div className="col-md-3">
+                                <label className="form-label mb-0">Sexo:</label>
+                                <select className="form-select w-100 h-50" name="aluSexo" value={verificaSexo(aluno && aluno.aluSexo)} onChange={atualizaCampo}>
                                     {
                                         sexo.map((item, index) => {
                                             return (
@@ -415,9 +448,9 @@ export default function AlunosCrud() {
                                     }
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputName" class="form-label mb-0 mt-2">Treinador:</label>
-                                <select class="form-select w-100 h-50"
+                            <div className="col-md-6">
+                                <label className="form-label mb-0 mt-2">Treinador:</label>
+                                <select className="form-select w-100 h-50"
                                     value={treinadoresData}>
                                     {
                                         treinadoresData.map((item, index) => {
@@ -428,40 +461,40 @@ export default function AlunosCrud() {
                                     }
                                 </select>
                             </div>
-                            <div class="col-6">
-                                <label for="tel" class="form-label mb-0 mt-2">Telefone:</label>
+                            <div className="col-6">
+                                <label className="form-label mb-0 mt-2">Telefone:</label>
                                 <input type="tel" class="form-control" name="aluFone"
                                     onChange={atualizaCampo} value={aluno && aluno.aluFone} />
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputEmail4" class="form-label mb-0 mt-2">Email:</label>
-                                <input type="email" class="form-control" name="aluEmail"
+                            <div className="col-md-6">
+                                <label className="form-label mb-0 mt-2">Email:</label>
+                                <input type="email" className="form-control" name="aluEmail"
                                     onChange={atualizaCampo} value={aluno && aluno.aluEmail} />
                             </div>
-                            <div class="col-md-3">
-                                <label for="inputPassword4" class="form-label mb-0 mt-2">Senha:</label>
-                                <input type="password" class="form-control" name="aluSenha"
+                            <div className="col-md-3">
+                                <label className="form-label mb-0 mt-2">Senha:</label>
+                                <input type="password" className="form-control" name="aluSenha"
                                     onChange={atualizaCampo} value={aluno && aluno.aluSenha} />
                             </div>
-                            <div class="col-md-3">
-                                <label for="inputPassword4" class="form-label mb-0 mt-2">Confirmar Senha:</label>
-                                <input type="password" class="form-control" name="aluNome"
+                            <div className="col-md-3">
+                                <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
+                                <input type="password" className="form-control" name="aluNome"
                                     onChange={atualizaCampo} value={aluno && aluno.aluSenha} />
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputName" class="form-label mb-0">Observação:</label>
-                                <input type="text" class="form-control" name="aluObs"
+                            <div className="col-md-6">
+                                <label className="form-label mb-0">Observação:</label>
+                                <input type="text" className="form-control" name="aluObs"
                                     onChange={atualizaCampo} value={aluno && aluno.aluObs} />
                             </div>
-                            <div class="col-2 mt-5">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="gridCheck"
+                            <div className="col-2 mt-5">
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" id="gridCheck"
                                         name="aluAtivo" onChange={atualizaCampo} checked={aluno && aluno.aluAtivo} />
-                                    <label class="form-check-label" for="gridCheck">Ativo</label>
+                                    <label className="form-check-label">Ativo</label>
                                 </div>
                             </div>
-                            <div class="col-md-4 mt-5">
-                                <label for="inputState" class="form-label mb-0">Imagem:</label>
+                            <div className="col-md-4 mt-5">
+                                <label className="form-label mb-0">Imagem:</label>
                                 <input type="image" alt="imagem" className="container border-dark" />
                             </div>
                         </form>
@@ -503,7 +536,7 @@ export default function AlunosCrud() {
                     </ModalFooter>
                 </Modal>
             </div>
-        </Mestre>
+        </Mestre >
     );
 }
 

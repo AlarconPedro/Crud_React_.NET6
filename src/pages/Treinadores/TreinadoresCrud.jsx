@@ -9,6 +9,7 @@ import "./TreinadoresCrud.css";
 
 export default function TreinadoresCrud() {
 
+    const [carregando, setCarregando] = useState(false);
 
     const [treinadoresData, setTreinadorData] = useState([]);
 
@@ -70,11 +71,13 @@ export default function TreinadoresCrud() {
     }
 
     const getTreinadores = async (skip = 0) => {
+        setCarregando(true);
         await Api.get(`treinador?skip=${skip}`).then(response => {
             setTreinadorData(response.data);
         }).catch(error => {
             console.log(error);
         });
+        setCarregando(false);
     }
 
     const postTreinador = async () => {
