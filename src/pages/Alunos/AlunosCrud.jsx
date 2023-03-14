@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Mestre from "../../layout/Mestre/Mestre";
 
 import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,15 +14,7 @@ import "./AlunosCrud.css";
 
 export default function AlunosCrud() {
 
-    const [carregando, setCarregando] = useState(false);
-
-    const [dataAtual, setDataAtual] = useState(new Date());
-
-    const [alunosData, setAlunosData] = useState([]);
-
-    const [treinadoresData, setTreinadoresData] = useState([]);
-
-    const [aluno, setAlunos] = useState({
+    const [alunoInitialState] = useState({
         aluCodigo: 0,
         aluNome: '',
         aluDataNasc: '',
@@ -33,7 +26,36 @@ export default function AlunosCrud() {
         aluId: '',
         aluFone: '',
         aluSexo: '',
-        aluAtivo: false,
+        aluAtivo: true,
+        aluObs: '',
+        aluStravaCode: null,
+        tbAlunoAtividades: [],
+        tbAlunoDesafios: [],
+        tbAlunoEventos: [],
+        treCodigoNavigation: null,
+    });
+
+    const [carregando, setCarregando] = useState(false);
+
+    const [dataAtual, setDataAtual] = useState(new Date());
+
+    const [alunosData, setAlunosData] = useState([]);
+
+    const [treinadoresData, setTreinadoresData] = useState([]);
+
+    const [aluno, setAluno] = useState({
+        aluCodigo: 0,
+        aluNome: '',
+        aluDataNasc: '',
+        aluEmail: '',
+        aluSenha: '',
+        treCodigo: '',
+        aluOneSignalId: null,
+        aluImagem: '',
+        aluId: '',
+        aluFone: '',
+        aluSexo: '',
+        aluAtivo: true,
         aluObs: '',
         aluStravaCode: null,
         tbAlunoAtividades: [],
@@ -71,14 +93,14 @@ export default function AlunosCrud() {
     }
 
     const selecionarAluno = (aluno, opcao) => {
-        setAlunos(aluno);
+        setAluno(aluno);
         (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
     }
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
         console.log(name, value);
-        setAlunos({
+        setAluno({
             ...aluno,
             [name]: value
         });
@@ -94,7 +116,7 @@ export default function AlunosCrud() {
 
     const atualizaCampoAtivo = e => {
         const { name, value } = e.target;
-        setAlunos({
+        setAluno({
             ...aluno,
             [name]: value === "true" ? true : false
         });
@@ -112,7 +134,7 @@ export default function AlunosCrud() {
         if (day.length < 2)
             day = '0' + day;
 
-        setAlunos({
+        setAluno({
             ...aluno,
             aluDataNasc: [year, month, day].join('-')
         });
@@ -142,7 +164,7 @@ export default function AlunosCrud() {
 
     const getTreinadorId = async (id) => {
         await Api.get(`treinador/${id}`).then(response => {
-            setAlunos({
+            setAluno({
                 ...aluno,
                 treCodigo: response.data.treCodigo
             });
@@ -154,12 +176,13 @@ export default function AlunosCrud() {
     const postAluno = async () => {
         await dataAuxiliar(dataAtual);
         await Api.post("aluno/", aluno).then(response => {
-            setAlunos(response.data);
+            setAluno(response.data);
             setUpdateAlunos(true);
             abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
+        setAluno(alunoInitialState);
     }
 
     const putAluno = async () => {
@@ -173,7 +196,7 @@ export default function AlunosCrud() {
                 }
                 return alunoMap;
             });
-            setAlunos(response.data);
+            setAluno(response.data);
             setUpdateAlunos(true);
             abrirFecharEditarAlunos();
         }).catch(error => {
@@ -355,10 +378,16 @@ export default function AlunosCrud() {
                                 <DatePicker
                                     className="form-control"
                                     name="aluDataNasc"
-                                    selected={dataAtual}
+                                    selected={new Date(aluno.aluDataNasc)}
                                     onChange={date => dataAuxiliar(date)}
                                     dateFormat={"dd/MM/yyyy"}
                                     timeFormat="yyyy-MM-dd"
+                                    customInput={
+                                        <InputMask
+                                            type="text"
+                                            mask="99/99/9999"
+                                        />
+                                    }
                                 />
                                 {/* <input type="date" className="form-control"
                                     name="aluDataNasc" onChange={atualizaCampo} /> */}
@@ -469,8 +498,16 @@ export default function AlunosCrud() {
                                 <DatePicker
                                     className="form-control"
                                     name="aluDataNasc"
-                                    selected={aluno && aluno.aluDataNasc}
-                                    onChange={date => setAlunos({ ...aluno, aluDataNasc: dataAuxiliar(date) })}
+                                    dateFormat={"dd/MM/yyyy"}
+                                    timeFormat="yyyy-MM-dd"
+                                    selected={new Date(aluno.aluDataNasc)}
+                                    onChange={date => dataAuxiliar(date)}
+                                    customInput={
+                                        <InputMask
+                                            type="text"
+                                            mask="99/99/9999"
+                                        />
+                                    }
                                 />
                                 {/* <input type="date" className="form-control"
                                     name="aluDataNasc" onChange={atualizaCampo} value={aluno && aluno.aluDataNasc} /> */}
