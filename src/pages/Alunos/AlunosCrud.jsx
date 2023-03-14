@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 
 import Mestre from "../../layout/Mestre/Mestre";
 
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../services/Api";
 
@@ -10,7 +14,8 @@ import "./AlunosCrud.css";
 export default function AlunosCrud() {
 
     const [carregando, setCarregando] = useState(false);
-    const [ativo, setAtivo] = useState(false);
+
+    const [dataAtual, setDataAtual] = useState(new Date());
 
     const [alunosData, setAlunosData] = useState([]);
 
@@ -19,7 +24,7 @@ export default function AlunosCrud() {
     const [aluno, setAlunos] = useState({
         aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: '1974-05-13T00:00:00',
+        aluDataNasc: '',
         aluEmail: '',
         aluSenha: '',
         treCodigo: '',
@@ -95,6 +100,26 @@ export default function AlunosCrud() {
         });
     }
 
+    const dataAuxiliar = (date) => {
+        setDataAtual(date);
+        var data = new Date(date),
+            month = '' + (data.getMonth() + 1),
+            day = '' + data.getDate(),
+            year = data.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        setAlunos({
+            ...aluno,
+            aluDataNasc: [year, month, day].join('-')
+        });
+        return [day, month, year].join('-');
+    }
+
+
     const getAlunos = async (skip = 0) => {
         setCarregando(true);
         await Api.get(`aluno?skip=${skip}`).then(response => {
@@ -127,6 +152,7 @@ export default function AlunosCrud() {
     }
 
     const postAluno = async () => {
+        await dataAuxiliar(dataAtual);
         await Api.post("aluno/", aluno).then(response => {
             setAlunos(response.data);
             setUpdateAlunos(true);
@@ -323,10 +349,19 @@ export default function AlunosCrud() {
                                 <input type="text" className="form-control" placeholder="Nome Sobrenome"
                                     name="aluNome" onChange={atualizaCampo} />
                             </div>
+
                             <div className="col-md-3">
                                 <label className="form-label mb-0">Data Nascimento:</label>
-                                <input type="date" className="form-control"
-                                    name="aluDataNasc" onChange={atualizaCampo} />
+                                <DatePicker
+                                    className="form-control"
+                                    name="aluDataNasc"
+                                    selected={dataAtual}
+                                    onChange={date => dataAuxiliar(date)}
+                                    dateFormat={"dd/MM/yyyy"}
+                                    timeFormat="yyyy-MM-dd"
+                                />
+                                {/* <input type="date" className="form-control"
+                                    name="aluDataNasc" onChange={atualizaCampo} /> */}
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label mb-0">Sexo:</label>
@@ -346,13 +381,11 @@ export default function AlunosCrud() {
                                 <label className="form-label mb-0 mt-2">Treinador:</label>
                                 <select className="form-select w-100 h-50"
                                     name="treCodigo" onChange={atualizaCampo}>
+                                    <option value=""></option>
                                     {
                                         treinadoresData.map((item, index) => {
                                             return (
-                                                <React.Fragment>
-                                                    <option value=""></option>
-                                                    <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                                </React.Fragment>
+                                                <option key={index} value={item.treCodigo}>{item.treNome}</option>
                                             )
                                         })
                                     }
@@ -433,8 +466,14 @@ export default function AlunosCrud() {
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label mb-0">Data Nascimento:</label>
-                                <input type="date" className="form-control"
-                                    name="aluDataNasc" onChange={atualizaCampo} value={aluno && aluno.aluDataNasc} />
+                                <DatePicker
+                                    className="form-control"
+                                    name="aluDataNasc"
+                                    selected={aluno && aluno.aluDataNasc}
+                                    onChange={date => setAlunos({ ...aluno, aluDataNasc: dataAuxiliar(date) })}
+                                />
+                                {/* <input type="date" className="form-control"
+                                    name="aluDataNasc" onChange={atualizaCampo} value={aluno && aluno.aluDataNasc} /> */}
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label mb-0">Sexo:</label>
