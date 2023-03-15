@@ -14,10 +14,19 @@ import "./AlunosCrud.css";
 
 export default function AlunosCrud() {
 
+
+    const [carregando, setCarregando] = useState(false);
+
+    const [dataAtual, setDataAtual] = useState(new Date());
+
+    const [alunosData, setAlunosData] = useState([]);
+
+    const [treinadoresData, setTreinadoresData] = useState([]);
+
     const [alunoInitialState] = useState({
         aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: '',
+        aluDataNasc: new Date("01/01/1900"),
         aluEmail: '',
         aluSenha: '',
         treCodigo: '',
@@ -35,18 +44,11 @@ export default function AlunosCrud() {
         treCodigoNavigation: null,
     });
 
-    const [carregando, setCarregando] = useState(false);
-
-    const [dataAtual, setDataAtual] = useState(new Date());
-
-    const [alunosData, setAlunosData] = useState([]);
-
-    const [treinadoresData, setTreinadoresData] = useState([]);
 
     const [aluno, setAluno] = useState({
         aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: '',
+        aluDataNasc: new Date(dataAtual),
         aluEmail: '',
         aluSenha: '',
         treCodigo: '',
@@ -82,6 +84,7 @@ export default function AlunosCrud() {
 
     const abrirFecharCadastroAlunos = () => {
         setAbrirCadastroAlunos(!abrirCadastroAlunos);
+        setAluno(alunoInitialState);
     }
 
     const abrirFecharEditarAlunos = () => {
@@ -126,7 +129,7 @@ export default function AlunosCrud() {
         setDataAtual(date);
         var data = new Date(date),
             month = '' + (data.getMonth() + 1),
-            day = '' + data.getDate(),
+            day = '' + (data.getDate() + 1),
             year = data.getFullYear();
 
         if (month.length < 2)
@@ -164,10 +167,7 @@ export default function AlunosCrud() {
 
     const getTreinadorId = async (id) => {
         await Api.get(`treinador/${id}`).then(response => {
-            setAluno({
-                ...aluno,
-                treCodigo: response.data.treCodigo
-            });
+            setTreinadoresData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -186,16 +186,34 @@ export default function AlunosCrud() {
     }
 
     const putAluno = async () => {
+        await dataAuxiliar(dataAtual);
         await Api.put("aluno/" + aluno.aluCodigo, aluno).then(response => {
             var alunosAuxiliar = alunosData;
             alunosAuxiliar.map(alunoMap => {
                 if (alunoMap.aluCodigo === aluno.aluCodigo) {
                     alunoMap.aluNome = aluno.aluNome;
-                    alunoMap.aluEmail = aluno.aluEmail;
                     alunoMap.aluDataNasc = aluno.aluDataNasc;
+                    alunoMap.aluEmail = aluno.aluEmail;
+                    alunoMap.aluSenha = aluno.aluSenha;
+                    alunoMap.treCodigo = aluno.treCodigo;
+                    alunoMap.aluOneSignalId = aluno.aluOneSignalId;
+                    alunoMap.aluImagem = aluno.aluImagem;
+                    alunoMap.aluId = aluno.aluId;
+                    alunoMap.aluFone = aluno.aluFone;
+                    alunoMap.aluSexo = aluno.aluSexo;
+                    alunoMap.aluAtivo = aluno.aluAtivo;
+                    alunoMap.aluObs = aluno.aluObs;
+                    alunoMap.aluStravaCode = aluno.aluStravaCode;
+                    alunoMap.aluStravaToken = aluno.aluStravaToken;
+                    alunoMap.aluStravaRefreshToken = aluno.aluStravaRefreshToken;
+                    alunoMap.aluStravaExpiresAt = aluno.aluStravaExpiresAt;
+                    alunoMap.aluStravaExpiresIn = aluno.aluStravaExpiresIn;
+                    alunoMap.aluStravaScope = aluno.aluStravaScope;
+                    alunoMap.aluStravaTokenType = aluno.aluStravaTokenType;
                 }
                 return alunoMap;
             });
+            setAlunosData(alunosAuxiliar);
             setAluno(response.data);
             setUpdateAlunos(true);
             abrirFecharEditarAlunos();
@@ -247,6 +265,10 @@ export default function AlunosCrud() {
         getTreinadores();
     }, [setAbrirCadastroAlunos]);
 
+    useEffect(() => {
+        getTreinadorId(aluno.treCodigo);
+    }, [setAbrirEditarAlunos]);
+
     function handleDefault(e) {
         e.preventDefault();
     }
@@ -267,6 +289,20 @@ export default function AlunosCrud() {
         skip = skip - 20;
         getAlunos(skip);
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
+    }
+
+    const mascaraTelefone = (e) => {
+        let input = e.target;
+        input.value = phoneMask(input.value);
+        setAluno({ ...aluno, [e.target.name]: input.value });
+    }
+
+    const phoneMask = (value) => {
+        if (!value) return ""
+        value = value.replace(/\D/g, '')
+        value = value.replace(/(\d{2})(\d)/, "($1) $2")
+        value = value.replace(/(\d)(\d{3})$/, "$1-$2")
+        return value
     }
 
     const verificaSexo = (sexo) => {
@@ -409,7 +445,8 @@ export default function AlunosCrud() {
                             <div className="col-md-6">
                                 <label className="form-label mb-0 mt-2">Treinador:</label>
                                 <select className="form-select w-100 h-50"
-                                    name="treCodigo" onChange={atualizaCampo}>
+                                    name="treCodigo"
+                                    onChange={atualizaCampo}>
                                     <option value=""></option>
                                     {
                                         treinadoresData.map((item, index) => {
@@ -422,8 +459,10 @@ export default function AlunosCrud() {
                             </div>
                             <div className="col-6">
                                 <label className="form-label mb-0 mt-2">Telefone:</label>
-                                <input type="tel" className="form-control" placeholder="(00) 00000-0000"
-                                    name="aluFone" onChange={atualizaCampo} />
+                                <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
+                                    name="aluFone"
+                                    onChange={mascaraTelefone}
+                                />
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label mb-0 mt-2">Email:</label>
@@ -459,19 +498,6 @@ export default function AlunosCrud() {
                                 <input type="image" alt="imagem" className="container border-dark" />
                             </div>
                         </form>
-                        {/* <div className="form-group" name="titulo">
-                            <label>Nome</label>
-                            <br />
-                            <input type="text" className="form-control" name="nome" onChange={atualizaCampo} />
-                            <br />
-                            <label>Email</label>
-                            <br />
-                            <input type="text" className="form-control" name="email" onChange={atualizaCampo} />
-                            <br />
-                            <label>Idade</label>
-                            <br />
-                            <input type="number" className="form-control" name="idade" onChange={atualizaCampo} />
-                        </div> */}
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn btn-success" onClick={() => postAluno()}>Salvar</button>{" "}
@@ -486,22 +512,26 @@ export default function AlunosCrud() {
                             <div className="col-md-12">
                                 <label className="mb-0">Id: </label>
                                 <input type="number" className="form-control mb-2" readOnly disabled
-                                    value={aluno && aluno.aluCodigo} />
+                                    value={aluno && aluno.aluCodigo}
+                                />
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label mb-0">Nome:</label>
                                 <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                                    name="aluNome" onChange={atualizaCampo} value={aluno && aluno.aluNome} />
+                                    name="aluNome"
+                                    onChange={atualizaCampo}
+                                    value={aluno && aluno.aluNome}
+                                />
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label mb-0">Data Nascimento:</label>
                                 <DatePicker
                                     className="form-control"
                                     name="aluDataNasc"
+                                    selected={new Date(dataAtual)}
+                                    onChange={date => dataAuxiliar(date)}
                                     dateFormat={"dd/MM/yyyy"}
                                     timeFormat="yyyy-MM-dd"
-                                    selected={new Date(aluno.aluDataNasc)}
-                                    onChange={date => dataAuxiliar(date)}
                                     customInput={
                                         <InputMask
                                             type="text"
@@ -509,16 +539,18 @@ export default function AlunosCrud() {
                                         />
                                     }
                                 />
-                                {/* <input type="date" className="form-control"
-                                    name="aluDataNasc" onChange={atualizaCampo} value={aluno && aluno.aluDataNasc} /> */}
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label mb-0">Sexo:</label>
-                                <select className="form-select w-100 h-50" name="aluSexo" value={verificaSexo(aluno && aluno.aluSexo)} onChange={atualizaCampo}>
+                                <select className="form-select w-100 h-50"
+                                    name="aluSexo"
+                                    value={aluno && aluno.aluSexo}
+                                    onChange={atualizaCampo}>
+                                    <option value=""></option>
                                     {
                                         sexo.map((item, index) => {
                                             return (
-                                                <option key={index} value={verificaSexo(aluno && item.id)}>{item.nome}</option>
+                                                <option key={index} value={item.id}>{item.nome}</option>
                                             )
                                         })
                                     }
@@ -527,7 +559,9 @@ export default function AlunosCrud() {
                             <div className="col-md-6">
                                 <label className="form-label mb-0 mt-2">Treinador:</label>
                                 <select className="form-select w-100 h-50"
-                                    value={treinadoresData}>
+                                    name="treCodigo"
+                                    selected={treinadoresData}
+                                    onChange={atualizaCampo}>
                                     {
                                         treinadoresData.map((item, index) => {
                                             return (
@@ -539,8 +573,12 @@ export default function AlunosCrud() {
                             </div>
                             <div className="col-6">
                                 <label className="form-label mb-0 mt-2">Telefone:</label>
-                                <input type="tel" class="form-control" name="aluFone"
-                                    onChange={atualizaCampo} value={aluno && aluno.aluFone} />
+                                <input type="tel" class="form-control" maxLength={15}
+                                    name="aluFone"
+                                    onKeyDown={mascaraTelefone}
+                                    onChange={atualizaCampo}
+                                    value={aluno && aluno.aluFone}      
+                                />
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label mb-0 mt-2">Email:</label>
@@ -565,7 +603,10 @@ export default function AlunosCrud() {
                             <div className="col-2 mt-5">
                                 <div className="form-check">
                                     <input className="form-check-input" type="checkbox" id="gridCheck"
-                                        name="aluAtivo" onChange={atualizaCampo} checked={aluno && aluno.aluAtivo} />
+                                        name="aluAtivo"
+                                        onChange={atualizaCampoAtivo}
+                                        value={true}
+                                    />
                                     <label className="form-check-label">Ativo</label>
                                 </div>
                             </div>
@@ -574,26 +615,6 @@ export default function AlunosCrud() {
                                 <input type="image" alt="imagem" className="container border-dark" />
                             </div>
                         </form>
-                        {/* <div className="form-group" name="titulo">
-                            <label>Id: </label>
-                            <br />
-                            <input type="number" className="form-control" readOnly disabled
-                                value={aluno && aluno.aluCodigo} />
-                            <label>Nome: </label>
-                            <br />
-                            <input type="text" className="form-control" name="nome"
-                                value={aluno && aluno.aluNome} onChange={atualizaCampo} />
-                            <br />
-                            <label>Email: </label>
-                            <br />
-                            <input type="text" className="form-control" name="email"
-                                value={aluno && aluno.aluEmail} onChange={atualizaCampo} />
-                            <br />
-                            <label>Idade: </label>
-                            <br />
-                            <input type="number" className="form-control" name="idade"
-                                value={aluno && aluno.aluDataNasc} onChange={atualizaCampo} />
-                        </div> */}
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn btn-success" onClick={() => putAluno()}>Salvar</button>{" "}
