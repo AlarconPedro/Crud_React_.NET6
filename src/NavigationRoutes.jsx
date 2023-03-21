@@ -10,5 +10,11 @@ export default nav =>
             <Route path="/home" element={<Home />} />
             <Route path="/alunos" element={<Alunos />} />
             <Route path="/treinadores" element={<Treinadores />} />
+            <Route path="/desafios" element={<Treinadores />} />
+            <Route path="/eventos" element={<Treinadores />} />
+            <Route path="/notificacao" element={<Treinadores />} />
+            <Route path="/modalidade" element={<Treinadores />} />
+            <Route path="/medalhas" element={<Treinadores />} />
+            <Route path="/calendario" element={<Treinadores />} />
             <Route path="*" element={<Home />} />
         </Routes>

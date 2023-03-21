@@ -14,7 +14,6 @@ import "./AlunosCrud.css";
 
 export default function AlunosCrud() {
 
-
     const [carregando, setCarregando] = useState(false);
 
     const [dataAtual, setDataAtual] = useState(new Date());
@@ -143,6 +142,11 @@ export default function AlunosCrud() {
         });
         return [day, month, year].join('-');
     }
+
+    // const converteMd5 = (senha) => {
+    //     var md5 = require('md5');
+    //     return md5(senha);
+    // }
 
 
     const getAlunos = async (skip = 0) => {
@@ -500,7 +504,7 @@ export default function AlunosCrud() {
                         </form>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn btn-success" onClick={() => postAluno()}>Salvar</button>{" "}
+                        <button className="btn btn-success" type="submit" onClick={() => postAluno()}>Salvar</button>{" "}
                         <button className="btn btn-danger" onClick={() => abrirFecharCadastroAlunos()}>Cancelar</button>
                     </ModalFooter>
                 </Modal>
