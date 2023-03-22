@@ -15,33 +15,62 @@ header.header p {
     font-size: 0.8em;
 }
 
+.areaUsuario {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    align-items: center;
+    display: flex;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1),
+                0 1px 15px 0 rgba(0, 0, 0, 0.4);
+}
+
 .usuario {
     display: flex;
     color: #fff;
     align-items: center;
     justify-content: center;
-    background-color: var(--bg-dark);
     border-radius: 10px;
-    padding: 10px 15px;
-    margin: 10px 10px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .usuario img {
     height: 30px;
     width: 30px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
-.usuario span {
-    font-size: 0.8em;
-}
-
-.usuarioLogado {
-    background-color: #fff;
+.usuarioLogado h6 {
+    align-items: center;
+    margin: 0px;
+    margin-right: 5px;
     color: #000;
-    padding: 5px;
-    border-radius: 10px;
+}
+
+/* .usuarioLogado img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+} */
+
+.usuarioSair i {
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 17px;
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1),
+        0 1px 15px 0 rgba(0, 0, 0, 0.4);
+
 }
 
 .sair {
