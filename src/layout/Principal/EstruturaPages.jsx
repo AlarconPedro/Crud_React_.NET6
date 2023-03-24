@@ -2,10 +2,10 @@ import React from 'react';
 
 import { BrowserRouter } from "react-router-dom";
 
-import Nav from '../../components/Nav';
+import Nav from '../../components/Layout/Nav';
 import NavRotas from '../../NavigationRoutes';
-import Footer from '../../components/Footer';
-import Logo from '../../components/Logo';
+import Footer from '../../components/Layout/Footer';
+import Logo from '../../components/Layout/Logo';
 
 export default props =>
     <div className="app">

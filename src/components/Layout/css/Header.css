@@ -78,7 +78,11 @@ header.header p {
     margin-left: 20px;
     padding-left: 10px;
     padding-right: 10px;
-    padding: 10px 10px;
+    padding: 10px;
     background-color: #fff;
     border-radius: 5px;
+}
+
+.areaUsuario {
+    display: flex;
 }

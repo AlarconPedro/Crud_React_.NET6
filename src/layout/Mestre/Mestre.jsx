@@ -2,7 +2,7 @@ import React from 'react';
 
 import "./Mestre.css";
 
-import Header from '../../components/Header';
+import Header from '../../components/Layout/Header';
 
 export default props => {
     return (

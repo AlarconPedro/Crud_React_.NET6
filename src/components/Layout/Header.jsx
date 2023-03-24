@@ -1,7 +1,7 @@
 import React from "react"
 import "./css/Header.css"
 
-import icone from "../assets/imgs/icone.png"
+import icone from "../../assets/imgs/icone.png"
 
 import { BsDoorClosedFill } from 'react-icons/bs';
 
@@ -15,7 +15,7 @@ export default props =>
         </div>
         <div className="usuario">
             <div className="areaUsuario">
-                <div className="dropdown">
+                {/* <div className="dropdown">
                     <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Dropdown button
                     </button>
@@ -24,7 +24,7 @@ export default props =>
                         <li><a className="dropdown-item" href="#">Another action</a></li>
                         <li><a className="dropdown-item" href="#">Something else here</a></li>
                     </ul>
-                </div>
+                </div> */}
                 <img src={icone} alt="icone" />
                 <div className="usuarioLogado">
                     <h6>Usuário Teste</h6>
