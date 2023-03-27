@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import Mestre from "../../layout/Mestre/Mestre";
+
+import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Crud/FormularioAluno/FormInserir";
-import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
+import FormInserir from "../../components/Crud/FormularioNotificacao/FormInserir";
+import FormEditar from "../../components/Crud/FormularioNotificacao/FormEditar";
+import FormExcluir from "../../components/Crud/FormularioNotificacao/FormExcluir";
 
-import "./AlunosCrud.css";
+import "./NotificacaoCrud.css";
 
 export default function AlunosCrud() {
 
@@ -27,7 +31,7 @@ export default function AlunosCrud() {
         aluNome: '',
         aluDataNasc: new Date("01/01/1900"),
         aluEmail: '',
-        aluSenha: '',
+        aluSenha: '', 
         treCodigo: '',
         aluOneSignalId: null,
         aluImagem: '',

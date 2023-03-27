@@ -12,11 +12,14 @@ import Api from "../../services/Api";
 
 import "./DesafiosCrud.css";
 
+import FormInserir from "../../components/Crud/FormularioDesafio/FormInserir";
+
 export default function DesafiosCrud() {
 
     const [carregando, setCarregando] = useState(false);
 
     const [dataAtual, setDataAtual] = useState(new Date());
+    const [dataFinal, setDataFinal] = useState(new Date());
 
     const [desafiosData, setDesafiosData] = useState([]);
 
@@ -46,7 +49,7 @@ export default function DesafiosCrud() {
         desNome: '',
         desDescricao: '',
         desDataInicio: (dataAtual),
-        desDataFim: new Date("01/01/1900"),
+        desDataFim: (dataFinal),
         desTipoDesafio: '',
         desMedidaDesafio: '',
         treCodigo: '',
@@ -70,7 +73,7 @@ export default function DesafiosCrud() {
     const [abrirExcluirDesafios, setAbrirExcluirDesafios] = useState(false);
     const [updateDesafios, setUpdateDesafios] = useState(true);
 
-    const abrirFecharCadastroDesafios = () => {
+    const abrirFecharCadastroDesafios = (abrirCadastroDesafios) => {
         setAbrirCadastroDesafios(!abrirCadastroDesafios);
         setDesafio(desafioInitialState);
     }
@@ -113,7 +116,25 @@ export default function DesafiosCrud() {
         });
     }
 
-    const dataAuxiliar = (date) => {
+    const dataFim = (date) => {
+        setDataFinal(date);
+        var data = new Date(date),
+            month = '' + (data.getMonth() + 1),
+            day = '' + (data.getDate() + 1),
+            year = data.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        setDesafio({
+            ...desafio,
+            desDataFim: [year, month, day].join('-')
+        });
+    }
+
+    const dataInicio = (date) => {
         setDataAtual(date);
         var data = new Date(date),
             month = '' + (data.getMonth() + 1),
@@ -125,10 +146,24 @@ export default function DesafiosCrud() {
         if (day.length < 2)
             day = '0' + day;
 
-        // setDesafio({
-        //     ...desafio,
-        //     desDataFim: [year, month, day].join('-')
-        // });
+        setDesafio({
+            ...desafio,
+            desDataInicio: [year, month, day].join('-')
+        });
+        return [day, month, year].join('-');
+    }
+
+    const dataInicioExibicao = (date) => {
+        var data = new Date(date),
+            month = '' + (data.getMonth() + 1),
+            day = '' + (data.getDate() + 1),
+            year = data.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
         return [day, month, year].join('-');
     }
 
@@ -161,7 +196,7 @@ export default function DesafiosCrud() {
     }
 
     const postDesafio = async () => {
-        await dataAuxiliar(dataAtual);
+        await dataInicio(dataAtual);
         await Api.post("aluno/", desafio).then(response => {
             setDesafio(response.data);
             setUpdateDesafios(true);
@@ -173,7 +208,7 @@ export default function DesafiosCrud() {
     }
 
     const putDesafio = async () => {
-        await dataAuxiliar(dataAtual);
+        await dataInicio(dataAtual);
         await Api.put("aluno/" + desafio.desCodigo, desafio).then(response => {
             var desafiosAuxiliar = desafiosData;
             desafiosAuxiliar.map(desafioMap => {
@@ -354,7 +389,7 @@ export default function DesafiosCrud() {
                     </nav>
                 </div>
 
-                <Modal isOpen={abrirCadastroDesafios} className="modal-incluir">
+                {/* <Modal isOpen={abrirCadastroDesafios} className="modal-incluir">
                     <ModalHeader>Incluir Aluno</ModalHeader>
                     <ModalBody>
                         <form className="row g-3 form-group">
@@ -459,7 +494,20 @@ export default function DesafiosCrud() {
                         <button className="btn btn-success" type="submit" onClick={() => postDesafio()}>Salvar</button>{" "}
                         <button className="btn btn-danger" onClick={() => abrirFecharCadastroDesafios()}>Cancelar</button>
                     </ModalFooter>
-                </Modal>
+                </Modal> */}
+
+                <FormInserir 
+                    abrir={abrirCadastroDesafios}
+                    funcAbrir={abrirFecharCadastroDesafios}
+                    funcPost={postDesafio}
+                    funcAtualizaCampo={atualizaCampo}
+                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                    funcDataInicio={dataInicio}
+                    funcDataFim={dataFim}
+                    funcMascaraTelefone={mascaraTelefone}
+                    treinadoresData={treinadoresData}
+                    desafio={desafio}
+                />
 
                 <Modal isOpen={abrirEditarDesafios} className="modal-editar">
                     <ModalHeader>Editar Aluno</ModalHeader>
@@ -485,7 +533,7 @@ export default function DesafiosCrud() {
                                     className="form-control"
                                     name="aluDataNasc"
                                     selected={new Date(dataAtual)}
-                                    onChange={date => dataAuxiliar(date)}
+                                    onChange={date => dataInicio(date)}
                                     dateFormat={"dd/MM/yyyy"}
                                     timeFormat="yyyy-MM-dd"
                                     customInput={

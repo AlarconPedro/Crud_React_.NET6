@@ -25,6 +25,47 @@ header.header p {
                 0 1px 15px 0 rgba(0, 0, 0, 0.4);
 }
 
+.areaUsuario img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.areaUsuario h6 {
+    align-items: center;
+    margin: 0px;
+    margin-right: 5px;
+    color: #000;
+}
+
+.areaUsuario i {
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 17px;
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1),
+        0 1px 15px 0 rgba(0, 0, 0, 0.4);
+
+}
+
+.areaUsuario:hover {
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    align-items: center;
+    display: flex;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1),
+                0 1px 15px 0 rgba(0, 0, 0, 0.4);
+}
+
 .usuario {
     display: flex;
     color: #fff;
@@ -34,6 +75,19 @@ header.header p {
     padding: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1),
+                0 1px 15px 0 rgba(0, 0, 0, 0.4);
+
 }
 
 .usuario img {
@@ -83,6 +137,6 @@ header.header p {
     border-radius: 5px;
 }
 
-.areaUsuario {
-    display: flex;
+.usuarioSair:hover {
+    cursor: pointer;
 }

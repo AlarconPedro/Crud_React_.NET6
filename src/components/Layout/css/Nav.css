@@ -16,7 +16,14 @@ aside.menu-lateral {
 
 .menu a:hover {
     background: linear-gradient(135deg, #033ba3 0%, #3280da 100%);
+    color: #fff;
+    text-decoration: none;
 }
+
+.dropdownIcon {
+    margin-left: 50%;
+    justify-content: space-between;
+}  
 
 @media(max-width: 768px) {
     .menu {

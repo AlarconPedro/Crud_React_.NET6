@@ -5,7 +5,23 @@ import icone from "../../assets/imgs/icone.png"
 
 import { BsDoorClosedFill } from 'react-icons/bs';
 
-export default props =>
+import { useNavigate } from "react-router-dom";
+
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.js';
+import $ from 'jquery';
+import Popper from 'popper.js';
+
+export default function Header(props) {
+
+    const navigate = useNavigate();
+
+    async function sairSistema() {
+        navigate("/login");
+    }
+
+    return (
     <header className="header d-none d-sm-flex flex-lg-row">
         <div className="flex-column">
             <h1 className="mt-3">
@@ -14,24 +30,16 @@ export default props =>
             <p className="lead text-muted">{props.subtitle}</p>
         </div>
         <div className="usuario">
-            <div className="areaUsuario">
-                {/* <div className="dropdown">
-                    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown button
-                    </button>
-                    <ul className="dropdown-menu">
-                        <li><a className="dropdown-item" href="#">Action</a></li>
-                        <li><a className="dropdown-item" href="#">Another action</a></li>
-                        <li><a className="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </div> */}
+            <div className="areaUsuario" role="button" data-toggle="dropdown" aria-expanded="false">
                 <img src={icone} alt="icone" />
                 <div className="usuarioLogado">
                     <h6>Usuário Teste</h6>
                 </div>
-            </div>
-            <div className="usuarioSair">
-                <i><BsDoorClosedFill /></i>
+                <ul className="dropdown-menu">
+                    <button className="btn btn-danger dropdown-item" type="submit" onClick={() => sairSistema()}>
+                        Sair
+                    </button>
+                </ul>
             </div>
             {/* <h1 className="usuarioLogado">
                 <i className={`fa fa-${props.icon}`}></i> {props.title}
@@ -42,3 +50,5 @@ export default props =>
 
         </div>
     </header>
+    )
+}

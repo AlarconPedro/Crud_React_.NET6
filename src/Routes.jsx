@@ -9,6 +9,7 @@ export default Rotas => {
         <BrowserRouter>
             <Routes>
                 <Route exact path="/" element={<Login />} />
+                <Route exact path="/login" element={<Login />} />
                 <Route path="/*" element={<Principal />} />
             </Routes>
         </BrowserRouter>

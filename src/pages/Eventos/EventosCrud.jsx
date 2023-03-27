@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import Mestre from "../../layout/Mestre/Mestre";
+
+import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
 
 import "react-datepicker/dist/react-datepicker.css";
 

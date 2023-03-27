@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import Mestre from "../../layout/Mestre/Mestre";
+
+import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Crud/FormularioAluno/FormInserir";
-import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
+import FormInserir from "../../components/Crud/FormularioModalidades/FormInserir";
+import FormEditar from "../../components/Crud/FormularioModalidades/FormEditar";
+import FormExcluir from "../../components/Crud/FormularioModalidades/FormExcluir";
 
-import "./AlunosCrud.css";
+import "./ModalidadesCrud.css";
 
-export default function AlunosCrud() {
+export default function ModalidadesCrud() {
 
     const [carregando, setCarregando] = useState(false);
 

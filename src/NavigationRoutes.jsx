@@ -5,6 +5,9 @@ import Home from './pages/Home/Home';
 import Alunos from './pages/Alunos/AlunosCrud';
 import Treinadores from './pages/Treinadores/TreinadoresCrud';
 import Desafios from './pages/Desafios/DesafiosCrud';
+import Notificacao from './pages/Notificacao/NotificacaoCrud';
+import Modalidades from './pages/Modalidades/ModalidadesCrud';
+import Medalhas from './pages/Medalhas/MedalhasCrud';
 
 export default nav => 
         <Routes>
@@ -13,9 +16,9 @@ export default nav =>
             <Route path="/treinadores" element={<Treinadores />} />
             <Route path="/desafios" element={<Desafios />} />
             <Route path="/eventos" element={<Treinadores />} />
-            <Route path="/notificacao" element={<Treinadores />} />
-            <Route path="/modalidade" element={<Treinadores />} />
-            <Route path="/medalhas" element={<Treinadores />} />
+            <Route path="/notificacao" element={<Notificacao />} />
+            <Route path="/modalidade" element={<Modalidades />} />
+            <Route path="/medalhas" element={<Medalhas />} />
             <Route path="/calendario" element={<Treinadores />} />
             <Route path="*" element={<Home />} />
         </Routes>
