@@ -140,6 +140,7 @@ export default function FormEditar(props) {
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" id="gridCheck"
                                 name="aluAtivo"
+                                checked={props.aluDados.aluAtivo}
                                 onChange={e => props.funcAtualizaCampoAtivo(e)}
                                 value={true}
                             />

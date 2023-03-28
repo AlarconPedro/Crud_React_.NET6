@@ -203,7 +203,7 @@ export default function TreinadoresCrud() {
                 <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th>Id</th>
+                            {/* <th>Id</th> */}
                             <th>Nome</th>
                             <th>Telefone</th>
                             <th>Idade</th>
@@ -218,11 +218,11 @@ export default function TreinadoresCrud() {
                         {treinadoresData.map((treinador) => (
                             console.log(treinador),
                             <tr key={treinador.treCodigo}>
-                                <td>{treinador.treCodigo}</td>
-                                <td>{treinador.treNome}</td>
-                                <td>{treinador.treFone}</td>
-                                <td><div className="idade">{converterDataToIdade(treinador.aluDataNasc ?? "")}</div></td>
-                                <td>
+                                {/* <td>{treinador.treCodigo}</td> */}
+                                <td className="pt-3">{treinador.treNome}</td>
+                                <td className="pt-3">{treinador.treFone}</td>
+                                <td className="pt-3"><div className="idade">{converterDataToIdade(treinador.aluDataNasc ?? "")}</div></td>
+                                <td className="pt-3">
                                     <div className="form-check">
                                         <input className="form-check-input" type="checkbox" checked={treinador.treAtivo} />
                                     </div>

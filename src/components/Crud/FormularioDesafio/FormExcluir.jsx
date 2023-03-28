@@ -22,9 +22,9 @@ export default function FormExcluir(props) {
 
     return (
         <Modal isOpen={abrir}>
-            <ModalHeader>Excluir {props.nome}</ModalHeader>
+            <ModalHeader>Excluir Desafio</ModalHeader>
             <ModalBody>
-                Deseja excluir o Aluno : {props.aluNome}?
+                Deseja excluir o Desafio : {props.desNome}?
             </ModalBody>
             <ModalFooter>
                 <button className="btn btn-danger" onClick={() => deletarAluno()}>Sim</button>

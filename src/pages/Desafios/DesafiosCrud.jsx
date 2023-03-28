@@ -10,9 +10,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../services/Api";
 
+import { BsJustify } from "react-icons/bs";
+
 import "./DesafiosCrud.css";
 
 import FormInserir from "../../components/Crud/FormularioDesafio/FormInserir";
+import FormEditar from "../../components/Crud/FormularioDesafio/FormEditar";
+import FormExcluir from "../../components/Crud/FormularioDesafio/FormExcluir";
 
 export default function DesafiosCrud() {
 
@@ -164,7 +168,7 @@ export default function DesafiosCrud() {
         if (day.length < 2)
             day = '0' + day;
 
-        return [day, month, year].join('-');
+        return [day, month, year].join('/');
     }
 
     const getDesafios = async (skip = 0) => {
@@ -320,10 +324,10 @@ export default function DesafiosCrud() {
 
     return (
         <Mestre icon="user" title="Cadastro Desafios" subtitle="Painel Sou+Fit">
-            <div className="alunos-container">
+            <div className="desafio-container">
                 <header>
                     <h3>Desafios</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroDesafios()}><strong>+</strong> Adicionar Alunos</button>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroDesafios()}><strong>+</strong> Adicionar Desafios</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
@@ -344,26 +348,32 @@ export default function DesafiosCrud() {
                             <tr>
                                 <th>Id</th>
                                 <th>Nome</th>
-                                <th>Tipo Desafio</th>
+                                {/* <th>Tipo</th> */}
                                 <th>Data Inicio</th>
                                 <th>Data Fim</th>
-                                <th>Ativo</th>
-                                <th>Ações</th>
+                                <th>Qtd. Participantes</th>
+                                <th>Participantes</th>
+                                {/* <th>Disp. Aluno</th> */}
+                                {/* <th>Disponível a partir</th> */}
+                                <th className="pl-4">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {desafiosData.map((desafio) => (
                                 <tr key={desafio.desCodigo}>
-                                    <td>{desafio.desCodigo}</td>
-                                    <td>{desafio.desNome}</td>
-                                    <td>{desafio.desTipoDesafio}</td>
-                                    <td>{desafio.desDataInicio}</td>
-                                    <td>{desafio.desDataFim}</td>
-                                    <td>
+                                    <td className="pt-3">{desafio.desCodigo}</td>
+                                    <td className="pt-3">{desafio.desNome}</td>
+                                    {/* <td className="pl-4">{desafio.desTipoDesafio}</td> */}
+                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
+                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
+                                    <td className="pt-3">{2}</td>
+                                    <td className="pl-5 pt-3 listarParticipantes"><BsJustify/></td>
+                                    {/* <td className="pl-5">
                                         <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={desafio.aluAtivo} />
+                                            <input className="form-check-input"  type="checkbox" checked={desafio.desExclusivoAluno} />
                                         </div>
-                                    </td>
+                                    </td> */}
+                                    {/* <td className="pl-5">{dataInicioExibicao(desafio.desDataInicioExibicao)}</td> */}
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
                                             <i className="fa fa-pencil"></i>
@@ -389,113 +399,6 @@ export default function DesafiosCrud() {
                     </nav>
                 </div>
 
-                {/* <Modal isOpen={abrirCadastroDesafios} className="modal-incluir">
-                    <ModalHeader>Incluir Aluno</ModalHeader>
-                    <ModalBody>
-                        <form className="row g-3 form-group">
-                            <div className="col-md-6">
-                                <label className="form-label mb-0">Nome:</label>
-                                <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                                    name="aluNome" onChange={atualizaCampo} />
-                            </div>
-
-                            <div className="col-md-3">
-                                <label className="form-label mb-0">Data Início:</label>
-                                <DatePicker
-                                    className="form-control"
-                                    name="aluDataNasc"
-                                    selected={new Date(desafio.desDataInicio)}
-                                    onChange={date => dataAuxiliar(date)}
-                                    dateFormat={"dd/MM/yyyy"}
-                                    timeFormat="yyyy-MM-dd"
-                                    customInput={
-                                        <InputMask
-                                            type="text"
-                                            mask="99/99/9999"
-                                        />
-                                    }
-                                />
-                            </div>
-                            <div className="col-md-3">
-                                <label className="form-label mb-0">Data Fim:</label>
-                                <DatePicker
-                                    className="form-control"
-                                    name="aluDataNasc"
-                                    selected={new Date(desafio.desDataFim)}
-                                    onChange={date => dataAuxiliar(date)}
-                                    dateFormat={"dd/MM/yyyy"}
-                                    timeFormat="yyyy-MM-dd"
-                                    customInput={
-                                        <InputMask
-                                            type="text"
-                                            mask="99/99/9999"
-                                        />
-                                    }
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label mb-0 mt-2">Treinador:</label>
-                                <select className="form-select w-100 h-50"
-                                    name="treCodigo"
-                                    onChange={atualizaCampo}>
-                                    <option value=""></option>
-                                    {
-                                        treinadoresData.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="col-6">
-                                <label className="form-label mb-0 mt-2">Telefone:</label>
-                                <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
-                                    name="aluFone"
-                                    onChange={mascaraTelefone}
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label mb-0 mt-2">Email:</label>
-                                <input type="email" className="form-control" placeholder="exemplo@gmail.com"
-                                    name="aluEmail" onChange={atualizaCampo} />
-                            </div>
-                            <div className="col-md-3">
-                                <label className="form-label mb-0 mt-2">Senha:</label>
-                                <input type="password" className="form-control" placeholder="****"
-                                    name="aluSenha" onChange={atualizaCampo} />
-                            </div>
-                            <div className="col-md-3">
-                                <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                                <input type="password" className="form-control" placeholder="****"
-                                    name="aluSenha" onChange={atualizaCampo} />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label mb-0">Observação:</label>
-                                <input type="text" className="form-control" placeholder="Obs."
-                                    name="aluObs" onChange={atualizaCampo} />
-                            </div>
-                            <div className="col-2 mt-5">
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" id="gridCheck"
-                                        name="aluAtivo"
-                                        onChange={atualizaCampoAtivo}
-                                        value={true} />
-                                    <label className="form-check-label">Ativo</label>
-                                </div>
-                            </div>
-                            <div className="col-md-4 mt-5">
-                                <label className="form-label mb-0">Imagem:</label>
-                                <input type="image" alt="imagem" className="container border-dark" />
-                            </div>
-                        </form>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn btn-success" type="submit" onClick={() => postDesafio()}>Salvar</button>{" "}
-                        <button className="btn btn-danger" onClick={() => abrirFecharCadastroDesafios()}>Cancelar</button>
-                    </ModalFooter>
-                </Modal> */}
-
                 <FormInserir 
                     abrir={abrirCadastroDesafios}
                     funcAbrir={abrirFecharCadastroDesafios}
@@ -509,133 +412,25 @@ export default function DesafiosCrud() {
                     desafio={desafio}
                 />
 
-                <Modal isOpen={abrirEditarDesafios} className="modal-editar">
-                    <ModalHeader>Editar Aluno</ModalHeader>
-                    <ModalBody>
-                        <form className="row g-3 form-group">
-                            <div className="col-md-12">
-                                <label className="mb-0">Id: </label>
-                                <input type="number" className="form-control mb-2" readOnly disabled
-                                    value={desafio && desafio.aluCodigo}
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label mb-0">Nome:</label>
-                                <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                                    name="aluNome"
-                                    onChange={atualizaCampo}
-                                    value={desafio && desafio.aluNome}
-                                />
-                            </div>
-                            <div className="col-md-3">
-                                <label className="form-label mb-0">Data Nascimento:</label>
-                                <DatePicker
-                                    className="form-control"
-                                    name="aluDataNasc"
-                                    selected={new Date(dataAtual)}
-                                    onChange={date => dataInicio(date)}
-                                    dateFormat={"dd/MM/yyyy"}
-                                    timeFormat="yyyy-MM-dd"
-                                    customInput={
-                                        <InputMask
-                                            type="text"
-                                            mask="99/99/9999"
-                                        />
-                                    }
-                                />
-                            </div>
-                            {/* <div className="col-md-3">
-                                <label className="form-label mb-0">Sexo:</label>
-                                <select className="form-select w-100 h-50"
-                                    name="aluSexo"
-                                    value={desafio && desafio.aluSexo}
-                                    onChange={atualizaCampo}>
-                                    <option value=""></option>
-                                    {
-                                        sexo.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.id}>{item.nome}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div> */}
-                            <div className="col-md-6">
-                                <label className="form-label mb-0 mt-2">Treinador:</label>
-                                <select className="form-select w-100 h-50"
-                                    name="treCodigo"
-                                    selected={treinadoresData}
-                                    onChange={atualizaCampo}>
-                                    {
-                                        treinadoresData.map((item, index) => {
-                                            return (
-                                                <option key={item.treCodigo} value={item.treCodigo}>{item.treNome}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="col-6">
-                                <label className="form-label mb-0 mt-2">Telefone:</label>
-                                <input type="tel" class="form-control" maxLength={15}
-                                    name="aluFone"
-                                    onKeyDown={mascaraTelefone}
-                                    onChange={atualizaCampo}
-                                    value={desafio && desafio.aluFone}      
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label mb-0 mt-2">Email:</label>
-                                <input type="email" className="form-control" name="aluEmail"
-                                    onChange={atualizaCampo} value={desafio && desafio.aluEmail} />
-                            </div>
-                            <div className="col-md-3">
-                                <label className="form-label mb-0 mt-2">Senha:</label>
-                                <input type="password" className="form-control" name="aluSenha"
-                                    onChange={atualizaCampo} value={desafio && desafio.aluSenha} />
-                            </div>
-                            <div className="col-md-3">
-                                <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                                <input type="password" className="form-control" name="aluNome"
-                                    onChange={atualizaCampo} value={desafio && desafio.aluSenha} />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label mb-0">Observação:</label>
-                                <input type="text" className="form-control" name="aluObs"
-                                    onChange={atualizaCampo} value={desafio && desafio.aluObs} />
-                            </div>
-                            <div className="col-2 mt-5">
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" id="gridCheck"
-                                        name="aluAtivo"
-                                        onChange={atualizaCampoAtivo}
-                                        value={true}
-                                    />
-                                    <label className="form-check-label">Ativo</label>
-                                </div>
-                            </div>
-                            <div className="col-md-4 mt-5">
-                                <label className="form-label mb-0">Imagem:</label>
-                                <input type="image" alt="imagem" className="container border-dark" />
-                            </div>
-                        </form>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn btn-success" onClick={() => putDesafio()}>Salvar</button>{" "}
-                        <button className="btn btn-danger" onClick={() => abrirFecharEditarDesafios()}>Cancelar</button>
-                    </ModalFooter>
-                </Modal>
+                <FormEditar 
+                    abrir={abrirEditarDesafios}
+                    funcAbrir={abrirFecharEditarDesafios}
+                    funcPut={putDesafio}
+                    funcAtualizaCampo={atualizaCampo}
+                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                    funcDataInicio={dataInicio}
+                    funcDataFim={dataFim}
+                    funcMascaraTelefone={mascaraTelefone}
+                    treinadoresData={treinadoresData}   
+                    desafio={desafio}
+                />
 
-                <Modal isOpen={abrirExcluirDesafios}>
-                    <ModalHeader>Excluir Aluno</ModalHeader>
-                    <ModalBody>
-                        Deseja excluir o Aluno : {desafio && desafio.aluNome}?
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn btn-danger" onClick={() => deleteDesafio()}>Sim</button>
-                        <button className="btn btn-secondary" onClick={() => abrirFecharExcluirDesafios()}>Não</button>
-                    </ModalFooter>
-                </Modal>
+                <FormExcluir 
+                    abrir={abrirExcluirDesafios}
+                    funcAbrir={abrirFecharExcluirDesafios}
+                    funcDelete={deleteDesafio}
+                    desafio={desafio}
+                />
             </div>
         </Mestre >
     );

@@ -343,7 +343,7 @@ export default function AlunosCrud() {
                     : <table className="table table-striped">
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                {/* <th>Id</th> */}
                                 <th>Nome</th>
                                 <th>Telefone</th>
                                 <th>Idade</th>
@@ -354,13 +354,13 @@ export default function AlunosCrud() {
                         <tbody>
                             {alunosData.map((aluno) => (
                                 <tr key={aluno.aluCodigo}>
-                                    <td>{aluno.aluCodigo}</td>
-                                    <td>{aluno.aluNome}</td>
-                                    <td>{aluno.aluFone}</td>
-                                    <td><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
-                                    <td>
+                                    {/* <td>{aluno.aluCodigo}</td> */}
+                                    <td className="pt-3">{aluno.aluNome}</td>
+                                    <td className="pt-3">{aluno.aluFone}</td>
+                                    <td className="pt-3"><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
+                                    <td className="pt-3">
                                         <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} />
+                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} value={true}/>
                                         </div>
                                     </td>
                                     <td>

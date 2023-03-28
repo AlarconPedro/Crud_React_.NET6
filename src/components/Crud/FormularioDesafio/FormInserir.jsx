@@ -17,23 +17,19 @@ export default function FormInserir(props) {
         setAbrir(props.abrir);
     }, [props.abrir]);
 
-    // useEffect(() => {
-    //     setTreinadoresData(props.treinaData);
-    // }, [props.treinaData]);
-
-    // useEffect(() => {
-    //     setDataAtual(props.aluDados.aluDataNasc);
-    // }, [props.aluDados.aluDataNasc]);
+    useEffect(() => {
+        setTreinadoresData(props.treinadoresData);
+    }, [props.treinadoresData]);
 
     const abrirModal = () => {
         setAbrir(!abrir);
         props.funcAbrir(abrir);
     }
 
-    // const inserirAluno = () => {
-    //     props.funcPost();
-    //     abrirModal();
-    // }
+    const inserirDesafio = () => {
+        props.funcPost();
+        abrirModal();
+    }
 
     return (
         <Modal isOpen={abrir} className="modal-incluir">
@@ -121,7 +117,7 @@ export default function FormInserir(props) {
                 </form>
             </ModalBody>
             <ModalFooter>
-                <button className="btn btn-success" type="submit" /*onClick={() => postDesafio()}*/>Salvar</button>{" "}
+                <button className="btn btn-success" type="submit" onClick={() => inserirDesafio()}>Salvar</button>{" "}
                 <button className="btn btn-danger" onClick={() => abrirModal()}>Cancelar</button>
             </ModalFooter>
         </Modal>
