@@ -22,23 +22,17 @@ export default function ModalidadesCrud() {
 
     const [dataAtual, setDataAtual] = useState(new Date());
 
-    const [alunosData, setAlunosData] = useState([]);
+    const [modalidadesData, setModalidadesData] = useState([]);
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
-    const [alunoInitialState] = useState({
+    const [modalidadeInitialState] = useState({
         aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: new Date("01/01/1900"),
-        aluEmail: '',
-        aluSenha: '',
         treCodigo: '',
         aluOneSignalId: null,
         aluImagem: '',
         aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: true,
         aluObs: '',
         aluStravaCode: null,
         tbAlunoAtividades: [],
@@ -48,18 +42,13 @@ export default function ModalidadesCrud() {
     });
 
 
-    const [aluno, setAluno] = useState({
+    const [modalidade, setModalidade] = useState({
         aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: new Date(dataAtual),
-        aluEmail: '',
-        aluSenha: '',
         treCodigo: '',
         aluOneSignalId: null,
         aluImagem: '',
         aluId: '',
-        aluFone: '',
-        aluSexo: '',
         aluAtivo: true,
         aluObs: '',
         aluStravaCode: null,
@@ -68,11 +57,6 @@ export default function ModalidadesCrud() {
         tbAlunoEventos: [],
         treCodigoNavigation: null,
     });
-
-    const sexo = [
-        { id: "M", nome: 'Masculino' },
-        { id: "F", nome: 'Feminino' },
-    ];
 
     const [nomeBusca, setNomeBusca] = useState({
         aluNome: ''
@@ -80,47 +64,33 @@ export default function ModalidadesCrud() {
 
     const [pagina, setPagina] = useState(1);
 
-    const [abrirCadastroAlunos, setAbrirCadastroAlunos] = useState(false);
-    const [abrirEditarAlunos, setAbrirEditarAlunos] = useState(false);
-    const [abrirExcluirAlunos, setAbrirExcluirAlunos] = useState(false);
-    const [updateAlunos, setUpdateAlunos] = useState(true);
+    const [abrirCadastroModalidades, setAbrirCadastroModalidades] = useState(false);
+    const [abrirEditarModalidades, setAbrirEditarModalidades] = useState(false);
+    const [abrirExcluirModalidades, setAbrirExcluirModalidades] = useState(false);
+    const [updateModalidades, setUpdateModalidades] = useState(true);
 
-    const abrirFecharCadastroAlunos = (abrirCadastroAlunos) => {
-        setAbrirCadastroAlunos(!abrirCadastroAlunos);
-        setAluno(alunoInitialState);
+    const abrirFecharCadastroModalidades = (abrirCadastroModalidades) => {
+        setAbrirCadastroModalidades(!abrirCadastroModalidades);
+        setModalidade(modalidadeInitialState);
     }
 
-    const abrirFecharEditarAlunos = (abrirEditarAlunos) => {
-        setAbrirEditarAlunos(!abrirEditarAlunos);
+    const abrirFecharEditarModalidades = (abrirEditarModalidades) => {
+        setAbrirEditarModalidades(!abrirEditarModalidades);
     }
 
-    const abrirFecharExcluirAlunos = (abrirExcluirAlunos) => {
-        setAbrirExcluirAlunos(!abrirExcluirAlunos);
-    }
-
-    const mascaraTelefone = (e) => {
-        let input = e.target;
-        input.value = phoneMask(input.value);
-        setAluno({ ...aluno, [e.target.name]: input.value });
-    }
-
-    const phoneMask = (value) => {
-        if (!value) return ""
-        value = value.replace(/\D/g, '')
-        value = value.replace(/(\d{2})(\d)/, "($1) $2")
-        value = value.replace(/(\d)(\d{4})$/, "$1-$2")
-        return value
+    const abrirFecharExcluirModalidades = (abrirExcluirModalidades) => {
+        setAbrirExcluirModalidades(!abrirExcluirModalidades);
     }
 
     const selecionarAluno = (aluno, opcao) => {
-        setAluno(aluno);
-        (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
+        setModalidade(aluno);
+        (opcao === "Editar") ? abrirFecharEditarModalidades() : abrirFecharExcluirModalidades();
     }
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
-        setAluno({
-            ...aluno,
+        setModalidade({
+            ...modalidade,
             [name]: value
         });
     }
@@ -133,44 +103,16 @@ export default function ModalidadesCrud() {
         });
     }
 
-    const atualizaCampoAtivo = e => {
-        const { name, value } = e.target;
-        setAluno({
-            ...aluno,
-            [name]: value === "true" ? true : false
-        });
-    }
-
-    const dataAuxiliar = (date) => {
-        setDataAtual(date);
-        console.log(date);
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        setAluno({
-            ...aluno,
-            aluDataNasc: [year, month, day].join('-')
-        });
-        return [day, month, year].join('-');
-    }
-
     // const converteMd5 = (senha) => {
     //     var md5 = require('md5');
     //     return md5(senha);
     // }
 
 
-    const getAlunos = async (skip = 0) => {
+    const getModalidades = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`aluno?skip=${skip}`).then(response => {
-            setAlunosData(response.data);
+        await Api.get(`modalidade?skip=${skip}`).then(response => {
+            setModalidadesData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -195,146 +137,121 @@ export default function ModalidadesCrud() {
         });
     }
 
-    const postAluno = async () => {
-        await dataAuxiliar(dataAtual);
-        await Api.post("aluno/", aluno).then(response => {
-            setAluno(response.data);
-            setUpdateAlunos(true);
+    const postModalidades = async () => {
+        await Api.post("modalidade/", modalidade).then(response => {
+            setModalidade(response.data);
+            setUpdateModalidades(true);
             // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
-        setAluno(alunoInitialState);
+        setModalidade(modalidadeInitialState);
     }
 
-    const putAluno = async (codigo = aluno.aluCodigo) => {
-        await dataAuxiliar(dataAtual);
-        await Api.put("aluno/" + codigo, aluno).then(response => {
-            var alunosAuxiliar = alunosData;
-            alunosAuxiliar.map(alunoMap => {
-                if (alunoMap.aluCodigo === aluno.aluCodigo) {
-                    alunoMap.aluNome = aluno.aluNome;
-                    alunoMap.aluDataNasc = aluno.aluDataNasc;
-                    alunoMap.aluEmail = aluno.aluEmail;
-                    alunoMap.aluSenha = aluno.aluSenha;
-                    alunoMap.treCodigo = aluno.treCodigo;
-                    alunoMap.aluOneSignalId = aluno.aluOneSignalId;
-                    alunoMap.aluImagem = aluno.aluImagem;
-                    alunoMap.aluId = aluno.aluId;
-                    alunoMap.aluFone = aluno.aluFone;
-                    alunoMap.aluSexo = aluno.aluSexo;
-                    alunoMap.aluAtivo = aluno.aluAtivo;
-                    alunoMap.aluObs = aluno.aluObs;
-                    alunoMap.aluStravaCode = aluno.aluStravaCode;
-                    alunoMap.aluStravaToken = aluno.aluStravaToken;
-                    alunoMap.aluStravaRefreshToken = aluno.aluStravaRefreshToken;
-                    alunoMap.aluStravaExpiresAt = aluno.aluStravaExpiresAt;
-                    alunoMap.aluStravaExpiresIn = aluno.aluStravaExpiresIn;
-                    alunoMap.aluStravaScope = aluno.aluStravaScope;
-                    alunoMap.aluStravaTokenType = aluno.aluStravaTokenType;
+    const putModalidade = async (codigo = modalidade.aluCodigo) => {
+        await Api.put("modalidade/" + codigo, modalidade).then(response => {
+            var modalidadesAuxiliar = modalidadesData;
+            modalidadesAuxiliar.map(modalidadeMap => {
+                if (modalidadeMap.aluCodigo === modalidade.aluCodigo) {
+                    modalidadeMap.aluNome = modalidade.aluNome;
+                    modalidadeMap.aluDataNasc = modalidade.aluDataNasc;
+                    modalidadeMap.aluEmail = modalidade.aluEmail;
+                    modalidadeMap.aluSenha = modalidade.aluSenha;
+                    modalidadeMap.treCodigo = modalidade.treCodigo;
+                    modalidadeMap.aluOneSignalId = modalidade.aluOneSignalId;
+                    modalidadeMap.aluImagem = modalidade.aluImagem;
+                    modalidadeMap.aluId = modalidade.aluId;
+                    modalidadeMap.aluFone = modalidade.aluFone;
+                    modalidadeMap.aluSexo = modalidade.aluSexo;
+                    modalidadeMap.aluAtivo = modalidade.aluAtivo;
+                    modalidadeMap.aluObs = modalidade.aluObs;
+                    modalidadeMap.aluStravaCode = modalidade.aluStravaCode;
+                    modalidadeMap.aluStravaToken = modalidade.aluStravaToken;
+                    modalidadeMap.aluStravaRefreshToken = modalidade.aluStravaRefreshToken;
+                    modalidadeMap.aluStravaExpiresAt = modalidade.aluStravaExpiresAt;
+                    modalidadeMap.aluStravaExpiresIn = modalidade.aluStravaExpiresIn;
+                    modalidadeMap.aluStravaScope = modalidade.aluStravaScope;
+                    modalidadeMap.aluStravaTokenType = modalidade.aluStravaTokenType;
                 }
-                return alunoMap;
+                return modalidadeMap;
             });
-            setAlunosData(alunosAuxiliar);
+            setModalidadesData(modalidadesAuxiliar);
             // setAluno(response.data);
-            setUpdateAlunos(true);
+            setUpdateModalidades(true);
             // abrirFecharEditarAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const deleteAluno = async (aluno = aluno.aluCodigo) => {
-        await Api.delete("aluno/" + aluno).then(response => {
-            setUpdateAlunos(true);
+    const deleteModalidade = async (modalidade = modalidade.aluCodigo) => {
+        await Api.delete("modalidade/" + modalidade).then(response => {
+            setUpdateModalidades(true);
             // abrirFecharExcluirAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const getAlunoNome = async () => {
+    const getModalidadeNome = async () => {
         setCarregando(true);
-        await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
-            setAlunosData(response.data);
+        await Api.get("modalidade/" + nomeBusca.aluNome).then(response => {
+            setModalidadesData(response.data);
         }).catch(error => {
             console.log(error);
         });
         setCarregando(false);
     }
 
-    const converterDataToIdade = (data) => {
-        const today = new Date();
-
-        var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
-        const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
-
-        if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
-            idade--;
-        }
-
-        return data !== "" ? idade : "-";
-    }
-
     useEffect(() => {
-        if (updateAlunos) {
-            getAlunos();
-            setUpdateAlunos(false);
+        if (updateModalidades) {
+            getModalidades();
+            setUpdateModalidades(false);
         }
-    }, [updateAlunos]);
+    }, [updateModalidades]);
 
     useEffect(() => {
         getTreinadores();
-    }, [setAbrirCadastroAlunos]);
+    }, [setAbrirCadastroModalidades]);
 
     useEffect(() => {
-        getTreinadorId(aluno.treCodigo);
-    }, [setAbrirEditarAlunos]);
+        getTreinadorId(modalidade.treCodigo);
+    }, [setAbrirEditarModalidades]);
 
     function handleDefault(e) {
         e.preventDefault();
     }
 
     const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > alunosData.length ? avancarPagina()
+        e === "&gt;" ? pagina > modalidadesData.length ? avancarPagina()
             : avancarPagina(pagina * 10)
             : voltarPagina(pagina * 10);
     }
 
     const avancarPagina = async (skip) => {
-        getAlunos(skip);
-        pagina > alunosData.length ? setPagina(1) :
+        getModalidades(skip);
+        pagina > modalidadesData.length ? setPagina(1) :
             setPagina(pagina + 1);
     }
 
     const voltarPagina = async (skip) => {
         skip = skip - 20;
-        getAlunos(skip);
+        getModalidades(skip);
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
     }
 
-    const verificaSexo = (sexo) => {
-        if (sexo === "M") {
-            return "Masculino";
-        } else if (sexo === "F") {
-            return "Feminino";
-        } else {
-            return "Outro";
-        }
-    }
-
     return (
-        <Mestre icon="user" title="Cadastro Alunos" subtitle="Painel Sou+Fit">
-            <div className="alunos-container">
+        <Mestre icon="bookmark" title="Cadastro Modalidades" subtitle="Painel Sou+Fit">
+            <div className="modalidade-container">
                 <header>
-                    <h3>Alunos</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Alunos</button>
+                    <h3>Modalidades</h3>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroModalidades()}><strong>+</strong> Adicionar Modalidades</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
                     <div className="input-group rounded">
                         <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getAlunoNome()} type="submit">
+                        <button className="botaoBusca" onClick={() => getModalidadeNome()} type="submit">
                             <span className="input-group-text border-0" id="search-addon">
                                 <i className="fa fa-search"></i>
                             </span>
@@ -349,25 +266,15 @@ export default function ModalidadesCrud() {
                             <tr>
                                 <th>Id</th>
                                 <th>Nome</th>
-                                <th>Telefone</th>
-                                <th>Idade</th>
-                                <th>Ativo</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {alunosData.map((aluno) => (
-                                <tr key={aluno.aluCodigo}>
-                                    <td>{aluno.aluCodigo}</td>
-                                    <td>{aluno.aluNome}</td>
-                                    <td>{aluno.aluFone}</td>
-                                    <td><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
-                                    <td>
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} />
-                                        </div>
-                                    </td>
-                                    <td>
+                            {modalidadesData.map((aluno) => (
+                                <tr key={aluno.modCodigo}>
+                                    <td>{aluno.modCodigo}</td>
+                                    <td>{aluno.modNome}</td>
+                                    <td className="justify-content-end">
                                         <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
                                             <i className="fa fa-pencil"></i>
                                         </button>{" "}
@@ -392,45 +299,37 @@ export default function ModalidadesCrud() {
                     </nav>
                 </div>
 
-                <FormInserir 
-                    nome={"Aluno"}
-                    abrir={abrirCadastroAlunos}
-                    aluDados={aluno}
-                    funcPost={postAluno}
-                    funcAbrir={abrirFecharCadastroAlunos}
-                    funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                <FormInserir
+                    nome={"Modalidade"}
+                    abrir={abrirCadastroModalidades}
+                    aluDados={modalidade}
+                    funcPost={postModalidades}
+                    funcAbrir={abrirFecharCadastroModalidades}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
                     treinaData={treinadoresData}
                     funcBuscaTreinador={getTreinadorId}
                 />
 
-                <FormEditar 
-                    nome={"Aluno"}
-                    abrir={abrirEditarAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno}
+                <FormEditar
+                    nome={"Modalidade"}
+                    abrir={abrirEditarModalidades}
+                    aluNome={modalidade && modalidade.aluNome}
+                    aluDados={modalidade}
                     dataAtual={dataAtual}
-                    funcPut={putAluno}
-                    funcAbrir={abrirFecharEditarAlunos}
-                    funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                    funcPut={putModalidade}
+                    funcAbrir={abrirFecharEditarModalidades}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
-                    treinaData={treinadoresData}
+                    treinaData={treinadoresData} 
                     funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormExcluir
-                    nome={"Aluno"}
-                    abrir={abrirExcluirAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno.aluCodigo}
-                    funcDelete={deleteAluno}
-                    funcAbrir={abrirFecharExcluirAlunos}
+                    nome={"Modalidade"}
+                    abrir={abrirExcluirModalidades}
+                    aluNome={modalidade && modalidade.aluNome}
+                    aluDados={modalidade.aluCodigo}
+                    funcDelete={deleteModalidade}
+                    funcAbrir={abrirFecharExcluirModalidades}
                 />
             </div>
         </Mestre >

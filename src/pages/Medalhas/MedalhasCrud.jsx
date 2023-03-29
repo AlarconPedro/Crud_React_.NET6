@@ -8,6 +8,11 @@ import InputMask from 'react-input-mask';
 
 import "react-datepicker/dist/react-datepicker.css";
 
+import {
+    BsAwardFill,
+    BsFillCalendarFill
+} from "react-icons/bs";
+
 import Api from "../../services/Api";
 
 import FormInserir from "../../components/Crud/FormularioMedalhas/FormInserir";
@@ -29,7 +34,6 @@ export default function MedalhasCrud() {
     const [alunoInitialState] = useState({
         aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: new Date("01/01/1900"),
         aluEmail: '',
         aluSenha: '',
         treCodigo: '',
@@ -51,7 +55,6 @@ export default function MedalhasCrud() {
     const [aluno, setAluno] = useState({
         aluCodigo: 0,
         aluNome: '',
-        aluDataNasc: new Date(dataAtual),
         aluEmail: '',
         aluSenha: '',
         treCodigo: '',
@@ -68,11 +71,6 @@ export default function MedalhasCrud() {
         tbAlunoEventos: [],
         treCodigoNavigation: null,
     });
-
-    const sexo = [
-        { id: "M", nome: 'Masculino' },
-        { id: "F", nome: 'Feminino' },
-    ];
 
     const [nomeBusca, setNomeBusca] = useState({
         aluNome: ''
@@ -98,20 +96,6 @@ export default function MedalhasCrud() {
         setAbrirExcluirAlunos(!abrirExcluirAlunos);
     }
 
-    const mascaraTelefone = (e) => {
-        let input = e.target;
-        input.value = phoneMask(input.value);
-        setAluno({ ...aluno, [e.target.name]: input.value });
-    }
-
-    const phoneMask = (value) => {
-        if (!value) return ""
-        value = value.replace(/\D/g, '')
-        value = value.replace(/(\d{2})(\d)/, "($1) $2")
-        value = value.replace(/(\d)(\d{4})$/, "$1-$2")
-        return value
-    }
-
     const selecionarAluno = (aluno, opcao) => {
         setAluno(aluno);
         (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
@@ -133,43 +117,9 @@ export default function MedalhasCrud() {
         });
     }
 
-    const atualizaCampoAtivo = e => {
-        const { name, value } = e.target;
-        setAluno({
-            ...aluno,
-            [name]: value === "true" ? true : false
-        });
-    }
-
-    const dataAuxiliar = (date) => {
-        setDataAtual(date);
-        console.log(date);
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        setAluno({
-            ...aluno,
-            aluDataNasc: [year, month, day].join('-')
-        });
-        return [day, month, year].join('-');
-    }
-
-    // const converteMd5 = (senha) => {
-    //     var md5 = require('md5');
-    //     return md5(senha);
-    // }
-
-
     const getAlunos = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`aluno?skip=${skip}`).then(response => {
+        await Api.get(`medalha?skip=${skip}`).then(response => {
             setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
@@ -196,8 +146,7 @@ export default function MedalhasCrud() {
     }
 
     const postAluno = async () => {
-        await dataAuxiliar(dataAtual);
-        await Api.post("aluno/", aluno).then(response => {
+        await Api.post("medalha/", aluno).then(response => {
             setAluno(response.data);
             setUpdateAlunos(true);
             // abrirFecharCadastroAlunos();
@@ -208,8 +157,7 @@ export default function MedalhasCrud() {
     }
 
     const putAluno = async (codigo = aluno.aluCodigo) => {
-        await dataAuxiliar(dataAtual);
-        await Api.put("aluno/" + codigo, aluno).then(response => {
+        await Api.put("medalha/" + codigo, aluno).then(response => {
             var alunosAuxiliar = alunosData;
             alunosAuxiliar.map(alunoMap => {
                 if (alunoMap.aluCodigo === aluno.aluCodigo) {
@@ -245,7 +193,7 @@ export default function MedalhasCrud() {
     }
 
     const deleteAluno = async (aluno = aluno.aluCodigo) => {
-        await Api.delete("aluno/" + aluno).then(response => {
+        await Api.delete("medalha/" + aluno).then(response => {
             setUpdateAlunos(true);
             // abrirFecharExcluirAlunos();
         }).catch(error => {
@@ -313,22 +261,12 @@ export default function MedalhasCrud() {
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
     }
 
-    const verificaSexo = (sexo) => {
-        if (sexo === "M") {
-            return "Masculino";
-        } else if (sexo === "F") {
-            return "Feminino";
-        } else {
-            return "Outro";
-        }
-    }
-
     return (
-        <Mestre icon="user" title="Cadastro Alunos" subtitle="Painel Sou+Fit">
+        <Mestre icon="certificate" title="Cadastro Medalhas" subtitle="Painel Sou+Fit">
             <div className="alunos-container">
                 <header>
-                    <h3>Alunos</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Alunos</button>
+                    <h3>Medalhas</h3>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Medalhas</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
@@ -349,24 +287,16 @@ export default function MedalhasCrud() {
                             <tr>
                                 <th>Id</th>
                                 <th>Nome</th>
-                                <th>Telefone</th>
-                                <th>Idade</th>
-                                <th>Ativo</th>
+                                <th>Tipo</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {alunosData.map((aluno) => (
-                                <tr key={aluno.aluCodigo}>
-                                    <td>{aluno.aluCodigo}</td>
-                                    <td>{aluno.aluNome}</td>
-                                    <td>{aluno.aluFone}</td>
-                                    <td><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
-                                    <td>
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} />
-                                        </div>
-                                    </td>
+                                <tr key={aluno.medCodigo}>
+                                    <td>{aluno.medCodigo}</td>
+                                    <td>{aluno.medNome}</td>
+                                    <td>{aluno.medTipoDesafio}</td>
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
                                             <i className="fa fa-pencil"></i>
@@ -392,40 +322,31 @@ export default function MedalhasCrud() {
                     </nav>
                 </div>
 
-                <FormInserir 
-                    nome={"Aluno"}
+                <FormInserir
+                    nome={"Medalha"}
                     abrir={abrirCadastroAlunos}
                     aluDados={aluno}
                     funcPost={postAluno}
                     funcAbrir={abrirFecharCadastroAlunos}
-                    funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
                     treinaData={treinadoresData}
                     funcBuscaTreinador={getTreinadorId}
                 />
 
-                <FormEditar 
-                    nome={"Aluno"}
+                <FormEditar
+                    nome={"Medalha"}
                     abrir={abrirEditarAlunos}
                     aluNome={aluno && aluno.aluNome}
                     aluDados={aluno}
-                    dataAtual={dataAtual}
                     funcPut={putAluno}
                     funcAbrir={abrirFecharEditarAlunos}
-                    funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
                     treinaData={treinadoresData}
                     funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormExcluir
-                    nome={"Aluno"}
+                    nome={"Medalha"}
                     abrir={abrirExcluirAlunos}
                     aluNome={aluno && aluno.aluNome}
                     aluDados={aluno.aluCodigo}

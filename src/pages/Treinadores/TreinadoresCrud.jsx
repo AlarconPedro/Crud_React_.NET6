@@ -182,7 +182,7 @@ export default function TreinadoresCrud() {
     }
 
     return (
-        <Mestre icon="user" title="Cadastro Treinadores" subtitle="Painel Sou+Fit">
+        <Mestre icon="graduation-cap" title="Cadastro Treinadores" subtitle="Painel Sou+Fit">
             <div className="treinadores-container">
                 <header>
                     <h3>Treinadores</h3>

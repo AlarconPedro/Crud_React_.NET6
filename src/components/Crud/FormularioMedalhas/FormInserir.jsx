@@ -13,11 +13,6 @@ export default function FormInserir(props) {
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
-    const sexo = [
-        { id: "M", nome: 'Masculino' },
-        { id: "F", nome: 'Feminino' },
-    ];
-
     useEffect(() => {
         setAbrir(props.abrir);
     }, [props.abrir]);
@@ -50,37 +45,6 @@ export default function FormInserir(props) {
                         <input type="text" className="form-control" placeholder="Nome Sobrenome"
                             name="aluNome" onChange={e => props.funcAtualizaCampo(e)} />
                     </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0">Data Nascimento:</label>
-                        <DatePicker
-                            className="form-control"
-                            name="aluDataNasc"
-                            selected={new Date(dataAtual)}
-                            onChange={date => props.funcData(date)}
-                            dateFormat={"dd/MM/yyyy"}
-                            timeFormat="yyyy-MM-dd"
-                            customInput={
-                                <InputMask
-                                    type="text"
-                                    mask="99/99/9999"
-                                />
-                            }
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0">Sexo:</label>
-                        <select className="form-select w-100 h-50"
-                            name="aluSexo" onChange={e => props.funcAtualizaCampo(e)}>
-                            <option value=""></option>
-                            {
-                                sexo.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.id}>{item.nome}</option>
-                                    )
-                                })
-                            }
-                        </select>
-                    </div>
                     <div className="col-md-6">
                         <label className="form-label mb-0 mt-2">Treinador:</label>
                         <select className="form-select w-100 h-50"
@@ -95,29 +59,6 @@ export default function FormInserir(props) {
                                 })
                             }
                         </select>
-                    </div>
-                    <div className="col-6">
-                        <label className="form-label mb-0 mt-2">Telefone:</label>
-                        <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
-                            name="aluFone"
-                            onKeyUp={e => props.funcMascara(e)}
-                            onChange={e => props.funcAtualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Email:</label>
-                        <input type="email" className="form-control" placeholder="exemplo@gmail.com"
-                            name="aluEmail" onChange={e => props.funcAtualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Senha:</label>
-                        <input type="password" className="form-control" placeholder="****"
-                            name="aluSenha" onChange={e => props.funcAtualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                        <input type="password" className="form-control" placeholder="****"
-                            name="aluSenha" onChange={e => props.funcAtualizaCampo(e)} />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label mb-0">Observação:</label>

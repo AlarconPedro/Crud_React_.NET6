@@ -14,9 +14,9 @@ import FormInserir from "../../components/Crud/FormularioAluno/FormInserir";
 import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
 
-import "./AlunosCrud.css";
+import "./EventosCrud.css";
 
-export default function AlunosCrud() {
+export default function EventosCrud() {
 
     const [carregando, setCarregando] = useState(false);
 
@@ -324,11 +324,11 @@ export default function AlunosCrud() {
     }
 
     return (
-        <Mestre icon="user" title="Cadastro Alunos" subtitle="Painel Sou+Fit">
+        <Mestre icon="bullhorn" title="Cadastro Eventos" subtitle="Painel Sou+Fit">
             <div className="alunos-container">
                 <header>
-                    <h3>Alunos</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Alunos</button>
+                    <h3>Eventos</h3>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Eventos</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
@@ -344,41 +344,8 @@ export default function AlunosCrud() {
                 <br />
                 {carregando ? <div className="spinner-border loader" role="status">
                 </div>
-                    : <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Nome</th>
-                                <th>Telefone</th>
-                                <th>Idade</th>
-                                <th>Ativo</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {alunosData.map((aluno) => (
-                                <tr key={aluno.aluCodigo}>
-                                    <td>{aluno.aluCodigo}</td>
-                                    <td>{aluno.aluNome}</td>
-                                    <td>{aluno.aluFone}</td>
-                                    <td><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
-                                    <td>
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} />
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
-                                            <i className="fa fa-pencil"></i>
-                                        </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
-                                            <i className="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    : 
+                    <div></div>
                 }
                 <hr />
                 <br />

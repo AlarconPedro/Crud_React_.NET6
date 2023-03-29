@@ -323,7 +323,7 @@ export default function DesafiosCrud() {
     }
 
     return (
-        <Mestre icon="user" title="Cadastro Desafios" subtitle="Painel Sou+Fit">
+        <Mestre icon="trophy" title="Cadastro Desafios" subtitle="Painel Sou+Fit">
             <div className="desafio-container">
                 <header>
                     <h3>Desafios</h3>
