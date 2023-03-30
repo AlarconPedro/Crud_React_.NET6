@@ -9,6 +9,7 @@ import InputMask from 'react-input-mask';
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
+import { modalidadeUrl } from "../../services/Imagens";
 
 import FormInserir from "../../components/Crud/FormularioModalidades/FormInserir";
 import FormEditar from "../../components/Crud/FormularioModalidades/FormEditar";
@@ -20,46 +21,39 @@ export default function ModalidadesCrud() {
 
     const [carregando, setCarregando] = useState(false);
 
-    const [dataAtual, setDataAtual] = useState(new Date());
-
     const [modalidadesData, setModalidadesData] = useState([]);
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
     const [modalidadeInitialState] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluObs: '',
-        aluStravaCode: null,
+        modCodigo: 0,
+        modNome: '',
+        modImagem: '',
+        modId: '',
+        modTipoDesafio: 0,
+        modTipoMedida: 0,
+        modAtiva: false,
         tbAlunoAtividades: [],
         tbAlunoDesafios: [],
         tbAlunoEventos: [],
-        treCodigoNavigation: null,
     });
 
 
     const [modalidade, setModalidade] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluAtivo: true,
-        aluObs: '',
-        aluStravaCode: null,
+        modCodigo: 0,
+        modNome: '',
+        modImagem: '',
+        modId: '',
+        modTipoDesafio: 0,
+        modTipoMedida: 0,
+        modAtiva: false,
         tbAlunoAtividades: [],
         tbAlunoDesafios: [],
         tbAlunoEventos: [],
-        treCodigoNavigation: null,
     });
 
     const [nomeBusca, setNomeBusca] = useState({
-        aluNome: ''
+        modNome: ''
     });
 
     const [pagina, setPagina] = useState(1);
@@ -102,12 +96,6 @@ export default function ModalidadesCrud() {
             [name]: value
         });
     }
-
-    // const converteMd5 = (senha) => {
-    //     var md5 = require('md5');
-    //     return md5(senha);
-    // }
-
 
     const getModalidades = async (skip = 0) => {
         setCarregando(true);
@@ -152,26 +140,13 @@ export default function ModalidadesCrud() {
         await Api.put("modalidade/" + codigo, modalidade).then(response => {
             var modalidadesAuxiliar = modalidadesData;
             modalidadesAuxiliar.map(modalidadeMap => {
-                if (modalidadeMap.aluCodigo === modalidade.aluCodigo) {
-                    modalidadeMap.aluNome = modalidade.aluNome;
-                    modalidadeMap.aluDataNasc = modalidade.aluDataNasc;
-                    modalidadeMap.aluEmail = modalidade.aluEmail;
-                    modalidadeMap.aluSenha = modalidade.aluSenha;
-                    modalidadeMap.treCodigo = modalidade.treCodigo;
-                    modalidadeMap.aluOneSignalId = modalidade.aluOneSignalId;
-                    modalidadeMap.aluImagem = modalidade.aluImagem;
-                    modalidadeMap.aluId = modalidade.aluId;
-                    modalidadeMap.aluFone = modalidade.aluFone;
-                    modalidadeMap.aluSexo = modalidade.aluSexo;
-                    modalidadeMap.aluAtivo = modalidade.aluAtivo;
-                    modalidadeMap.aluObs = modalidade.aluObs;
-                    modalidadeMap.aluStravaCode = modalidade.aluStravaCode;
-                    modalidadeMap.aluStravaToken = modalidade.aluStravaToken;
-                    modalidadeMap.aluStravaRefreshToken = modalidade.aluStravaRefreshToken;
-                    modalidadeMap.aluStravaExpiresAt = modalidade.aluStravaExpiresAt;
-                    modalidadeMap.aluStravaExpiresIn = modalidade.aluStravaExpiresIn;
-                    modalidadeMap.aluStravaScope = modalidade.aluStravaScope;
-                    modalidadeMap.aluStravaTokenType = modalidade.aluStravaTokenType;
+                if (modalidadeMap.modCodigo === modalidade.modCodigo) {
+                    modalidadeMap.modNome = modalidade.modNome;
+                    modalidadeMap.modImagem = modalidade.modImagem;
+                    modalidadeMap.modId = modalidade.modId;
+                    modalidadeMap.modTipoDesafio = modalidade.modTipoDesafio;
+                    modalidadeMap.modTipoMedida = modalidade.modTipoMedida;
+                    modalidadeMap.modAtiva = modalidade.modAtiva;
                 }
                 return modalidadeMap;
             });
@@ -250,7 +225,7 @@ export default function ModalidadesCrud() {
                 <hr />
                 <form onSubmit={handleDefault}>
                     <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
+                        <input type="search" className="form-control rounded" name="modNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
                         <button className="botaoBusca" onClick={() => getModalidadeNome()} type="submit">
                             <span className="input-group-text border-0" id="search-addon">
                                 <i className="fa fa-search"></i>
@@ -264,21 +239,21 @@ export default function ModalidadesCrud() {
                     : <table className="table table-striped">
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>Avatar</th>
                                 <th>Nome</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {modalidadesData.map((aluno) => (
-                                <tr key={aluno.modCodigo}>
-                                    <td>{aluno.modCodigo}</td>
-                                    <td>{aluno.modNome}</td>
+                            {modalidadesData.map((modalidade) => (
+                                <tr key={modalidade.modCodigo}>
+                                    <td><img src={modalidadeUrl + modalidade.modImagem} alt="" /></td>
+                                    <td>{modalidade.modNome}</td>
                                     <td className="justify-content-end">
-                                        <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
+                                        <button className="btn btn-warning" onClick={() => selecionarAluno(modalidade, "Editar")}>
                                             <i className="fa fa-pencil"></i>
                                         </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
+                                        <button className="btn btn-danger" onClick={() => selecionarAluno(modalidade, "Excluir")}>
                                             <i className="fa fa-trash"></i>
                                         </button>
                                     </td>
@@ -313,9 +288,8 @@ export default function ModalidadesCrud() {
                 <FormEditar
                     nome={"Modalidade"}
                     abrir={abrirEditarModalidades}
-                    aluNome={modalidade && modalidade.aluNome}
-                    aluDados={modalidade}
-                    dataAtual={dataAtual}
+                    modNome={modalidade && modalidade.modNome}
+                    modDados={modalidade}
                     funcPut={putModalidade}
                     funcAbrir={abrirFecharEditarModalidades}
                     funcAtualizaCampo={atualizaCampo}
@@ -326,8 +300,8 @@ export default function ModalidadesCrud() {
                 <FormExcluir
                     nome={"Modalidade"}
                     abrir={abrirExcluirModalidades}
-                    aluNome={modalidade && modalidade.aluNome}
-                    aluDados={modalidade.aluCodigo}
+                    modNome={modalidade && modalidade.aluNome}
+                    modDados={modalidade.aluCodigo}
                     funcDelete={deleteModalidade}
                     funcAbrir={abrirFecharExcluirModalidades}
                 />

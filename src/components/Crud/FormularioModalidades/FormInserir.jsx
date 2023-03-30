@@ -40,13 +40,13 @@ export default function FormInserir(props) {
             <ModalHeader>Incluir {props.nome}</ModalHeader>
             <ModalBody>
                 <form className="row g-3 form-group">
-                    <div className="col-md-6">
+                    <div className="col-md-5">
                         <label className="form-label mb-0">Nome:</label>
                         <input type="text" className="form-control" placeholder="Nome Sobrenome"
                             name="aluNome" onChange={e => props.funcAtualizaCampo(e)} />
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Treinador:</label>
+                    <div className="col-md-4">
+                        <label className="form-label mb-0">Tipo Desafio:</label>
                         <select className="form-select w-100 h-50"
                             name="treCodigo"
                             onChange={e => props.funcAtualizaCampo(e)}>
@@ -60,10 +60,20 @@ export default function FormInserir(props) {
                             }
                         </select>
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text" className="form-control" placeholder="Obs."
-                            name="aluObs" onChange={e => props.funcAtualizaCampo(e)} />
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Tipo Medida:</label>
+                        <select className="form-select w-100 h-50"
+                            name="treCodigo"
+                            onChange={e => props.funcAtualizaCampo(e)}>
+                            <option value=""></option>
+                            {
+                                treinadoresData.map((item, index) => {
+                                    return (
+                                        <option key={index} value={item.treCodigo}>{item.treNome}</option>
+                                    )
+                                })
+                            }
+                        </select>
                     </div>
                     <div className="col-md-4 mt-5">
                         <label className="form-label mb-0">Imagem:</label>

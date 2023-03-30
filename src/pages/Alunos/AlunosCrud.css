@@ -75,6 +75,12 @@ td {
     text-align: left;
 }
 
+tbody tr td img {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+}
+
 tbody tr td {
     max-width: 200px;
     overflow: hidden;

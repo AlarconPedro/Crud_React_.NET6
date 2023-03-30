@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../services/Api";
+import { desafioUrl } from "../../services/Imagens";
 
 import { BsJustify } from "react-icons/bs";
 
@@ -346,7 +347,7 @@ export default function DesafiosCrud() {
                     : <table className="table table-striped">
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>Avatar</th>
                                 <th>Nome</th>
                                 {/* <th>Tipo</th> */}
                                 <th>Data Inicio</th>
@@ -361,7 +362,7 @@ export default function DesafiosCrud() {
                         <tbody>
                             {desafiosData.map((desafio) => (
                                 <tr key={desafio.desCodigo}>
-                                    <td className="pt-3">{desafio.desCodigo}</td>
+                                    <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
                                     <td className="pt-3">{desafio.desNome}</td>
                                     {/* <td className="pl-4">{desafio.desTipoDesafio}</td> */}
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>

@@ -25,86 +25,59 @@ export default function MedalhasCrud() {
 
     const [carregando, setCarregando] = useState(false);
 
-    const [dataAtual, setDataAtual] = useState(new Date());
+    const [medalhasData, setMedalhasData] = useState([]);
 
-    const [alunosData, setAlunosData] = useState([]);
+    const [modalidadeData, setModalidadeData] = useState([]);
 
-    const [treinadoresData, setTreinadoresData] = useState([]);
-
-    const [alunoInitialState] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        aluEmail: '',
-        aluSenha: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: true,
-        aluObs: '',
-        aluStravaCode: null,
-        tbAlunoAtividades: [],
-        tbAlunoDesafios: [],
-        tbAlunoEventos: [],
-        treCodigoNavigation: null,
+    const [medalhaInitialState] = useState({
+        medCodigo: 0,
+        medNome: '',
+        medTipoDesafio: '',
+        tbMedalhaModalidades: [],
+        tbMedalhaNivels: [],
     });
 
-
-    const [aluno, setAluno] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        aluEmail: '',
-        aluSenha: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: true,
-        aluObs: '',
-        aluStravaCode: null,
-        tbAlunoAtividades: [],
-        tbAlunoDesafios: [],
-        tbAlunoEventos: [],
-        treCodigoNavigation: null,
+    const [medalha, setMedalha] = useState({
+        medCodigo: 0,
+        medNome: '',
+        medTipoDesafio: '',
+        tbMedalhaModalidades: [],
+        tbMedalhaNivels: [],
     });
 
     const [nomeBusca, setNomeBusca] = useState({
-        aluNome: ''
+        medNome: ''
     });
 
     const [pagina, setPagina] = useState(1);
 
-    const [abrirCadastroAlunos, setAbrirCadastroAlunos] = useState(false);
-    const [abrirEditarAlunos, setAbrirEditarAlunos] = useState(false);
-    const [abrirExcluirAlunos, setAbrirExcluirAlunos] = useState(false);
-    const [updateAlunos, setUpdateAlunos] = useState(true);
+    const [abrirCadastroMedalhas, setAbrirCadastroMedalhas] = useState(false);
+    const [abrirEditarMedalhas, setAbrirEditarMedalhas] = useState(false);
+    const [abrirExcluirMedalhas, setAbrirExcluirMedalhas] = useState(false);
+    const [updateMedalhas, setUpdateMedalhas] = useState(true);
 
-    const abrirFecharCadastroAlunos = (abrirCadastroAlunos) => {
-        setAbrirCadastroAlunos(!abrirCadastroAlunos);
-        setAluno(alunoInitialState);
+    const abrirFecharCadastroMedalhas = (abrirCadastroMedalhas) => {
+        setAbrirCadastroMedalhas(!abrirCadastroMedalhas);
+        setMedalha(medalhaInitialState);
     }
 
-    const abrirFecharEditarAlunos = (abrirEditarAlunos) => {
-        setAbrirEditarAlunos(!abrirEditarAlunos);
+    const abrirFecharEditarMedalhas = (abrirEditarMedalhas) => {
+        setAbrirEditarMedalhas(!abrirEditarMedalhas);
     }
 
-    const abrirFecharExcluirAlunos = (abrirExcluirAlunos) => {
-        setAbrirExcluirAlunos(!abrirExcluirAlunos);
+    const abrirFecharExcluirMedalhas = (abrirExcluirMedalhas) => {
+        setAbrirExcluirMedalhas(!abrirExcluirMedalhas);
     }
 
-    const selecionarAluno = (aluno, opcao) => {
-        setAluno(aluno);
-        (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
+    const selecionarMedalha = (medalha, opcao) => {
+        setMedalha(medalha);
+        (opcao === "Editar") ? abrirFecharEditarMedalhas() : abrirFecharExcluirMedalhas();
     }
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
-        setAluno({
-            ...aluno,
+        setMedalha({
+            ...medalha,
             [name]: value
         });
     }
@@ -117,162 +90,135 @@ export default function MedalhasCrud() {
         });
     }
 
-    const getAlunos = async (skip = 0) => {
+    const getMedalhas = async (skip = 0) => {
         setCarregando(true);
         await Api.get(`medalha?skip=${skip}`).then(response => {
-            setAlunosData(response.data);
+            setMedalhasData(response.data);
         }).catch(error => {
             console.log(error);
         });
         setCarregando(false);
     }
 
-    const getTreinadores = async (skip = 0) => {
-        setCarregando(true);
-        await Api.get(`treinador?skip=${skip}`).then(response => {
-            setTreinadoresData(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
-        setCarregando(false);
-    }
-
-    const getTreinadorId = async (id) => {
-        await Api.get(`treinador/${id}`).then(response => {
-            setTreinadoresData(response.data);
+    const getModalidades = async () => {
+        await Api.get("modalidade").then(response => {
+            setModalidadeData(response.data);
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const postAluno = async () => {
-        await Api.post("medalha/", aluno).then(response => {
-            setAluno(response.data);
-            setUpdateAlunos(true);
+    const postMedalha = async () => {
+        await Api.post("medalha/", medalha).then(response => {
+            setMedalha(response.data);
+            setUpdateMedalhas(true);
             // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
-        setAluno(alunoInitialState);
+        setMedalha(medalhaInitialState);
     }
 
-    const putAluno = async (codigo = aluno.aluCodigo) => {
-        await Api.put("medalha/" + codigo, aluno).then(response => {
-            var alunosAuxiliar = alunosData;
+    const putMedalha = async (codigo = medalha.aluCodigo) => {
+        await Api.put("medalha/" + codigo, medalha).then(response => {
+            var alunosAuxiliar = medalhasData;
             alunosAuxiliar.map(alunoMap => {
-                if (alunoMap.aluCodigo === aluno.aluCodigo) {
-                    alunoMap.aluNome = aluno.aluNome;
-                    alunoMap.aluDataNasc = aluno.aluDataNasc;
-                    alunoMap.aluEmail = aluno.aluEmail;
-                    alunoMap.aluSenha = aluno.aluSenha;
-                    alunoMap.treCodigo = aluno.treCodigo;
-                    alunoMap.aluOneSignalId = aluno.aluOneSignalId;
-                    alunoMap.aluImagem = aluno.aluImagem;
-                    alunoMap.aluId = aluno.aluId;
-                    alunoMap.aluFone = aluno.aluFone;
-                    alunoMap.aluSexo = aluno.aluSexo;
-                    alunoMap.aluAtivo = aluno.aluAtivo;
-                    alunoMap.aluObs = aluno.aluObs;
-                    alunoMap.aluStravaCode = aluno.aluStravaCode;
-                    alunoMap.aluStravaToken = aluno.aluStravaToken;
-                    alunoMap.aluStravaRefreshToken = aluno.aluStravaRefreshToken;
-                    alunoMap.aluStravaExpiresAt = aluno.aluStravaExpiresAt;
-                    alunoMap.aluStravaExpiresIn = aluno.aluStravaExpiresIn;
-                    alunoMap.aluStravaScope = aluno.aluStravaScope;
-                    alunoMap.aluStravaTokenType = aluno.aluStravaTokenType;
+                if (alunoMap.aluCodigo === medalha.aluCodigo) {
+                    alunoMap.aluNome = medalha.aluNome;
+                    alunoMap.aluDataNasc = medalha.aluDataNasc;
+                    alunoMap.aluEmail = medalha.aluEmail;
+                    alunoMap.aluSenha = medalha.aluSenha;
+                    alunoMap.treCodigo = medalha.treCodigo;
+                    alunoMap.aluOneSignalId = medalha.aluOneSignalId;
+                    alunoMap.aluImagem = medalha.aluImagem;
+                    alunoMap.aluId = medalha.aluId;
+                    alunoMap.aluFone = medalha.aluFone;
+                    alunoMap.aluSexo = medalha.aluSexo;
+                    alunoMap.aluAtivo = medalha.aluAtivo;
+                    alunoMap.aluObs = medalha.aluObs;
+                    alunoMap.aluStravaCode = medalha.aluStravaCode;
+                    alunoMap.aluStravaToken = medalha.aluStravaToken;
+                    alunoMap.aluStravaRefreshToken = medalha.aluStravaRefreshToken;
+                    alunoMap.aluStravaExpiresAt = medalha.aluStravaExpiresAt;
+                    alunoMap.aluStravaExpiresIn = medalha.aluStravaExpiresIn;
+                    alunoMap.aluStravaScope = medalha.aluStravaScope;
+                    alunoMap.aluStravaTokenType = medalha.aluStravaTokenType;
                 }
                 return alunoMap;
             });
-            setAlunosData(alunosAuxiliar);
+            setMedalhasData(alunosAuxiliar);
             // setAluno(response.data);
-            setUpdateAlunos(true);
+            setUpdateMedalhas(true);
             // abrirFecharEditarAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const deleteAluno = async (aluno = aluno.aluCodigo) => {
+    const deleteMedalha = async (aluno = aluno.aluCodigo) => {
         await Api.delete("medalha/" + aluno).then(response => {
-            setUpdateAlunos(true);
+            setUpdateMedalhas(true);
             // abrirFecharExcluirAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const getAlunoNome = async () => {
+    const getMedalhaNome = async () => {
         setCarregando(true);
         await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
-            setAlunosData(response.data);
+            setMedalhasData(response.data);
         }).catch(error => {
             console.log(error);
         });
         setCarregando(false);
     }
 
-    const converterDataToIdade = (data) => {
-        const today = new Date();
-
-        var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
-        const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
-
-        if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
-            idade--;
+    useEffect(() => {
+        if (updateMedalhas) {
+            getMedalhas();
+            setUpdateMedalhas(false);
         }
-
-        return data !== "" ? idade : "-";
-    }
+    }, [updateMedalhas]);
 
     useEffect(() => {
-        if (updateAlunos) {
-            getAlunos();
-            setUpdateAlunos(false);
-        }
-    }, [updateAlunos]);
-
-    useEffect(() => {
-        getTreinadores();
-    }, [setAbrirCadastroAlunos]);
-
-    useEffect(() => {
-        getTreinadorId(aluno.treCodigo);
-    }, [setAbrirEditarAlunos]);
+        getModalidades();
+    }, [setAbrirCadastroMedalhas]);    
 
     function handleDefault(e) {
         e.preventDefault();
     }
 
     const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > alunosData.length ? avancarPagina()
+        e === "&gt;" ? pagina > medalhasData.length ? avancarPagina()
             : avancarPagina(pagina * 10)
             : voltarPagina(pagina * 10);
     }
 
     const avancarPagina = async (skip) => {
-        getAlunos(skip);
-        pagina > alunosData.length ? setPagina(1) :
+        getMedalhas(skip);
+        pagina > medalhasData.length ? setPagina(1) :
             setPagina(pagina + 1);
     }
 
     const voltarPagina = async (skip) => {
         skip = skip - 20;
-        getAlunos(skip);
+        getMedalhas(skip);
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
     }
 
     return (
         <Mestre icon="certificate" title="Cadastro Medalhas" subtitle="Painel Sou+Fit">
-            <div className="alunos-container">
+            <div className="medalhas-container">
                 <header>
                     <h3>Medalhas</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Medalhas</button>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroMedalhas()}><strong>+</strong> Adicionar Medalhas</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
                     <div className="input-group rounded">
                         <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getAlunoNome()} type="submit">
+                        <button className="botaoBusca" onClick={() => getMedalhaNome()} type="submit">
                             <span className="input-group-text border-0" id="search-addon">
                                 <i className="fa fa-search"></i>
                             </span>
@@ -292,16 +238,16 @@ export default function MedalhasCrud() {
                             </tr>
                         </thead>
                         <tbody>
-                            {alunosData.map((aluno) => (
-                                <tr key={aluno.medCodigo}>
-                                    <td>{aluno.medCodigo}</td>
-                                    <td>{aluno.medNome}</td>
-                                    <td>{aluno.medTipoDesafio}</td>
+                            {medalhasData.map((medalha) => (
+                                <tr key={medalha.medCodigo}>
+                                    <td>{medalha.medCodigo}</td>
+                                    <td>{medalha.medNome}</td>
+                                    <td>{medalha.medTipoDesafio}</td>
                                     <td>
-                                        <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
+                                        <button className="btn btn-warning" onClick={() => selecionarMedalha(medalha, "Editar")}>
                                             <i className="fa fa-pencil"></i>
                                         </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
+                                        <button className="btn btn-danger" onClick={() => selecionarMedalha(medalha, "Excluir")}>
                                             <i className="fa fa-trash"></i>
                                         </button>
                                     </td>
@@ -324,34 +270,32 @@ export default function MedalhasCrud() {
 
                 <FormInserir
                     nome={"Medalha"}
-                    abrir={abrirCadastroAlunos}
-                    aluDados={aluno}
-                    funcPost={postAluno}
-                    funcAbrir={abrirFecharCadastroAlunos}
+                    abrir={abrirCadastroMedalhas}
+                    modalidades={modalidadeData}
+                    aluDados={medalha}
+                    funcPost={postMedalha}
+                    funcAbrir={abrirFecharCadastroMedalhas}
                     funcAtualizaCampo={atualizaCampo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormEditar
                     nome={"Medalha"}
-                    abrir={abrirEditarAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno}
-                    funcPut={putAluno}
-                    funcAbrir={abrirFecharEditarAlunos}
+                    abrir={abrirEditarMedalhas}
+                    modalidades={modalidadeData}
+                    aluNome={medalha && medalha.aluNome}
+                    aluDados={medalha}
+                    funcPut={putMedalha}
+                    funcAbrir={abrirFecharEditarMedalhas}
                     funcAtualizaCampo={atualizaCampo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormExcluir
                     nome={"Medalha"}
-                    abrir={abrirExcluirAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno.aluCodigo}
-                    funcDelete={deleteAluno}
-                    funcAbrir={abrirFecharExcluirAlunos}
+                    abrir={abrirExcluirMedalhas}
+                    aluNome={medalha && medalha.aluNome}
+                    aluDados={medalha.aluCodigo}
+                    funcDelete={deleteMedalha}
+                    funcAbrir={abrirFecharExcluirMedalhas}
                 />
             </div>
         </Mestre >

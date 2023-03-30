@@ -5,6 +5,10 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
+import { desafioUrl } from "../../../services/Imagens";
+
+import "./FormCss.css";
+
 export default function FormEditar(props) {
 
     const [abrir, setAbrir] = useState(false);
@@ -87,22 +91,6 @@ export default function FormEditar(props) {
                             }
                         />
                     </div>
-                    {/* <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Treinador:</label>
-                        <select className="form-select w-100 h-50"
-                            name="treCodigo"
-                            selected={treinadoresData}
-                            onChange={e => props.funcAtualizaCampo(e)}>
-                            <option value=""></option>
-                            {
-                                treinadoresData.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                    )
-                                })
-                            }
-                        </select>
-                    </div> */}
                     <div className="col-md-6 mt-2">
                         <label className="form-label mb-0">Observação:</label>
                         <input type="text"
@@ -139,6 +127,11 @@ export default function FormEditar(props) {
                                 value={true} />
                             <label className="form-check-label">Exclusivo Aluno</label>
                         </div>
+                    </div>
+                    <div className="col-md-4 mt-5">
+                        <label className="form-label mb-0">Imagem:</label>
+                        {/* <input type="image" alt="imagem" className="container border-dark" /> */}
+                        <img className="imagem" src={desafioUrl + props.desafio.desImagem} alt="" />
                     </div>
                 </form>
             </ModalBody>

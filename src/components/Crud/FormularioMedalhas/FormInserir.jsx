@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
@@ -11,17 +11,17 @@ export default function FormInserir(props) {
 
     const [dataAtual, setDataAtual] = useState(new Date());
 
-    const [treinadoresData, setTreinadoresData] = useState([]);
+    const [modalidadesData, setModalidadesData] = useState([]);
 
     useEffect(() => {
         setAbrir(props.abrir);
     }, [props.abrir]);
 
     useEffect(() => {
-        setTreinadoresData(props.treinaData);
-    }, [props.treinaData]);
+        setModalidadesData(props.modalidades);
+    }, [props.modalidades]);
 
-     useEffect(() => {
+    useEffect(() => {
         setDataAtual(props.aluDados.aluDataNasc);
     }, [props.aluDados.aluDataNasc]);
 
@@ -46,37 +46,30 @@ export default function FormInserir(props) {
                             name="aluNome" onChange={e => props.funcAtualizaCampo(e)} />
                     </div>
                     <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Treinador:</label>
-                        <select className="form-select w-100 h-50"
+                        <label className="form-label mb-0">Tipo de Medida:</label>
+                        <select className="form-select w-100 h-50 pb-4"
                             name="treCodigo"
                             onChange={e => props.funcAtualizaCampo(e)}>
                             <option value=""></option>
                             {
-                                treinadoresData.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                    )
-                                })
+
                             }
                         </select>
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text" className="form-control" placeholder="Obs."
-                            name="aluObs" onChange={e => props.funcAtualizaCampo(e)} />
-                    </div>
-                    <div className="col-2 mt-5">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" id="gridCheck"
-                                name="aluAtivo"
-                                onChange={e => props.funcAtualizaCampoAtivo(e)}
-                                value={true} />
-                            <label className="form-check-label">Ativo</label>
-                        </div>
-                    </div>
-                    <div className="col-md-4 mt-5">
-                        <label className="form-label mb-0">Imagem:</label>
-                        <input type="image" alt="imagem" className="container border-dark" />
+                    <div className="selecionarModalidade ml-2">
+                    <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+                            modalidadesData.map((modalidade) => {
+                                return (
+                                    <div className="form-check" key={modalidade.modCodigo}>
+                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                        <label className="form-check-label" for="flexCheckDefault">
+                                            {modalidade.modNome}
+                                        </label>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </form>
             </ModalBody>

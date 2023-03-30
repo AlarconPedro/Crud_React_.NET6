@@ -5,6 +5,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
+import { alunoUrl } from "../../../services/Imagens";
+
 export default function FormEditar(props) {
 
     const [abrir, setAbrir] = useState(false);
@@ -149,7 +151,8 @@ export default function FormEditar(props) {
                     </div>
                     <div className="col-md-4 mt-5">
                         <label className="form-label mb-0">Imagem:</label>
-                        <input type="image" alt="imagem" className="container border-dark" />
+                        {/* <input type="image" alt="imagem" className="container border-dark" /> */}
+                        <img src={alunoUrl + props.aluDados.aluImagem} alt="" />
                     </div>
                 </form>
             </ModalBody>

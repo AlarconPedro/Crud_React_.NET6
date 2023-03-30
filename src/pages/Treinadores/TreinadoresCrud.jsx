@@ -4,6 +4,7 @@ import Mestre from "../../layout/Mestre/Mestre";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../services/Api";
+import { treinadorUrl } from "../../services/Imagens";
 
 import "./TreinadoresCrud.css";
 
@@ -204,6 +205,7 @@ export default function TreinadoresCrud() {
                     <thead>
                         <tr>
                             {/* <th>Id</th> */}
+                            <th>Avatar</th>
                             <th>Nome</th>
                             <th>Telefone</th>
                             <th>Idade</th>
@@ -219,6 +221,7 @@ export default function TreinadoresCrud() {
                             console.log(treinador),
                             <tr key={treinador.treCodigo}>
                                 {/* <td>{treinador.treCodigo}</td> */}
+                                <td className="pt-3"><img src={treinadorUrl  + treinador.treImagem} alt="" /></td>
                                 <td className="pt-3">{treinador.treNome}</td>
                                 <td className="pt-3">{treinador.treFone}</td>
                                 <td className="pt-3"><div className="idade">{converterDataToIdade(treinador.aluDataNasc ?? "")}</div></td>

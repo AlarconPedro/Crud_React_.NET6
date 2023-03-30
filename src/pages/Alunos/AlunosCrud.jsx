@@ -11,6 +11,8 @@ import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
 
 import "./AlunosCrud.css";
+import {alunoUrl, treinadorUrl} from "../../services/Imagens";
+
 
 export default function AlunosCrud() {
 
@@ -344,6 +346,7 @@ export default function AlunosCrud() {
                         <thead>
                             <tr>
                                 {/* <th>Id</th> */}
+                                <th>Avatar</th>
                                 <th>Nome</th>
                                 <th>Telefone</th>
                                 <th>Idade</th>
@@ -355,6 +358,7 @@ export default function AlunosCrud() {
                             {alunosData.map((aluno) => (
                                 <tr key={aluno.aluCodigo}>
                                     {/* <td>{aluno.aluCodigo}</td> */}
+                                    <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td>
                                     <td className="pt-3">{aluno.aluNome}</td>
                                     <td className="pt-3">{aluno.aluFone}</td>
                                     <td className="pt-3"><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>

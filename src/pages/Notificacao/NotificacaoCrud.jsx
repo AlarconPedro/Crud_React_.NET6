@@ -58,7 +58,7 @@ export default function AlunosCrud() {
                 <form onSubmit={handleDefault}>
                     <h6><strong>Alunos:</strong></h6>
                     <div className="col-md-6 pl-0">
-                        <select className="form-select w-100 h-50">
+                        <select className="form-select w-100 h-50 pb-3">
                             <option value=""></option>
                             {
                                 alunosData.map((aluno) => {

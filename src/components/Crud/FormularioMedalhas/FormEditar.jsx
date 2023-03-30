@@ -2,28 +2,25 @@ import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import DatePicker from "react-datepicker";
-import InputMask from 'react-input-mask';
-
 export default function FormEditar(props) {
 
     const [abrir, setAbrir] = useState(false);
 
-    const [dataAtual, setDataAtual] = useState(new Date());
+    const [modalidadesData, setModalidadesData] = useState([]);
 
-    const [treinadoresData, setTreinadoresData] = useState([]);
-
-    useEffect(() => {
-        setTreinadoresData(props.treinaData);
-    }, [props.treinaData]);
+    const tipoMedida = [
+        { treCodigo: 1, treNome: "Distância(KM)" },
+        { treCodigo: 2, treNome: "Tempo(Horas)" },
+        { treCodigo: 3, treNome: "Frequência(Dias)" },
+    ];
 
     useEffect(() => {
         setAbrir(props.abrir);
     }, [props.abrir]);
 
     useEffect(() => {
-        setDataAtual(props.aluDados.aluDataNasc);
-    }, [props.aluDados.aluDataNasc]);
+        setModalidadesData(props.modalidades);
+    }, [props.modalidades]);
 
     const abrirModal = () => {
         setAbrir(!abrir);
@@ -40,43 +37,36 @@ export default function FormEditar(props) {
             <ModalHeader>Editar {props.nome}</ModalHeader>
             <ModalBody>
                 <form className="row g-3 form-group">
-                    <div className="col-md-12">
-                        <label className="mb-0">Id: </label>
-                        <input type="number" className="form-control mb-2" readOnly disabled
-                            value={props.aluDados.aluCodigo}
-                        />
-                    </div>
                     <div className="col-md-6">
                         <label className="form-label mb-0">Nome:</label>
                         <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                            name="aluNome"
-                            onChange={e => props.funcAtualizaCampo(e)}
-                            value={props.aluNome}
-                        />
+                            name="aluNome" onChange={e => props.funcAtualizaCampo(e)} />
                     </div>
                     <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Treinador:</label>
-                        <select className="form-select w-100 h-50"
+                        <label className="form-label mb-0">Tipo de Medida:</label>
+                        <select className="form-select w-100 h-50 pb-4"
                             name="treCodigo"
-                            selected={treinadoresData}
                             onChange={e => props.funcAtualizaCampo(e)}>
+                            <option value=""></option>
                             {
-                                treinadoresData.map((item, index) => {
-                                    return (
-                                        <option key={item.treCodigo} value={item.treCodigo}>{item.treNome}</option>
-                                    )
-                                })
+
                             }
                         </select>
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text" className="form-control" name="aluObs"
-                            onChange={e => props.funcAtualizaCampo(e)} value={props.aluDados.aluObs} />
-                    </div>
-                    <div className="col-md-4 mt-5">
-                        <label className="form-label mb-0">Imagem:</label>
-                        <input type="image" alt="imagem" className="container border-dark" />
+                    <div className="selecionarModalidade ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+                            modalidadesData.map((modalidade) => {
+                                return (
+                                    <div className="form-check" key={modalidade.modCodigo}>
+                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                        <label className="form-check-label" for="flexCheckDefault">
+                                            {modalidade.modNome}
+                                        </label>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </form>
             </ModalBody>
