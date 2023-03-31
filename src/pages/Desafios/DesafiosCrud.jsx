@@ -18,6 +18,7 @@ import "./DesafiosCrud.css";
 import FormInserir from "../../components/Crud/FormularioDesafio/FormInserir";
 import FormEditar from "../../components/Crud/FormularioDesafio/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioDesafio/FormExcluir";
+import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
 export default function DesafiosCrud() {
 
@@ -29,6 +30,8 @@ export default function DesafiosCrud() {
     const [desafiosData, setDesafiosData] = useState([]);
 
     const [treinadoresData, setTreinadoresData] = useState([]);
+
+    const [modalidadeData, setModalidadeData] = useState([]);
 
     const [desafioInitialState] = useState({
         desCodigo: 0,
@@ -76,6 +79,7 @@ export default function DesafiosCrud() {
     const [abrirCadastroDesafios, setAbrirCadastroDesafios] = useState(false);
     const [abrirEditarDesafios, setAbrirEditarDesafios] = useState(false);
     const [abrirExcluirDesafios, setAbrirExcluirDesafios] = useState(false);
+    const [abrirParticipantes, setAbrirParticipantes] = useState(false);
     const [updateDesafios, setUpdateDesafios] = useState(true);
 
     const abrirFecharCadastroDesafios = (abrirCadastroDesafios) => {
@@ -89,6 +93,10 @@ export default function DesafiosCrud() {
 
     const abrirFecharExcluirDesafios = () => {
         setAbrirExcluirDesafios(!abrirExcluirDesafios);
+    }
+
+    const abrirFecharParticipantes = (abrirParticipantes) => {
+        setAbrirParticipantes(!abrirParticipantes);
     }
 
     const selecionarDesafio = (desafio, opcao) => {
@@ -170,6 +178,14 @@ export default function DesafiosCrud() {
             day = '0' + day;
 
         return [day, month, year].join('/');
+    }
+
+    const getModalidades = async () => {
+        await Api.get("modalidade").then(response => {
+            setModalidadeData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     const getDesafios = async (skip = 0) => {
@@ -259,19 +275,6 @@ export default function DesafiosCrud() {
         setCarregando(false);
     }
 
-    const converterDataToIdade = (data) => {
-        const today = new Date();
-
-        var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
-        const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
-
-        if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
-            idade--;
-        }
-
-        return data !== "" ? idade : "-";
-    }
-
     useEffect(() => {
         if (updateDesafios) {
             getDesafios();
@@ -286,6 +289,10 @@ export default function DesafiosCrud() {
     useEffect(() => {
         getTreinadorId(desafio.treCodigo);
     }, [setAbrirEditarDesafios]);
+
+    useEffect(() => {
+        getModalidades();
+    }, [setAbrirCadastroDesafios]);  
 
     function handleDefault(e) {
         e.preventDefault();
@@ -368,7 +375,7 @@ export default function DesafiosCrud() {
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
                                     <td className="pt-3">{2}</td>
-                                    <td className="pl-5 pt-3 listarParticipantes"><BsJustify/></td>
+                                    <td className="pl-5 pt-3 listarParticipantes" onClick={() => abrirFecharParticipantes()}><BsJustify/></td>
                                     {/* <td className="pl-5">
                                         <div className="form-check">
                                             <input className="form-check-input"  type="checkbox" checked={desafio.desExclusivoAluno} />
@@ -400,10 +407,16 @@ export default function DesafiosCrud() {
                     </nav>
                 </div>
 
+                <FormParticipantes
+                    abrir={abrirParticipantes}
+                    funcAbrir={abrirFecharParticipantes}
+                />
+
                 <FormInserir 
                     abrir={abrirCadastroDesafios}
                     funcAbrir={abrirFecharCadastroDesafios}
                     funcPost={postDesafio}
+                    modalidades={modalidadeData}
                     funcAtualizaCampo={atualizaCampo}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcDataInicio={dataInicio}
@@ -417,6 +430,7 @@ export default function DesafiosCrud() {
                     abrir={abrirEditarDesafios}
                     funcAbrir={abrirFecharEditarDesafios}
                     funcPut={putDesafio}
+                    modalidades={modalidadeData}
                     funcAtualizaCampo={atualizaCampo}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcDataInicio={dataInicio}

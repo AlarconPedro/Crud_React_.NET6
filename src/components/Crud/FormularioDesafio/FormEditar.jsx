@@ -17,9 +17,15 @@ export default function FormEditar(props) {
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
+    const [modalidadesData, setModalidadesData] = useState([]);
+
     useEffect(() => {
         setAbrir(props.abrir);
     }, [props.abrir]);
+
+    useEffect(() => {
+        setModalidadesData(props.modalidades);
+    }, [props.modalidades]);
 
     useEffect(() => {
         setTreinadoresData(props.treinadoresData);
@@ -91,6 +97,36 @@ export default function FormEditar(props) {
                             }
                         />
                     </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo do Desafio:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoDesafio"
+                            value={props.desafio.desTipoDesafio}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo da Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoMedida"
+                            value={props.desafio.desTipoMedida}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desMedidaDesafio"
+                            value={props.desafio.desMedidaDesafio}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
+                    </div>
                     <div className="col-md-6 mt-2">
                         <label className="form-label mb-0">Observação:</label>
                         <input type="text"
@@ -105,7 +141,7 @@ export default function FormEditar(props) {
                         <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
                         <DatePicker
                             className="form-control"
-                            name="desDataFim"
+                            name="desDataInicioExibicao"
                             selected={new Date(props.desafio.desDataInicioExibicao)}
                             onChange={date => props.funcDataFim(date)}
                             dateFormat={"dd/MM/yyyy"}
@@ -128,7 +164,23 @@ export default function FormEditar(props) {
                             <label className="form-check-label">Exclusivo Aluno</label>
                         </div>
                     </div>
-                    <div className="col-md-4 mt-5">
+                    <div className="selecionarModalidade ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+                            modalidadesData.map((modalidade) => {
+                                return (
+                                    <div className="form-check" key={modalidade.modCodigo}>
+                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                        <label className="form-check-label" for="flexCheckDefault">
+                                            {modalidade.modNome}
+                                        </label>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div className="col-md-5"></div>
+                    <div className="col-md-4 mt-5 logoDesafio">
                         <label className="form-label mb-0">Imagem:</label>
                         {/* <input type="image" alt="imagem" className="container border-dark" /> */}
                         <img className="imagem" src={desafioUrl + props.desafio.desImagem} alt="" />

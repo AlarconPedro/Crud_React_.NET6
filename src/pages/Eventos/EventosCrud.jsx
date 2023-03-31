@@ -3,16 +3,13 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import Mestre from "../../layout/Mestre/Mestre";
 
-import DatePicker from "react-datepicker";
-import InputMask from 'react-input-mask';
-
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Crud/FormularioAluno/FormInserir";
-import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
+import FormInserir from "../../components/Crud/FormularioEventos/FormInserir";
+import FormEditar from "../../components/Crud/FormularioEventos/FormEditar";
+import FormExcluir from "../../components/Crud/FormularioEventos/FormExcluir";
 
 import "./EventosCrud.css";
 
@@ -22,11 +19,11 @@ export default function EventosCrud() {
 
     const [dataAtual, setDataAtual] = useState(new Date());
 
-    const [alunosData, setAlunosData] = useState([]);
+    const [eventosData, setEventosData] = useState([]);
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
-    const [alunoInitialState] = useState({
+    const [eventoInitialState] = useState({
         aluCodigo: 0,
         aluNome: '',
         aluDataNasc: new Date("01/01/1900"),
@@ -48,7 +45,7 @@ export default function EventosCrud() {
     });
 
 
-    const [aluno, setAluno] = useState({
+    const [evento, setEvento] = useState({
         aluCodigo: 0,
         aluNome: '',
         aluDataNasc: new Date(dataAtual),
@@ -69,39 +66,34 @@ export default function EventosCrud() {
         treCodigoNavigation: null,
     });
 
-    const sexo = [
-        { id: "M", nome: 'Masculino' },
-        { id: "F", nome: 'Feminino' },
-    ];
-
     const [nomeBusca, setNomeBusca] = useState({
         aluNome: ''
     });
 
     const [pagina, setPagina] = useState(1);
 
-    const [abrirCadastroAlunos, setAbrirCadastroAlunos] = useState(false);
-    const [abrirEditarAlunos, setAbrirEditarAlunos] = useState(false);
-    const [abrirExcluirAlunos, setAbrirExcluirAlunos] = useState(false);
-    const [updateAlunos, setUpdateAlunos] = useState(true);
+    const [abrirCadastroEventos, setAbrirCadastroEventos] = useState(false);
+    const [abrirEditarEventos, setAbrirEditarEventos] = useState(false);
+    const [abrirExcluirEventos, setAbrirExcluirEventos] = useState(false);
+    const [updateEventos, setUpdateEventos] = useState(true);
 
-    const abrirFecharCadastroAlunos = (abrirCadastroAlunos) => {
-        setAbrirCadastroAlunos(!abrirCadastroAlunos);
-        setAluno(alunoInitialState);
+    const abrirFecharCadastroEventos = (abrirCadastroEventos) => {
+        setAbrirCadastroEventos(!abrirCadastroEventos);
+        setEvento(eventoInitialState);
     }
 
-    const abrirFecharEditarAlunos = (abrirEditarAlunos) => {
-        setAbrirEditarAlunos(!abrirEditarAlunos);
+    const abrirFecharEditarEventos = (abrirEditarEventos) => {
+        setAbrirEditarEventos(!abrirEditarEventos);
     }
 
     const abrirFecharExcluirAlunos = (abrirExcluirAlunos) => {
-        setAbrirExcluirAlunos(!abrirExcluirAlunos);
+        setAbrirExcluirEventos(!abrirExcluirAlunos);
     }
 
     const mascaraTelefone = (e) => {
         let input = e.target;
         input.value = phoneMask(input.value);
-        setAluno({ ...aluno, [e.target.name]: input.value });
+        setEvento({ ...evento, [e.target.name]: input.value });
     }
 
     const phoneMask = (value) => {
@@ -112,15 +104,15 @@ export default function EventosCrud() {
         return value
     }
 
-    const selecionarAluno = (aluno, opcao) => {
-        setAluno(aluno);
-        (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
+    const selecionarEvento = (evento, opcao) => {
+        setEvento(evento);
+        (opcao === "Editar") ? abrirFecharEditarEventos() : abrirFecharExcluirAlunos();
     }
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
-        setAluno({
-            ...aluno,
+        setEvento({
+            ...evento,
             [name]: value
         });
     }
@@ -135,8 +127,8 @@ export default function EventosCrud() {
 
     const atualizaCampoAtivo = e => {
         const { name, value } = e.target;
-        setAluno({
-            ...aluno,
+        setEvento({
+            ...evento,
             [name]: value === "true" ? true : false
         });
     }
@@ -154,8 +146,8 @@ export default function EventosCrud() {
         if (day.length < 2)
             day = '0' + day;
 
-        setAluno({
-            ...aluno,
+        setEvento({
+            ...evento,
             aluDataNasc: [year, month, day].join('-')
         });
         return [day, month, year].join('-');
@@ -167,10 +159,10 @@ export default function EventosCrud() {
     // }
 
 
-    const getAlunos = async (skip = 0) => {
+    const getEventos = async (skip = 0) => {
         setCarregando(true);
         await Api.get(`aluno?skip=${skip}`).then(response => {
-            setAlunosData(response.data);
+            setEventosData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -195,58 +187,58 @@ export default function EventosCrud() {
         });
     }
 
-    const postAluno = async () => {
+    const postEvento = async () => {
         await dataAuxiliar(dataAtual);
-        await Api.post("aluno/", aluno).then(response => {
-            setAluno(response.data);
-            setUpdateAlunos(true);
+        await Api.post("aluno/", evento).then(response => {
+            setEvento(response.data);
+            setUpdateEventos(true);
             // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
-        setAluno(alunoInitialState);
+        setEvento(eventoInitialState);
     }
 
-    const putAluno = async (codigo = aluno.aluCodigo) => {
+    const putEvento = async (codigo = evento.aluCodigo) => {
         await dataAuxiliar(dataAtual);
-        await Api.put("aluno/" + codigo, aluno).then(response => {
-            var alunosAuxiliar = alunosData;
+        await Api.put("aluno/" + codigo, evento).then(response => {
+            var alunosAuxiliar = eventosData;
             alunosAuxiliar.map(alunoMap => {
-                if (alunoMap.aluCodigo === aluno.aluCodigo) {
-                    alunoMap.aluNome = aluno.aluNome;
-                    alunoMap.aluDataNasc = aluno.aluDataNasc;
-                    alunoMap.aluEmail = aluno.aluEmail;
-                    alunoMap.aluSenha = aluno.aluSenha;
-                    alunoMap.treCodigo = aluno.treCodigo;
-                    alunoMap.aluOneSignalId = aluno.aluOneSignalId;
-                    alunoMap.aluImagem = aluno.aluImagem;
-                    alunoMap.aluId = aluno.aluId;
-                    alunoMap.aluFone = aluno.aluFone;
-                    alunoMap.aluSexo = aluno.aluSexo;
-                    alunoMap.aluAtivo = aluno.aluAtivo;
-                    alunoMap.aluObs = aluno.aluObs;
-                    alunoMap.aluStravaCode = aluno.aluStravaCode;
-                    alunoMap.aluStravaToken = aluno.aluStravaToken;
-                    alunoMap.aluStravaRefreshToken = aluno.aluStravaRefreshToken;
-                    alunoMap.aluStravaExpiresAt = aluno.aluStravaExpiresAt;
-                    alunoMap.aluStravaExpiresIn = aluno.aluStravaExpiresIn;
-                    alunoMap.aluStravaScope = aluno.aluStravaScope;
-                    alunoMap.aluStravaTokenType = aluno.aluStravaTokenType;
+                if (alunoMap.aluCodigo === evento.aluCodigo) {
+                    alunoMap.aluNome = evento.aluNome;
+                    alunoMap.aluDataNasc = evento.aluDataNasc;
+                    alunoMap.aluEmail = evento.aluEmail;
+                    alunoMap.aluSenha = evento.aluSenha;
+                    alunoMap.treCodigo = evento.treCodigo;
+                    alunoMap.aluOneSignalId = evento.aluOneSignalId;
+                    alunoMap.aluImagem = evento.aluImagem;
+                    alunoMap.aluId = evento.aluId;
+                    alunoMap.aluFone = evento.aluFone;
+                    alunoMap.aluSexo = evento.aluSexo;
+                    alunoMap.aluAtivo = evento.aluAtivo;
+                    alunoMap.aluObs = evento.aluObs;
+                    alunoMap.aluStravaCode = evento.aluStravaCode;
+                    alunoMap.aluStravaToken = evento.aluStravaToken;
+                    alunoMap.aluStravaRefreshToken = evento.aluStravaRefreshToken;
+                    alunoMap.aluStravaExpiresAt = evento.aluStravaExpiresAt;
+                    alunoMap.aluStravaExpiresIn = evento.aluStravaExpiresIn;
+                    alunoMap.aluStravaScope = evento.aluStravaScope;
+                    alunoMap.aluStravaTokenType = evento.aluStravaTokenType;
                 }
                 return alunoMap;
             });
-            setAlunosData(alunosAuxiliar);
+            setEventosData(alunosAuxiliar);
             // setAluno(response.data);
-            setUpdateAlunos(true);
+            setUpdateEventos(true);
             // abrirFecharEditarAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const deleteAluno = async (aluno = aluno.aluCodigo) => {
+    const deleteEvento = async (aluno = aluno.aluCodigo) => {
         await Api.delete("aluno/" + aluno).then(response => {
-            setUpdateAlunos(true);
+            setUpdateEventos(true);
             // abrirFecharExcluirAlunos();
         }).catch(error => {
             console.log(error);
@@ -256,7 +248,7 @@ export default function EventosCrud() {
     const getAlunoNome = async () => {
         setCarregando(true);
         await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
-            setAlunosData(response.data);
+            setEventosData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -277,50 +269,40 @@ export default function EventosCrud() {
     }
 
     useEffect(() => {
-        if (updateAlunos) {
-            getAlunos();
-            setUpdateAlunos(false);
+        if (updateEventos) {
+            getEventos();
+            setUpdateEventos(false);
         }
-    }, [updateAlunos]);
+    }, [updateEventos]);
 
     useEffect(() => {
         getTreinadores();
-    }, [setAbrirCadastroAlunos]);
+    }, [setAbrirCadastroEventos]);
 
     useEffect(() => {
-        getTreinadorId(aluno.treCodigo);
-    }, [setAbrirEditarAlunos]);
+        getTreinadorId(evento.treCodigo);
+    }, [setAbrirEditarEventos]);
 
     function handleDefault(e) {
         e.preventDefault();
     }
 
     const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > alunosData.length ? avancarPagina()
+        e === "&gt;" ? pagina > eventosData.length ? avancarPagina()
             : avancarPagina(pagina * 10)
             : voltarPagina(pagina * 10);
     }
 
     const avancarPagina = async (skip) => {
-        getAlunos(skip);
-        pagina > alunosData.length ? setPagina(1) :
+        getEventos(skip);
+        pagina > eventosData.length ? setPagina(1) :
             setPagina(pagina + 1);
     }
 
     const voltarPagina = async (skip) => {
         skip = skip - 20;
-        getAlunos(skip);
+        getEventos(skip);
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
-    }
-
-    const verificaSexo = (sexo) => {
-        if (sexo === "M") {
-            return "Masculino";
-        } else if (sexo === "F") {
-            return "Feminino";
-        } else {
-            return "Outro";
-        }
     }
 
     return (
@@ -328,7 +310,7 @@ export default function EventosCrud() {
             <div className="alunos-container">
                 <header>
                     <h3>Eventos</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Eventos</button>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroEventos()}><strong>+</strong> Adicionar Eventos</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
@@ -360,43 +342,41 @@ export default function EventosCrud() {
                 </div>
 
                 <FormInserir 
-                    nome={"Aluno"}
-                    abrir={abrirCadastroAlunos}
-                    aluDados={aluno}
-                    funcPost={postAluno}
-                    funcAbrir={abrirFecharCadastroAlunos}
+                    nome={"Eventos"}
+                    abrir={abrirCadastroEventos}
+                    aluDados={evento}
+                    funcPost={postEvento}
+                    funcAbrir={abrirFecharCadastroEventos}
                     funcData={dataAuxiliar}
                     funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
                     treinaData={treinadoresData}
                     funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormEditar 
-                    nome={"Aluno"}
-                    abrir={abrirEditarAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno}
+                    nome={"Eventos"}
+                    abrir={abrirEditarEventos}
+                    aluNome={evento && evento.aluNome}
+                    aluDados={evento}
                     dataAtual={dataAtual}
-                    funcPut={putAluno}
-                    funcAbrir={abrirFecharEditarAlunos}
+                    funcPut={putEvento}
+                    funcAbrir={abrirFecharEditarEventos}
                     funcData={dataAuxiliar}
                     funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
                     treinaData={treinadoresData}
                     funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormExcluir
-                    nome={"Aluno"}
-                    abrir={abrirExcluirAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno.aluCodigo}
-                    funcDelete={deleteAluno}
+                    nome={"Eventos"}
+                    abrir={abrirExcluirEventos}
+                    aluNome={evento && evento.aluNome}
+                    aluDados={evento.aluCodigo}
+                    funcDelete={deleteEvento}
                     funcAbrir={abrirFecharExcluirAlunos}
                 />
             </div>

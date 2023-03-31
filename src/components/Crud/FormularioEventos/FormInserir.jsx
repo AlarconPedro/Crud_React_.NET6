@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
@@ -13,11 +13,6 @@ export default function FormInserir(props) {
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
-    const sexo = [
-        { id: "M", nome: 'Masculino' },
-        { id: "F", nome: 'Feminino' },
-    ];
-
     useEffect(() => {
         setAbrir(props.abrir);
     }, [props.abrir]);
@@ -26,7 +21,7 @@ export default function FormInserir(props) {
         setTreinadoresData(props.treinaData);
     }, [props.treinaData]);
 
-     useEffect(() => {
+    useEffect(() => {
         setDataAtual(props.aluDados.aluDataNasc);
     }, [props.aluDados.aluDataNasc]);
 
@@ -47,16 +42,21 @@ export default function FormInserir(props) {
                 <form className="row g-3 form-group">
                     <div className="col-md-6">
                         <label className="form-label mb-0">Nome:</label>
-                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                            name="aluNome" onChange={e => props.funcAtualizaCampo(e)} />
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desNome"
+                            // value={props.desafio.desNome}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
                     </div>
                     <div className="col-md-3">
-                        <label className="form-label mb-0">Data Nascimento:</label>
+                        <label className="form-label mb-0">Data Início:</label>
                         <DatePicker
                             className="form-control"
-                            name="aluDataNasc"
-                            selected={new Date(dataAtual)}
-                            onChange={date => props.funcData(date)}
+                            name="desDataInicio"
+                            // selected={new Date(props.desafio.desDataInicio)}
+                            onChange={date => props.funcDataInicio(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
                             customInput={
@@ -68,74 +68,88 @@ export default function FormInserir(props) {
                         />
                     </div>
                     <div className="col-md-3">
-                        <label className="form-label mb-0">Sexo:</label>
-                        <select className="form-select w-100 h-50"
-                            name="aluSexo" onChange={e => props.funcAtualizaCampo(e)}>
-                            <option value=""></option>
-                            {
-                                sexo.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.id}>{item.nome}</option>
-                                    )
-                                })
+                        <label className="form-label mb-0">Data Fim:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataFim"
+                            // selected={new Date(props.desafio.desDataFim)}
+                            onChange={date => props.funcDataFim(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
                             }
-                        </select>
+                        />
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Treinador:</label>
-                        <select className="form-select w-100 h-50"
-                            name="treCodigo"
-                            onChange={e => props.funcAtualizaCampo(e)}>
-                            <option value=""></option>
-                            {
-                                treinadoresData.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                    )
-                                })
-                            }
-                        </select>
-                    </div>
-                    <div className="col-6">
-                        <label className="form-label mb-0 mt-2">Telefone:</label>
-                        <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
-                            name="aluFone"
-                            onKeyUp={e => props.funcMascara(e)}
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo do Desafio:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoDesafio"
+                            // value={props.desafio.desNome}
                             onChange={e => props.funcAtualizaCampo(e)}
                         />
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Email:</label>
-                        <input type="email" className="form-control" placeholder="exemplo@gmail.com"
-                            name="aluEmail" onChange={e => props.funcAtualizaCampo(e)} />
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo da Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoMedida"
+                            // value={props.desafio.desNome}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desMedidaDesafio"
+                            // value={props.desafio.desNome}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-6 mt-2">
+                        <label className="form-label mb-0">Descrição:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Obs."
+                            name="desDescricao"
+                            // value={props.desafio.desObs}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
                     </div>
                     <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Senha:</label>
-                        <input type="password" className="form-control" placeholder="****"
-                            name="aluSenha" onChange={e => props.funcAtualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                        <input type="password" className="form-control" placeholder="****"
-                            name="aluSenha" onChange={e => props.funcAtualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text" className="form-control" placeholder="Obs."
-                            name="aluObs" onChange={e => props.funcAtualizaCampo(e)} />
+                        <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataInicioExibicao"
+                            // selected={new Date(props.desafio.desDataInicioExibicao)}
+                            onChange={date => props.funcDataFim(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
                     </div>
                     <div className="col-2 mt-5">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" id="gridCheck"
-                                name="aluAtivo"
+                                name="desExclusivoAluno"
                                 onChange={e => props.funcAtualizaCampoAtivo(e)}
+                                // checked={props.desafio.desExclusivoAluno}
                                 value={true} />
-                            <label className="form-check-label">Ativo</label>
+                            <label className="form-check-label">Exclusivo Aluno</label>
                         </div>
-                    </div>
-                    <div className="col-md-4 mt-5">
-                        <label className="form-label mb-0">Imagem:</label>
-                        <input type="image" alt="imagem" className="container border-dark" />
                     </div>
                 </form>
             </ModalBody>
