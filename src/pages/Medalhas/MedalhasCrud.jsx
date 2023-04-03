@@ -8,16 +8,14 @@ import InputMask from 'react-input-mask';
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import {
-    BsAwardFill,
-    BsFillCalendarFill
-} from "react-icons/bs";
+import { BsJustify } from "react-icons/bs";
 
 import Api from "../../services/Api";
 
 import FormInserir from "../../components/Crud/FormularioMedalhas/FormInserir";
 import FormEditar from "../../components/Crud/FormularioMedalhas/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioMedalhas/FormExcluir";
+import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/FormNivelMedalha";
 
 import "./MedalhasCrud.css";
 
@@ -26,6 +24,7 @@ export default function MedalhasCrud() {
     const [carregando, setCarregando] = useState(false);
 
     const [medalhasData, setMedalhasData] = useState([]);
+    const [medNivelData, setMedNivelData] = useState([]);
 
     const [modalidadeData, setModalidadeData] = useState([]);
 
@@ -54,6 +53,7 @@ export default function MedalhasCrud() {
     const [abrirCadastroMedalhas, setAbrirCadastroMedalhas] = useState(false);
     const [abrirEditarMedalhas, setAbrirEditarMedalhas] = useState(false);
     const [abrirExcluirMedalhas, setAbrirExcluirMedalhas] = useState(false);
+    const [abrirNivelMedalhas, setAbrirNivelMedalhas] = useState(false);
     const [updateMedalhas, setUpdateMedalhas] = useState(true);
 
     const abrirFecharCadastroMedalhas = (abrirCadastroMedalhas) => {
@@ -69,9 +69,18 @@ export default function MedalhasCrud() {
         setAbrirExcluirMedalhas(!abrirExcluirMedalhas);
     }
 
+    const abrirFecharNiveis = (abrirNivelMedalhas) => {
+        setAbrirNivelMedalhas(!abrirNivelMedalhas);
+    }
+
     const selecionarMedalha = (medalha, opcao) => {
         setMedalha(medalha);
         (opcao === "Editar") ? abrirFecharEditarMedalhas() : abrirFecharExcluirMedalhas();
+    }
+
+    const selecionaMedalahaNivel = async (medalha, abrirNivelMedalhas) => {
+        await setMedalha(medalha);
+        abrirFecharNiveis(abrirNivelMedalhas);
     }
 
     const atualizaCampo = e => {
@@ -174,6 +183,14 @@ export default function MedalhasCrud() {
         setCarregando(false);
     }
 
+    const getMedalhaNivel = async () => {
+        await Api.get("medalha/" + medalha.medCodigo).then(response => {
+            medNivelData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     useEffect(() => {
         if (updateMedalhas) {
             getMedalhas();
@@ -231,8 +248,8 @@ export default function MedalhasCrud() {
                     : <table className="table table-striped">
                         <thead>
                             <tr>
-                                <th>Id</th>
                                 <th>Nome</th>
+                                <th>Níveis</th>
                                 <th>Tipo</th>
                                 <th>Ações</th>
                             </tr>
@@ -240,8 +257,8 @@ export default function MedalhasCrud() {
                         <tbody>
                             {medalhasData.map((medalha) => (
                                 <tr key={medalha.medCodigo}>
-                                    <td>{medalha.medCodigo}</td>
                                     <td>{medalha.medNome}</td>
+                                    <td className="pl-4 listar" onClick={() => selecionaMedalahaNivel(medalha, abrirNivelMedalhas)}><BsJustify/></td>
                                     <td>{medalha.medTipoDesafio}</td>
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarMedalha(medalha, "Editar")}>
@@ -268,6 +285,13 @@ export default function MedalhasCrud() {
                     </nav>
                 </div>
 
+                <FormNivelMedalha
+                    nome={"Nível Medalha"}
+                    abrir={abrirNivelMedalhas}
+                    medalha={medalha} 
+                    funcAbrir={abrirFecharNiveis}   
+                />
+
                 <FormInserir
                     nome={"Medalha"}
                     abrir={abrirCadastroMedalhas}
@@ -282,7 +306,7 @@ export default function MedalhasCrud() {
                     nome={"Medalha"}
                     abrir={abrirEditarMedalhas}
                     modalidades={modalidadeData}
-                    aluNome={medalha && medalha.aluNome}
+                    aluNome={medalha && medalha.medNome}
                     aluDados={medalha}
                     funcPut={putMedalha}
                     funcAbrir={abrirFecharEditarMedalhas}
@@ -292,8 +316,8 @@ export default function MedalhasCrud() {
                 <FormExcluir
                     nome={"Medalha"}
                     abrir={abrirExcluirMedalhas}
-                    aluNome={medalha && medalha.aluNome}
-                    aluDados={medalha.aluCodigo}
+                    aluNome={medalha && medalha.medNome}
+                    aluDados={medalha}
                     funcDelete={deleteMedalha}
                     funcAbrir={abrirFecharExcluirMedalhas}
                 />

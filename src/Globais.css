@@ -12,6 +12,11 @@
         0 2px 49px 0 rgba(0,0,0,0.06);
 }
 
+
+.listar {
+    cursor: pointer;
+}
+
 * {
     box-sizing: border-box;
     font-family: "Montserrat", sans-serif;

@@ -375,7 +375,7 @@ export default function DesafiosCrud() {
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
                                     <td className="pt-3">{2}</td>
-                                    <td className="pl-5 pt-3 listarParticipantes" onClick={() => abrirFecharParticipantes()}><BsJustify/></td>
+                                    <td className="pl-5 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify/></td>
                                     {/* <td className="pl-5">
                                         <div className="form-check">
                                             <input className="form-check-input"  type="checkbox" checked={desafio.desExclusivoAluno} />

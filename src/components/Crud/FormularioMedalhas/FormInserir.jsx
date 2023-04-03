@@ -9,8 +9,6 @@ export default function FormInserir(props) {
 
     const [abrir, setAbrir] = useState(false);
 
-    const [dataAtual, setDataAtual] = useState(new Date());
-
     const [modalidadesData, setModalidadesData] = useState([]);
 
     useEffect(() => {
@@ -20,10 +18,6 @@ export default function FormInserir(props) {
     useEffect(() => {
         setModalidadesData(props.modalidades);
     }, [props.modalidades]);
-
-    useEffect(() => {
-        setDataAtual(props.aluDados.aluDataNasc);
-    }, [props.aluDados.aluDataNasc]);
 
     const abrirModal = () => {
         setAbrir(!abrir);
