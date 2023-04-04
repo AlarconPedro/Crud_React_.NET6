@@ -17,6 +17,29 @@
     cursor: pointer;
 }
 
+.formInfo {
+    width: 100%;
+    max-width: 500px;
+    padding: 5 10px;
+    margin: 30px auto;
+}
+
+.formInfo table thead tr th {
+    width: 50%;
+}
+
+.formCadastro {
+    width: 100%;
+    max-width: 900px;
+    padding: 5 10px;
+    margin: 30px auto;
+}
+
+.imgEditar img {
+    width: 140px;
+    height: 140px;
+}
+
 * {
     box-sizing: border-box;
     font-family: "Montserrat", sans-serif;

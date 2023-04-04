@@ -41,7 +41,7 @@ export default function FormInserir(props) {
     }
 
     return (
-        <Modal isOpen={abrir} className="modal-incluir">
+        <Modal isOpen={abrir} className="formCadastro">
             <ModalHeader>Incluir {props.nome}</ModalHeader>
             <ModalBody>
                 <form className="row g-3 form-group">

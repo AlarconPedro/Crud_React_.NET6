@@ -15,7 +15,7 @@ import Api from "../../services/Api";
 import FormInserir from "../../components/Crud/FormularioMedalhas/FormInserir";
 import FormEditar from "../../components/Crud/FormularioMedalhas/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioMedalhas/FormExcluir";
-import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/FormNivelMedalha";
+import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/Niveis/FormNivelMedalha";
 
 import "./MedalhasCrud.css";
 
@@ -24,7 +24,7 @@ export default function MedalhasCrud() {
     const [carregando, setCarregando] = useState(false);
 
     const [medalhasData, setMedalhasData] = useState([]);
-    const [medNivelData, setMedNivelData] = useState([]);
+    const [niveisData, setNiveisData] = useState([]);
 
     const [modalidadeData, setModalidadeData] = useState([]);
 
@@ -80,6 +80,7 @@ export default function MedalhasCrud() {
 
     const selecionaMedalahaNivel = async (medalha, abrirNivelMedalhas) => {
         await setMedalha(medalha);
+        await getMedalhaNivel();
         abrirFecharNiveis(abrirNivelMedalhas);
     }
 
@@ -184,8 +185,9 @@ export default function MedalhasCrud() {
     }
 
     const getMedalhaNivel = async () => {
-        await Api.get("medalha/" + medalha.medCodigo).then(response => {
-            medNivelData(response.data);
+        await Api.get(`nivel/${medalha.medCodigo}`).then(response => {
+            setNiveisData(response.data);
+            console.log(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -284,12 +286,13 @@ export default function MedalhasCrud() {
                         </ul>
                     </nav>
                 </div>
-
+                
                 <FormNivelMedalha
                     nome={"Nível Medalha"}
                     abrir={abrirNivelMedalhas}
-                    medalha={medalha} 
+                    nivel={niveisData} 
                     funcAbrir={abrirFecharNiveis}   
+                    funcAtualizaCampo={atualizaCampo}
                 />
 
                 <FormInserir

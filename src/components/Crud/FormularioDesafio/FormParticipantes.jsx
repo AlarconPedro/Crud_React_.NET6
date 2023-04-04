@@ -50,7 +50,7 @@ export default function FormParticipantes(props) {
                         <tr>
                             <th>Avatar</th>
                             <th>Nome</th>
-                            <th className="pl-4">Ações</th>
+                            <th className="pl-4 acoes">Ações</th>
                         </tr>
                     </thead>
                     <tbody>

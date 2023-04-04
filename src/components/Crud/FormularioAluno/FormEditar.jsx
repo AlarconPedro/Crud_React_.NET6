@@ -43,7 +43,7 @@ export default function FormEditar(props) {
     }
 
     return (
-        <Modal isOpen={abrir} className="modal-editar">
+        <Modal isOpen={abrir} className="formCadastro">
             <ModalHeader>Editar {props.nome}</ModalHeader>
             <ModalBody>
                 <form className="row g-3 form-group">
