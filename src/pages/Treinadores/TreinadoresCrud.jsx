@@ -93,6 +93,11 @@ export default function AlunosCrud() {
         return value
     }
 
+    const selecionaImagem = (e) => {
+        console.log(e.target.files[0]); // Imagem
+        setTreinador({ ...treinador, treImagem: e.target.files[0] });
+    }
+
     const selecionarTreinador = (treinador, opcao) => {
         setTreinador(treinador);
         (opcao === "Editar") ? abrirFecharEditarTreinadores() : abrirFecharExcluirTreinadores();
@@ -161,7 +166,6 @@ export default function AlunosCrud() {
                     treinadorMap.treEmail = treinador.aluEmail;
                     treinadorMap.treSenha = treinador.aluSenha;
                     treinadorMap.treOneSignalId = treinador.aluOneSignalId;
-                    treinadorMap.treImagem = treinador.aluImagem;
                     treinadorMap.treId = treinador.aluId;
                     treinadorMap.treFone = treinador.aluFone;
                     treinadorMap.treAtivo = treinador.aluAtivo;
@@ -170,7 +174,7 @@ export default function AlunosCrud() {
                 return treinadorMap;
             });
             setTreinadoresData(treinadoresAuxiliar);
-            setUpdateTreinadores(!updateTreinadores);
+            setUpdateTreinadores(true);
         }).catch(error => {
             console.log(error);
         });
@@ -299,6 +303,7 @@ export default function AlunosCrud() {
                     funcPost={postTreinador}
                     funcAbrir={abrirFecharCadastroTreinadores}
                     funcMascara={mascaraTelefone}
+                    funcSelectImagem={selecionaImagem}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
                     treinaData={treinadoresData}
@@ -312,6 +317,7 @@ export default function AlunosCrud() {
                     treDados={treinador}
                     funcPut={putTreinador}
                     funcAbrir={abrirFecharEditarTreinadores}
+                    funcSelectImagem={selecionaImagem}
                     funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}

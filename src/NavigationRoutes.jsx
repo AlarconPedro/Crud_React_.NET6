@@ -9,6 +9,7 @@ import Eventos from './pages/Eventos/EventosCrud';
 import Notificacao from './pages/Notificacao/NotificacaoCrud';
 import Modalidades from './pages/Modalidades/ModalidadesCrud';
 import Medalhas from './pages/Medalhas/MedalhasCrud';
+import Calendario from './pages/Calendario';
 
 export default nav => 
         <Routes>
@@ -20,6 +21,6 @@ export default nav =>
             <Route path="/notificacao" element={<Notificacao />} />
             <Route path="/modalidade" element={<Modalidades />} />
             <Route path="/medalhas" element={<Medalhas />} />
-            <Route path="/calendario" element={<Treinadores />} />
+            <Route path="/calendario" element={<Calendario />} />
             <Route path="*" element={<Home />} />
         </Routes>

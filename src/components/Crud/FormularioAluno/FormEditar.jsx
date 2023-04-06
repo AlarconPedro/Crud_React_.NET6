@@ -130,7 +130,7 @@ export default function FormEditar(props) {
                     </div>
                     <div className="col-md-3">
                         <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                        <input type="password" className="form-control" name="aluNome"
+                        <input type="password" className="form-control" name="aluSenha"
                             onChange={e => props.funcAtualizaCampo(e)} value={props.aluDados.aluSenha} />
                     </div>
                     <div className="col-md-6">
@@ -151,6 +151,8 @@ export default function FormEditar(props) {
                     </div>
                     <div className="col-md-4 mt-5">
                         <label className="form-label mb-0">Imagem:</label>
+                        <input type="file" className="form-control"
+                            name="treImagem"/>
                         {/* <input type="image" alt="imagem" className="container border-dark" /> */}
                         <img src={alunoUrl + props.aluDados.aluImagem} alt="" />
                     </div>

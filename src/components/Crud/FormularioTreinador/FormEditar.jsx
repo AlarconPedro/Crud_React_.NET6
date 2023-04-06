@@ -76,14 +76,18 @@ export default function FormEditar(props) {
                                 name="treAtivo"
                                 onChange={e => props.funcAtualizaCampoAtivo(e)}
                                 checked={props.treDados.treAtivo}
-                                value={true}
-                            />
+                                value={true} />
                             <label className="form-check-label">Ativo</label>
                         </div>
                     </div>
                     <div className="col-md-4 mt-5">
                         <label className="form-label mb-0">Imagem:</label>
-                        <img src={treinadorUrl + props.treDados.treImagem} alt="" />
+                        <input type="file" className="form-control"
+                            name="treImagem"
+                            onChange={e => props.funcSelectImagem(e)} />
+                        {props.treDados.treImagem === null 
+                        ? <div></div>
+                        : <img src={treinadorUrl + props.treDados.treImagem} alt="imagem" />}
                     </div>
                 </form>
             </ModalBody>

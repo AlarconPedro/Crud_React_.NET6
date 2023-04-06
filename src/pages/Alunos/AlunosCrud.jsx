@@ -217,7 +217,6 @@ export default function AlunosCrud() {
                     alunoMap.aluSenha = aluno.aluSenha;
                     alunoMap.treCodigo = aluno.treCodigo;
                     alunoMap.aluOneSignalId = aluno.aluOneSignalId;
-                    alunoMap.aluImagem = aluno.aluImagem;
                     alunoMap.aluId = aluno.aluId;
                     alunoMap.aluFone = aluno.aluFone;
                     alunoMap.aluSexo = aluno.aluSexo;

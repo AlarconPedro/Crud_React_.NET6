@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
@@ -78,7 +78,12 @@ export default function FormInserir(props) {
                     </div>
                     <div className="col-md-4 mt-5">
                         <label className="form-label mb-0">Imagem:</label>
-                        <input type="image" alt="imagem" className="container border-dark" />
+                        <input type="file" alt="imagem"
+                            className="container border-dark"
+                            name="aluImagem"
+                            accept="image/png, image/gif, image/jpeg"
+                            onChange={e => props.funcSelectImagem(e)} 
+                            />
                     </div>
                 </form>
             </ModalBody>

@@ -7,17 +7,22 @@ import InputMask from 'react-input-mask';
 
 import { desafioUrl } from "../../../services/Imagens";
 
+import Api from "../../../services/Api";
+
 import "./FormCss.css";
 
 export default function FormEditar(props) {
 
     const [abrir, setAbrir] = useState(false);
+    const [carregando, setCarregando] = useState(false);
 
     const [dataAtual, setDataAtual] = useState(new Date());
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
     const [modalidadesData, setModalidadesData] = useState([]);
+
+    const [desafiosData, setDesafiosData] = useState([]);
 
     useEffect(() => {
         setAbrir(props.abrir);
@@ -31,6 +36,11 @@ export default function FormEditar(props) {
         setTreinadoresData(props.treinadoresData);
     }, [props.treinadoresData]);
 
+    useEffect(() => {
+        setDesafiosData(props.desafio);
+        buscaDesafio(props.desafio.desCodigo);
+    }, [props.desafio]);
+
     const abrirModal = () => {
         setAbrir(!abrir);
         props.funcAbrir(abrir);
@@ -41,6 +51,32 @@ export default function FormEditar(props) {
         abrirModal();
     }
 
+    const dataInicioExibicao = (date) => {
+        var data = new Date(date),
+            month = '' + (data.getMonth() + 1),
+            day = '' + (data.getDate() + 1),
+            year = data.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        console.log([day, month, year].join('/'));
+        return [day, month, year].join('/');
+    }
+
+    const buscaDesafio = async (desCodigo) => {
+        setCarregando(true);
+        await Api.get("desafio/" + desCodigo).then(response => {
+            setDesafiosData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+        console.log(desafiosData);
+        setCarregando(false);
+    }
+
     return (
         <Modal isOpen={abrir} className="modal-editar">
             <ModalHeader>Editar Aluno</ModalHeader>
@@ -49,7 +85,7 @@ export default function FormEditar(props) {
                     <div className="col-md-12">
                         <label className="mb-0">Id: </label>
                         <input type="number" className="form-control mb-2" readOnly disabled
-                            value={props.desafio.desCodigo}
+                            value={desafiosData.desCodigo}
                         />
                     </div>
                     <div className="col-md-6">
@@ -58,7 +94,7 @@ export default function FormEditar(props) {
                             className="form-control"
                             placeholder="Nome Desafio"
                             name="desNome"
-                            value={props.desafio.desNome}
+                            value={desafiosData.desNome}
                             onChange={e => props.funcAtualizaCampo(e)}
                         />
                     </div>
@@ -68,7 +104,7 @@ export default function FormEditar(props) {
                         <DatePicker
                             className="form-control"
                             name="desDataInicio"
-                            selected={new Date(props.desafio.desDataInicio)}
+                            selected={desafiosData.desDataInicio}
                             onChange={date => props.funcDataInicio(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
@@ -85,7 +121,7 @@ export default function FormEditar(props) {
                         <DatePicker
                             className="form-control"
                             name="desDataFim"
-                            selected={new Date(props.desafio.desDataFim)}
+                            selected={desafiosData.desDataFim}
                             onChange={date => props.funcDataFim(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
@@ -103,7 +139,7 @@ export default function FormEditar(props) {
                             className="form-control"
                             placeholder="Nome Desafio"
                             name="desTipoDesafio"
-                            value={props.desafio.desTipoDesafio}
+                            value={desafiosData.desTipoDesafio}
                             onChange={e => props.funcAtualizaCampo(e)}
                         />
                     </div>
@@ -113,7 +149,7 @@ export default function FormEditar(props) {
                             className="form-control"
                             placeholder="Nome Desafio"
                             name="desTipoMedida"
-                            value={props.desafio.desTipoMedida}
+                            value={desafiosData.desTipoMedida}
                             onChange={e => props.funcAtualizaCampo(e)}
                         />
                     </div>
@@ -123,7 +159,7 @@ export default function FormEditar(props) {
                             className="form-control"
                             placeholder="Nome Desafio"
                             name="desMedidaDesafio"
-                            value={props.desafio.desMedidaDesafio}
+                            value={desafiosData.desMedidaDesafio}
                             onChange={e => props.funcAtualizaCampo(e)}
                         />
                     </div>
@@ -133,7 +169,7 @@ export default function FormEditar(props) {
                             className="form-control"
                             placeholder="Obs."
                             name="desObs"
-                            value={props.desafio.desObs}
+                            value={desafiosData.desObs}
                             onChange={e => props.funcAtualizaCampo(e)}
                         />
                     </div>
@@ -142,7 +178,7 @@ export default function FormEditar(props) {
                         <DatePicker
                             className="form-control"
                             name="desDataInicioExibicao"
-                            selected={new Date(props.desafio.desDataInicioExibicao)}
+                            selected={desafiosData.desDataInicioExibicao}
                             onChange={date => props.funcDataFim(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
@@ -159,7 +195,7 @@ export default function FormEditar(props) {
                             <input className="form-check-input" type="checkbox" id="gridCheck"
                                 name="desExclusivoAluno"
                                 onChange={e => props.funcAtualizaCampoAtivo(e)}
-                                checked={props.desafio.desExclusivoAluno}
+                                checked={desafiosData.desExclusivoAluno}
                                 value={true} />
                             <label className="form-check-label">Exclusivo Aluno</label>
                         </div>
@@ -183,7 +219,7 @@ export default function FormEditar(props) {
                     <div className="col-md-4 mt-5 logoDesafio">
                         <label className="form-label mb-0">Imagem:</label>
                         {/* <input type="image" alt="imagem" className="container border-dark" /> */}
-                        <img className="imagem" src={desafioUrl + props.desafio.desImagem} alt="" />
+                        <img className="imagem" src={desafioUrl + desafiosData.desImagem} alt="" />
                     </div>
                 </form>
             </ModalBody>

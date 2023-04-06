@@ -2,12 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import Mestre from "../../layout/Mestre/Mestre";
 
-import DatePicker from "react-datepicker";
-import InputMask from 'react-input-mask';
-
 import "react-datepicker/dist/react-datepicker.css";
 
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../services/Api";
 import { desafioUrl } from "../../services/Imagens";
 
@@ -37,6 +33,7 @@ export default function DesafiosCrud() {
         desCodigo: 0,
         desNome: '',
         desDescricao: '',
+        total: 0,
         desDataInicio: new Date("01/01/1900"),
         desDataFim: new Date("01/01/1900"),
         desTipoDesafio: '',
@@ -56,6 +53,7 @@ export default function DesafiosCrud() {
         desCodigo: 0,
         desNome: '',
         desDescricao: '',
+        total: 0,
         desDataInicio: (dataAtual),
         desDataFim: (dataFinal),
         desTipoDesafio: '',
@@ -359,8 +357,8 @@ export default function DesafiosCrud() {
                                 {/* <th>Tipo</th> */}
                                 <th>Data Inicio</th>
                                 <th>Data Fim</th>
-                                <th>Qtd. Participantes</th>
                                 <th>Participantes</th>
+                                <th>Alunos</th>
                                 {/* <th>Disp. Aluno</th> */}
                                 {/* <th>Disponível a partir</th> */}
                                 <th className="pl-4">Ações</th>
@@ -374,8 +372,8 @@ export default function DesafiosCrud() {
                                     {/* <td className="pl-4">{desafio.desTipoDesafio}</td> */}
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
-                                    <td className="pt-3">{2}</td>
-                                    <td className="pl-5 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify/></td>
+                                    <td className="pt-3 pl-5">{desafio.total}</td>
+                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify/></td>
                                     {/* <td className="pl-5">
                                         <div className="form-check">
                                             <input className="form-check-input"  type="checkbox" checked={desafio.desExclusivoAluno} />

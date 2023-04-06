@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
@@ -26,7 +26,7 @@ export default function FormInserir(props) {
         setTreinadoresData(props.treinaData);
     }, [props.treinaData]);
 
-     useEffect(() => {
+    useEffect(() => {
         setDataAtual(props.aluDados.aluDataNasc);
     }, [props.aluDados.aluDataNasc]);
 
@@ -135,7 +135,8 @@ export default function FormInserir(props) {
                     </div>
                     <div className="col-md-4 mt-5">
                         <label className="form-label mb-0">Imagem:</label>
-                        <input type="image" alt="imagem" className="container border-dark" />
+                        <input type="file" className="form-control"
+                            name="treImagem" />
                     </div>
                 </form>
             </ModalBody>
