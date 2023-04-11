@@ -80,7 +80,7 @@ export default function MedalhasCrud() {
 
     const selecionaMedalahaNivel = async (medalha, abrirNivelMedalhas) => {
         await setMedalha(medalha);
-        await getMedalhaNivel();
+        await getMedalhaNivel(medalha.medCodigo);
         abrirFecharNiveis(abrirNivelMedalhas);
     }
 
@@ -184,8 +184,8 @@ export default function MedalhasCrud() {
         setCarregando(false);
     }
 
-    const getMedalhaNivel = async () => {
-        await Api.get(`nivel/${medalha.medCodigo}`).then(response => {
+    const getMedalhaNivel = async (medCodigo) => {
+        await Api.get("nivel/" + medCodigo).then(response => {
             setNiveisData(response.data);
             console.log(response.data);
         }).catch(error => {

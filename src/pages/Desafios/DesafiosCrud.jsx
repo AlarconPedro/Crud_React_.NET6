@@ -54,15 +54,15 @@ export default function DesafiosCrud() {
         desNome: '',
         desDescricao: '',
         total: 0,
-        desDataInicio: (dataAtual),
-        desDataFim: (dataFinal),
+        desDataInicio: dataAtual,
+        desDataFim: dataFinal,
         desTipoDesafio: '',
         desMedidaDesafio: '',
         treCodigo: '',
         desImagem: '',
         desId: '',
         desExclusivoAluno: false,
-        desDataInicioExibicao: (dataAtual),
+        desDataInicioExibicao: dataAtual,
         tbAlunoDesafios: [],
         tbDesafioModalidades: [],
         treCodigoNavigation: null,
@@ -141,7 +141,7 @@ export default function DesafiosCrud() {
 
         setDesafio({
             ...desafio,
-            desDataFim: [year, month, day].join('-')
+            desDataFim: [year, month, day].join('/')
         });
     }
 
@@ -159,7 +159,7 @@ export default function DesafiosCrud() {
 
         setDesafio({
             ...desafio,
-            desDataInicio: [year, month, day].join('-')
+            desDataInicio: [year, month, day].join('/')
         });
         return [day, month, year].join('-');
     }
@@ -216,7 +216,7 @@ export default function DesafiosCrud() {
 
     const postDesafio = async () => {
         await dataInicio(dataAtual);
-        await Api.post("aluno/", desafio).then(response => {
+        await Api.post("desafio/", desafio).then(response => {
             setDesafio(response.data);
             setUpdateDesafios(true);
             abrirFecharCadastroDesafios();
@@ -228,7 +228,7 @@ export default function DesafiosCrud() {
 
     const putDesafio = async () => {
         await dataInicio(dataAtual);
-        await Api.put("aluno/" + desafio.desCodigo, desafio).then(response => {
+        await Api.put("desafio/" + desafio.desCodigo, desafio).then(response => {
             var desafiosAuxiliar = desafiosData;
             desafiosAuxiliar.map(desafioMap => {
                 if (desafioMap.desCodigo === desafio.desCodigo) {
@@ -255,7 +255,7 @@ export default function DesafiosCrud() {
     }
 
     const deleteDesafio = async () => {
-        await Api.delete("aluno/" + desafio.desCodigo).then(response => {
+        await Api.delete("desafio/" + desafio.desCodigo).then(response => {
             setUpdateDesafios(true);
             abrirFecharExcluirDesafios();
         }).catch(error => {
@@ -265,7 +265,7 @@ export default function DesafiosCrud() {
 
     const getDesafioNome = async () => {
         setCarregando(true);
-        await Api.get("aluno/" + nomeBusca.desNome).then(response => {
+        await Api.get("desafio/" + nomeBusca.desNome).then(response => {
             setDesafiosData(response.data);
         }).catch(error => {
             console.log(error);
@@ -290,7 +290,7 @@ export default function DesafiosCrud() {
 
     useEffect(() => {
         getModalidades();
-    }, [setAbrirCadastroDesafios]);  
+    }, [setAbrirCadastroDesafios]);
 
     function handleDefault(e) {
         e.preventDefault();
@@ -338,7 +338,7 @@ export default function DesafiosCrud() {
                 <hr />
                 <form onSubmit={handleDefault}>
                     <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
+                        <input type="search" className="form-control rounded" name="desNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
                         <button className="botaoBusca" onClick={() => getDesafioNome()} type="submit">
                             <span className="input-group-text border-0" id="search-addon">
                                 <i className="fa fa-search"></i>
@@ -354,13 +354,10 @@ export default function DesafiosCrud() {
                             <tr>
                                 <th>Avatar</th>
                                 <th>Nome</th>
-                                {/* <th>Tipo</th> */}
                                 <th>Data Inicio</th>
                                 <th>Data Fim</th>
                                 <th>Participantes</th>
                                 <th>Alunos</th>
-                                {/* <th>Disp. Aluno</th> */}
-                                {/* <th>Disponível a partir</th> */}
                                 <th className="pl-4">Ações</th>
                             </tr>
                         </thead>
@@ -369,17 +366,10 @@ export default function DesafiosCrud() {
                                 <tr key={desafio.desCodigo}>
                                     <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
                                     <td className="pt-3">{desafio.desNome}</td>
-                                    {/* <td className="pl-4">{desafio.desTipoDesafio}</td> */}
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
                                     <td className="pt-3 pl-5">{desafio.total}</td>
-                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify/></td>
-                                    {/* <td className="pl-5">
-                                        <div className="form-check">
-                                            <input className="form-check-input"  type="checkbox" checked={desafio.desExclusivoAluno} />
-                                        </div>
-                                    </td> */}
-                                    {/* <td className="pl-5">{dataInicioExibicao(desafio.desDataInicioExibicao)}</td> */}
+                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify /></td>
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
                                             <i className="fa fa-pencil"></i>
@@ -410,7 +400,7 @@ export default function DesafiosCrud() {
                     funcAbrir={abrirFecharParticipantes}
                 />
 
-                <FormInserir 
+                <FormInserir
                     abrir={abrirCadastroDesafios}
                     funcAbrir={abrirFecharCadastroDesafios}
                     funcPost={postDesafio}
@@ -422,9 +412,12 @@ export default function DesafiosCrud() {
                     funcMascaraTelefone={mascaraTelefone}
                     treinadoresData={treinadoresData}
                     desafio={desafio}
+                    desCodigo={desafio.desCodigo}
+                    dataInicio={desafio.desDataInicio}
+                    dataFim={desafio.desDataFim}
                 />
 
-                <FormEditar 
+                <FormEditar
                     abrir={abrirEditarDesafios}
                     funcAbrir={abrirFecharEditarDesafios}
                     funcPut={putDesafio}
@@ -434,11 +427,14 @@ export default function DesafiosCrud() {
                     funcDataInicio={dataInicio}
                     funcDataFim={dataFim}
                     funcMascaraTelefone={mascaraTelefone}
-                    treinadoresData={treinadoresData}   
+                    treinadoresData={treinadoresData}
                     desafio={desafio}
+                    desCodigo={desafio.desCodigo}
+                    dataInicio={desafio.desDataInicio}
+                    dataFim={desafio.desDataFim}
                 />
 
-                <FormExcluir 
+                <FormExcluir
                     abrir={abrirExcluirDesafios}
                     funcAbrir={abrirFecharExcluirDesafios}
                     funcDelete={deleteDesafio}

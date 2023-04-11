@@ -102,7 +102,7 @@ export default function FormNivelMedalha(props) {
                                         <button className="btn btn-warning" onClick={() => selecionarNivel(nivel, "Editar")}>
                                             <i className="fa fa-pencil"></i>
                                         </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => () => selecionarNivel(nivel, "Excluir")}>
+                                        <button className="btn btn-danger" onClick={() => selecionarNivel(nivel, "Excluir")}>
                                             <i className="fa fa-trash"></i>
                                         </button>
                                     </td>

@@ -24,44 +24,32 @@ export default function EventosCrud() {
     const [treinadoresData, setTreinadoresData] = useState([]);
 
     const [eventoInitialState] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        aluDataNasc: new Date("01/01/1900"),
-        aluEmail: '',
-        aluSenha: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: true,
-        aluObs: '',
-        aluStravaCode: null,
-        tbAlunoAtividades: [],
-        tbAlunoDesafios: [],
+        eveCodigo: 0,
+        eveNome: '',
+        eveDescricao: '',
+        eveDataInicio: new Date("01/01/1900"),
+        eveDataFim: new Date("01/01/1900"),
+        eveImagem: '',
+        eveId: '',
+        treCodigo: 0,
+        eveExclusivoAluno: false,
+        eveDataInicioExibicao: new Date("01/01/1900"),
         tbAlunoEventos: [],
         treCodigoNavigation: null,
     });
 
 
     const [evento, setEvento] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        aluDataNasc: new Date(dataAtual),
-        aluEmail: '',
-        aluSenha: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: true,
-        aluObs: '',
-        aluStravaCode: null,
-        tbAlunoAtividades: [],
-        tbAlunoDesafios: [],
+        eveCodigo: 0,
+        eveNome: '',
+        eveDescricao: '',
+        eveDataInicio: new Date("01/01/1900"),
+        eveDataFim: new Date("01/01/1900"),
+        eveImagem: '',
+        eveId: '',
+        treCodigo: 0,
+        eveExclusivoAluno: false,
+        eveDataInicioExibicao: new Date("01/01/1900"),
         tbAlunoEventos: [],
         treCodigoNavigation: null,
     });
@@ -326,8 +314,40 @@ export default function EventosCrud() {
                 <br />
                 {carregando ? <div className="spinner-border loader" role="status">
                 </div>
-                    : 
-                    <div></div>
+                    : <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Imagem</th>
+                                <th>Nome</th>
+                                <th>Inicio</th>
+                                <th>Fim</th>
+                                <th>Só Alunos</th>
+                                <th>Qtd. Participantes</th>
+                                <th>Participantes</th>
+                                <th className="pl-4">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {desafiosData.map((desafio) => (
+                                <tr key={desafio.desCodigo}>
+                                    <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
+                                    <td className="pt-3">{desafio.desNome}</td>
+                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
+                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
+                                    <td className="pt-3 pl-5">{desafio.total}</td>
+                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify /></td>
+                                    <td>
+                                        <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
+                                            <i className="fa fa-pencil"></i>
+                                        </button>{" "}
+                                        <button className="btn btn-danger" onClick={() => selecionarDesafio(desafio, "Excluir")}>
+                                            <i className="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 }
                 <hr />
                 <br />
@@ -341,7 +361,7 @@ export default function EventosCrud() {
                     </nav>
                 </div>
 
-                <FormInserir 
+                <FormInserir
                     nome={"Eventos"}
                     abrir={abrirCadastroEventos}
                     aluDados={evento}
@@ -355,7 +375,7 @@ export default function EventosCrud() {
                     funcBuscaTreinador={getTreinadorId}
                 />
 
-                <FormEditar 
+                <FormEditar
                     nome={"Eventos"}
                     abrir={abrirEditarEventos}
                     aluNome={evento && evento.aluNome}

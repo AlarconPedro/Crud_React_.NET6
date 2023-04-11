@@ -16,7 +16,9 @@ export default function FormEditar(props) {
     const [abrir, setAbrir] = useState(false);
     const [carregando, setCarregando] = useState(false);
 
-    const [dataAtual, setDataAtual] = useState(new Date());
+    const [dataInicio, setDataInicio] = useState(new Date());
+    const [dataFim, setDataFim] = useState(new Date());
+    const [dataExibicao, setDataExibicao] = useState(new Date());
 
     const [treinadoresData, setTreinadoresData] = useState([]);
 
@@ -25,8 +27,17 @@ export default function FormEditar(props) {
     const [desafiosData, setDesafiosData] = useState([]);
 
     useEffect(() => {
+        buscaDesafio(props.desafio.desCodigo);
         setAbrir(props.abrir);
     }, [props.abrir]);
+
+    useEffect(() => {
+        setDataInicio(props.dataInicio);
+    }, [props.dataInicio]);
+
+    useEffect(() => {
+        setDataFim(props.dataFim);
+    }, [props.desDataFim]);
 
     useEffect(() => {
         setModalidadesData(props.modalidades);
@@ -38,7 +49,6 @@ export default function FormEditar(props) {
 
     useEffect(() => {
         setDesafiosData(props.desafio);
-        buscaDesafio(props.desafio.desCodigo);
     }, [props.desafio]);
 
     const abrirModal = () => {
@@ -51,25 +61,11 @@ export default function FormEditar(props) {
         abrirModal();
     }
 
-    const dataInicioExibicao = (date) => {
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        console.log([day, month, year].join('/'));
-        return [day, month, year].join('/');
-    }
-
-    const buscaDesafio = async (desCodigo) => {
+    const buscaDesafio = async () => {
         setCarregando(true);
-        await Api.get("desafio/" + desCodigo).then(response => {
+        await Api.get("desafio/" + props.desCodigo).then(response => {
             setDesafiosData(response.data);
+            setDataExibicao(response.data.desDataInicioExibicao);
         }).catch(error => {
             console.log(error);
         });
@@ -104,7 +100,7 @@ export default function FormEditar(props) {
                         <DatePicker
                             className="form-control"
                             name="desDataInicio"
-                            selected={desafiosData.desDataInicio}
+                            selected={new Date(dataInicio)}
                             onChange={date => props.funcDataInicio(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
@@ -121,7 +117,7 @@ export default function FormEditar(props) {
                         <DatePicker
                             className="form-control"
                             name="desDataFim"
-                            selected={desafiosData.desDataFim}
+                            selected={new Date(dataFim)}
                             onChange={date => props.funcDataFim(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
@@ -178,7 +174,7 @@ export default function FormEditar(props) {
                         <DatePicker
                             className="form-control"
                             name="desDataInicioExibicao"
-                            selected={desafiosData.desDataInicioExibicao}
+                            selected={new Date(dataExibicao)}
                             onChange={date => props.funcDataFim(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
@@ -218,7 +214,6 @@ export default function FormEditar(props) {
                     <div className="col-md-5"></div>
                     <div className="col-md-4 mt-5 logoDesafio">
                         <label className="form-label mb-0">Imagem:</label>
-                        {/* <input type="image" alt="imagem" className="container border-dark" /> */}
                         <img className="imagem" src={desafioUrl + desafiosData.desImagem} alt="" />
                     </div>
                 </form>
