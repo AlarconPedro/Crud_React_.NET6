@@ -11,6 +11,9 @@ import FormInserir from "../../components/Crud/FormularioEventos/FormInserir";
 import FormEditar from "../../components/Crud/FormularioEventos/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioEventos/FormExcluir";
 
+import { eventoUrl } from "../../services/Imagens";
+import { BsJustify } from "react-icons/bs";
+
 import "./EventosCrud.css";
 
 export default function EventosCrud() {
@@ -63,6 +66,7 @@ export default function EventosCrud() {
     const [abrirCadastroEventos, setAbrirCadastroEventos] = useState(false);
     const [abrirEditarEventos, setAbrirEditarEventos] = useState(false);
     const [abrirExcluirEventos, setAbrirExcluirEventos] = useState(false);
+    const [abrirParticipantes, setAbrirParticipantes] = useState(false);
     const [updateEventos, setUpdateEventos] = useState(true);
 
     const abrirFecharCadastroEventos = (abrirCadastroEventos) => {
@@ -78,18 +82,8 @@ export default function EventosCrud() {
         setAbrirExcluirEventos(!abrirExcluirAlunos);
     }
 
-    const mascaraTelefone = (e) => {
-        let input = e.target;
-        input.value = phoneMask(input.value);
-        setEvento({ ...evento, [e.target.name]: input.value });
-    }
-
-    const phoneMask = (value) => {
-        if (!value) return ""
-        value = value.replace(/\D/g, '')
-        value = value.replace(/(\d{2})(\d)/, "($1) $2")
-        value = value.replace(/(\d)(\d{4})$/, "$1-$2")
-        return value
+    const abrirFecharParticipantes = (abrirParticipantes) => {
+        setAbrirParticipantes(!abrirParticipantes);
     }
 
     const selecionarEvento = (evento, opcao) => {
@@ -122,7 +116,6 @@ export default function EventosCrud() {
     }
 
     const dataAuxiliar = (date) => {
-        setDataAtual(date);
         console.log(date);
         var data = new Date(date),
             month = '' + (data.getMonth() + 1),
@@ -134,45 +127,17 @@ export default function EventosCrud() {
         if (day.length < 2)
             day = '0' + day;
 
-        setEvento({
-            ...evento,
-            aluDataNasc: [year, month, day].join('-')
-        });
-        return [day, month, year].join('-');
+        return [day, month, year].join('/');
     }
-
-    // const converteMd5 = (senha) => {
-    //     var md5 = require('md5');
-    //     return md5(senha);
-    // }
-
 
     const getEventos = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`aluno?skip=${skip}`).then(response => {
+        await Api.get(`evento?skip=${skip}`).then(response => {
             setEventosData(response.data);
         }).catch(error => {
             console.log(error);
         });
         setCarregando(false);
-    }
-
-    const getTreinadores = async (skip = 0) => {
-        setCarregando(true);
-        await Api.get(`treinador?skip=${skip}`).then(response => {
-            setTreinadoresData(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
-        setCarregando(false);
-    }
-
-    const getTreinadorId = async (id) => {
-        await Api.get(`treinador/${id}`).then(response => {
-            setTreinadoresData(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
     }
 
     const postEvento = async () => {
@@ -216,9 +181,7 @@ export default function EventosCrud() {
                 return alunoMap;
             });
             setEventosData(alunosAuxiliar);
-            // setAluno(response.data);
             setUpdateEventos(true);
-            // abrirFecharEditarAlunos();
         }).catch(error => {
             console.log(error);
         });
@@ -262,14 +225,6 @@ export default function EventosCrud() {
             setUpdateEventos(false);
         }
     }, [updateEventos]);
-
-    useEffect(() => {
-        getTreinadores();
-    }, [setAbrirCadastroEventos]);
-
-    useEffect(() => {
-        getTreinadorId(evento.treCodigo);
-    }, [setAbrirEditarEventos]);
 
     function handleDefault(e) {
         e.preventDefault();
@@ -319,8 +274,8 @@ export default function EventosCrud() {
                             <tr>
                                 <th>Imagem</th>
                                 <th>Nome</th>
-                                <th>Inicio</th>
-                                <th>Fim</th>
+                                <th className="pl-4">Inicio</th>
+                                <th className="pl-4">Fim</th>
                                 <th>Só Alunos</th>
                                 <th>Qtd. Participantes</th>
                                 <th>Participantes</th>
@@ -328,19 +283,24 @@ export default function EventosCrud() {
                             </tr>
                         </thead>
                         <tbody>
-                            {desafiosData.map((desafio) => (
-                                <tr key={desafio.desCodigo}>
-                                    <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
-                                    <td className="pt-3">{desafio.desNome}</td>
-                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
-                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
-                                    <td className="pt-3 pl-5">{desafio.total}</td>
-                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify /></td>
+                            {eventosData.map((evento) => (
+                                <tr key={evento.eveCodigo}>
+                                    <td className="pt-3"><img src={eventoUrl + evento.eveImagem} alt="" /></td>
+                                    <td className="pt-3">{evento.eveNome}</td>
+                                    <td className="pt-3">{dataAuxiliar(evento.eveDataInicio)}</td>
+                                    <td className="pt-3">{dataAuxiliar(evento.eveDataFim)}</td>
+                                    <td className="pt-3">
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="checkbox" checked={evento.eveExclusivoAluno} value={true} />
+                                        </div>
+                                    </td>
+                                    <td className="pt-3 pl-5">{evento.total}</td>
+                                    <td className="pl-5 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify /></td>
                                     <td>
-                                        <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
+                                        <button className="btn btn-warning" onClick={() => selecionarEvento(evento, "Editar")}>
                                             <i className="fa fa-pencil"></i>
                                         </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarDesafio(desafio, "Excluir")}>
+                                        <button className="btn btn-danger" onClick={() => selecionarEvento(evento, "Excluir")}>
                                             <i className="fa fa-trash"></i>
                                         </button>
                                     </td>
@@ -361,18 +321,15 @@ export default function EventosCrud() {
                     </nav>
                 </div>
 
-                <FormInserir
+                {/* <FormInserir
                     nome={"Eventos"}
                     abrir={abrirCadastroEventos}
                     aluDados={evento}
                     funcPost={postEvento}
                     funcAbrir={abrirFecharCadastroEventos}
                     funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormEditar
@@ -384,11 +341,8 @@ export default function EventosCrud() {
                     funcPut={putEvento}
                     funcAbrir={abrirFecharEditarEventos}
                     funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormExcluir
@@ -398,7 +352,7 @@ export default function EventosCrud() {
                     aluDados={evento.aluCodigo}
                     funcDelete={deleteEvento}
                     funcAbrir={abrirFecharExcluirAlunos}
-                />
+                /> */}
             </div>
         </Mestre >
     );

@@ -369,7 +369,7 @@ export default function DesafiosCrud() {
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
                                     <td className="pt-3 pl-5">{desafio.total}</td>
-                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify /></td>
+                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes(desafio)}><BsJustify /></td>
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
                                             <i className="fa fa-pencil"></i>
@@ -398,6 +398,7 @@ export default function DesafiosCrud() {
                 <FormParticipantes
                     abrir={abrirParticipantes}
                     funcAbrir={abrirFecharParticipantes}
+                    codigoDesafio={desafio.desCodigo}
                 />
 
                 <FormInserir

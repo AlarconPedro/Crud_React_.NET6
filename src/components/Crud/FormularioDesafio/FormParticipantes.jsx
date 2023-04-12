@@ -33,8 +33,8 @@ export default function FormParticipantes(props) {
         props.funcAbrir(abrir);
     }
 
-    const getAlunos = async (skip = 0) => {
-        await Api.get(`aluno?skip=${skip}`).then(response => {
+    const getAlunos = async () => {
+        await Api.get("desafio/alunos/" + props.codigoDesafio).then(response => {
             setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
