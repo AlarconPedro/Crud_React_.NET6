@@ -10,6 +10,7 @@ import Api from "../../services/Api";
 import FormInserir from "../../components/Crud/FormularioEventos/FormInserir";
 import FormEditar from "../../components/Crud/FormularioEventos/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioEventos/FormExcluir";
+import FormParticipantes from "../../components/Crud/FormularioEventos/FormParticipantes";
 
 import { eventoUrl } from "../../services/Imagens";
 import { BsJustify } from "react-icons/bs";
@@ -78,7 +79,7 @@ export default function EventosCrud() {
         setAbrirEditarEventos(!abrirEditarEventos);
     }
 
-    const abrirFecharExcluirAlunos = (abrirExcluirAlunos) => {
+    const abrirFecharExcluirEventos = (abrirExcluirAlunos) => {
         setAbrirExcluirEventos(!abrirExcluirAlunos);
     }
 
@@ -88,7 +89,13 @@ export default function EventosCrud() {
 
     const selecionarEvento = (evento, opcao) => {
         setEvento(evento);
-        (opcao === "Editar") ? abrirFecharEditarEventos() : abrirFecharExcluirAlunos();
+        if (opcao === "Participantes") {
+            abrirFecharParticipantes();
+        } else if (opcao === "Editar") {
+            abrirFecharEditarEventos();
+        } else {
+            abrirFecharExcluirEventos();
+        }
     }
 
     const atualizaCampo = e => {
@@ -145,7 +152,6 @@ export default function EventosCrud() {
         await Api.post("aluno/", evento).then(response => {
             setEvento(response.data);
             setUpdateEventos(true);
-            // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
@@ -190,7 +196,6 @@ export default function EventosCrud() {
     const deleteEvento = async (aluno = aluno.aluCodigo) => {
         await Api.delete("aluno/" + aluno).then(response => {
             setUpdateEventos(true);
-            // abrirFecharExcluirAlunos();
         }).catch(error => {
             console.log(error);
         });
@@ -279,7 +284,7 @@ export default function EventosCrud() {
                                 <th>Só Alunos</th>
                                 <th>Qtd. Participantes</th>
                                 <th>Participantes</th>
-                                <th className="pl-4">Ações</th>
+                                <th className="pl-4 acoes">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -295,7 +300,7 @@ export default function EventosCrud() {
                                         </div>
                                     </td>
                                     <td className="pt-3 pl-5">{evento.total}</td>
-                                    <td className="pl-5 pt-3 listar" onClick={() => abrirFecharParticipantes()}><BsJustify /></td>
+                                    <td className="pl-5 pt-3 listar" onClick={() => selecionarEvento(evento, "Participantes")}><BsJustify /></td>
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarEvento(evento, "Editar")}>
                                             <i className="fa fa-pencil"></i>
@@ -321,7 +326,15 @@ export default function EventosCrud() {
                     </nav>
                 </div>
 
-                {/* <FormInserir
+                <FormParticipantes
+                    abrir={abrirParticipantes}
+                    funcAbrir={abrirFecharParticipantes}
+                    codigoDesafio={evento.eveCodigo}
+                    funcAtualizaCampo={atualizaCampo}
+                    funcPut={putEvento}
+                />
+
+                <FormInserir
                     nome={"Eventos"}
                     abrir={abrirCadastroEventos}
                     aluDados={evento}
@@ -335,14 +348,13 @@ export default function EventosCrud() {
                 <FormEditar
                     nome={"Eventos"}
                     abrir={abrirEditarEventos}
-                    aluNome={evento && evento.aluNome}
-                    aluDados={evento}
-                    dataAtual={dataAtual}
+                    eveDados={evento}
                     funcPut={putEvento}
                     funcAbrir={abrirFecharEditarEventos}
-                    funcData={dataAuxiliar}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
+                    dataInicio={evento.eveDataInicio}
+                    dataFim={evento.eveDataFim}
                 />
 
                 <FormExcluir
@@ -351,8 +363,8 @@ export default function EventosCrud() {
                     aluNome={evento && evento.aluNome}
                     aluDados={evento.aluCodigo}
                     funcDelete={deleteEvento}
-                    funcAbrir={abrirFecharExcluirAlunos}
-                /> */}
+                    funcAbrir={abrirFecharExcluirEventos}
+                />
             </div>
         </Mestre >
     );

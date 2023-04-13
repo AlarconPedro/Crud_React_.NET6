@@ -253,7 +253,7 @@ export default function MedalhasCrud() {
                                 <th>Nome</th>
                                 <th>Níveis</th>
                                 <th>Tipo</th>
-                                <th>Ações</th>
+                                <th className="acoes">Ações</th>
                             </tr>
                         </thead>
                         <tbody>

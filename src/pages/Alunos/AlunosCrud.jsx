@@ -350,7 +350,7 @@ export default function AlunosCrud() {
                                 <th>Telefone</th>
                                 <th>Idade</th>
                                 <th>Ativo</th>
-                                <th>Ações</th>
+                                <th className="acoes">Ações</th>
                             </tr>
                         </thead>
                         <tbody>

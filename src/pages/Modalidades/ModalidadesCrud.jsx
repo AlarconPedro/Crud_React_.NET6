@@ -241,7 +241,7 @@ export default function ModalidadesCrud() {
                             <tr>
                                 <th>Avatar</th>
                                 <th>Nome</th>
-                                <th>Ações</th>
+                                <th className="acoes">Ações</th>
                             </tr>
                         </thead>
                         <tbody>

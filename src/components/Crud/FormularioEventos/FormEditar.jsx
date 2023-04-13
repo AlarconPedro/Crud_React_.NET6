@@ -5,13 +5,20 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
+import Api from "../../../services/Api";
+
 export default function FormEditar(props) {
 
     const [abrir, setAbrir] = useState(false);
+    const [carregando, setCarregando] = useState(false);
 
-    const [dataAtual, setDataAtual] = useState(new Date());
+    const [dataInicio, setDataInicio] = useState(new Date());
+    const [dataFim, setDataFim] = useState(new Date());
+    const [dataExibicao, setDataExibicao] = useState(new Date());
 
     const [treinadoresData, setTreinadoresData] = useState([]);
+
+    const [eventosData, setEventosData] = useState([]);
 
     const sexo = [
         { id: "M", nome: 'Masculino' },
@@ -23,12 +30,17 @@ export default function FormEditar(props) {
     }, [props.treinaData]);
 
     useEffect(() => {
+        buscarPaticipantes();
         setAbrir(props.abrir);
     }, [props.abrir]);
 
     useEffect(() => {
-        setDataAtual(props.aluDados.aluDataNasc);
-    }, [props.aluDados.aluDataNasc]);
+        setDataInicio(props.dataInicio);
+    }, [props.dataInicio]);
+
+    useEffect(() => {
+        setDataFim(props.eveDados.eveDataFim);
+    }, [props.eveDados.eveDataFim]);
 
     const abrirModal = () => {
         setAbrir(!abrir);
@@ -36,36 +48,43 @@ export default function FormEditar(props) {
     }
 
     const editarAluno = () => {
-        props.funcPut(props.aluDados.aluCodigo);
+        props.funcPut(props.eveDados.aluCodigo);
         abrirModal();
+    }
+
+    const buscarPaticipantes = async () => {
+        setCarregando(true);
+        await Api.get("evento/" + props.eveDados.eveCodigo).then(response => {
+            setEventosData(response.data);
+            setDataExibicao(response.data.eveDataInicioExibicao);
+        }).catch(error => {
+            console.log(error);
+        });
+        setCarregando(false);
     }
 
     return (
         <Modal isOpen={abrir} className="modal-editar">
             <ModalHeader>Editar {props.nome}</ModalHeader>
             <ModalBody>
-                <form className="row g-3 form-group">
-                    <div className="col-md-12">
-                        <label className="mb-0">Id: </label>
-                        <input type="number" className="form-control mb-2" readOnly disabled
-                            value={props.aluDados.aluCodigo}
-                        />
-                    </div>
+            <form className="row g-3 form-group">
                     <div className="col-md-6">
                         <label className="form-label mb-0">Nome:</label>
-                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                            name="aluNome"
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="eveNome"
+                            value={eventosData.eveNome}
                             onChange={e => props.funcAtualizaCampo(e)}
-                            value={props.aluNome}
                         />
                     </div>
                     <div className="col-md-3">
-                        <label className="form-label mb-0">Data Nascimento:</label>
+                        <label className="form-label mb-0">Data Início:</label>
                         <DatePicker
                             className="form-control"
-                            name="aluDataNasc"
-                            selected={new Date(dataAtual)}
-                            onChange={date => props.funcData(date)}
+                            name="eveDataInicio"
+                            selected={new Date(dataInicio)}
+                            onChange={date => props.funcDataInicio(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
                             customInput={
@@ -77,79 +96,59 @@ export default function FormEditar(props) {
                         />
                     </div>
                     <div className="col-md-3">
-                        <label className="form-label mb-0">Sexo:</label>
-                        <select className="form-select w-100 h-50"
-                            name="aluSexo"
-                            value={props.aluDados.aluSexo}
-                            onChange={e => props.funcAtualizaCampo(e)}>
-                            <option value=""></option>
-                            {
-                                sexo.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.id}>{item.nome}</option>
-                                    )
-                                })
+                        <label className="form-label mb-0">Data Fim:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="eveDataFim"
+                            selected={new Date(dataFim)}
+                            onChange={date => props.funcDataFim(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
                             }
-                        </select>
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Treinador:</label>
-                        <select className="form-select w-100 h-50"
-                            name="treCodigo"
-                            selected={treinadoresData}
-                            onChange={e => props.funcAtualizaCampo(e)}>
-                            {
-                                treinadoresData.map((item, index) => {
-                                    return (
-                                        <option key={item.treCodigo} value={item.treCodigo}>{item.treNome}</option>
-                                    )
-                                })
-                            }
-                        </select>
-                    </div>
-                    <div className="col-6">
-                        <label className="form-label mb-0 mt-2">Telefone:</label>
-                        <input type="tel" class="form-control" maxLength={15}
-                            name="aluFone"
-                            onKeyUp={e => props.funcMascara(e)}
-                            onChange={e => props.funcAtualizaCampo(e)}
-                            value={props.aluDados.aluFone}
                         />
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Email:</label>
-                        <input type="email" className="form-control" name="aluEmail"
-                            onChange={e => props.funcAtualizaCampo(e)} value={props.aluDados.aluEmail} />
-                    </div>
                     <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Senha:</label>
-                        <input type="password" className="form-control" name="aluSenha"
-                            onChange={e => props.funcAtualizaCampo(e)} value={props.aluDados.aluSenha} />
+                        <label className="form-label mb-0 mt-2">Início Exibição:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="eveDataInicioExibicao"
+                            selected={new Date(dataExibicao)}
+                            onChange={date => props.funcDataFim(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
                     </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                        <input type="password" className="form-control" name="aluNome"
-                            onChange={e => props.funcAtualizaCampo(e)} value={props.aluDados.aluSenha} />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text" className="form-control" name="aluObs"
-                            onChange={e => props.funcAtualizaCampo(e)} value={props.aluDados.aluObs} />
+                    <div className="col-md-6 mt-2">
+                        <label className="form-label mb-0">Descrição:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Obs."
+                            name="eveDescricao"
+                            value={eventosData.eveDescricao}
+                            onChange={e => props.funcAtualizaCampo(e)}
+                        />
                     </div>
                     <div className="col-2 mt-5">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" id="gridCheck"
-                                name="aluAtivo"
+                                name="eveExclusivoAluno"
                                 onChange={e => props.funcAtualizaCampoAtivo(e)}
-                                value={true}
-                            />
-                            <label className="form-check-label">Ativo</label>
+                                value={true} />
+                            <label className="form-check-label">Exclusivo Aluno</label>
                         </div>
                     </div>
-                    <div className="col-md-4 mt-5">
-                        <label className="form-label mb-0">Imagem:</label>
-                        <input type="image" alt="imagem" className="container border-dark" />
-                    </div>
+
                 </form>
             </ModalBody>
             <ModalFooter>

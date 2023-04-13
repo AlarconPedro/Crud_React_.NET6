@@ -99,7 +99,13 @@ export default function DesafiosCrud() {
 
     const selecionarDesafio = (desafio, opcao) => {
         setDesafio(desafio);
-        (opcao === "Editar") ? abrirFecharEditarDesafios() : abrirFecharExcluirDesafios();
+        if (opcao === "Participantes") {
+            abrirFecharParticipantes();
+        } else if (opcao === "Editar") {
+            abrirFecharEditarDesafios();
+        } else {
+            abrirFecharExcluirDesafios();
+        }
     }
 
     const atualizaCampo = e => {
@@ -358,7 +364,7 @@ export default function DesafiosCrud() {
                                 <th>Data Fim</th>
                                 <th>Participantes</th>
                                 <th>Alunos</th>
-                                <th className="pl-4">Ações</th>
+                                <th className="pl-4 acoes">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -369,7 +375,7 @@ export default function DesafiosCrud() {
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
                                     <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
                                     <td className="pt-3 pl-5">{desafio.total}</td>
-                                    <td className="pl-4 pt-3 listar" onClick={() => abrirFecharParticipantes(desafio)}><BsJustify /></td>
+                                    <td className="pl-4 pt-3 listar" onClick={() => selecionarDesafio(desafio, "Participantes")}><BsJustify /></td>
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
                                             <i className="fa fa-pencil"></i>
@@ -399,11 +405,14 @@ export default function DesafiosCrud() {
                     abrir={abrirParticipantes}
                     funcAbrir={abrirFecharParticipantes}
                     codigoDesafio={desafio.desCodigo}
+                    funcAtualizaCampo={atualizaCampo}
+                    funcPut={putDesafio}
                 />
 
                 <FormInserir
                     abrir={abrirCadastroDesafios}
                     funcAbrir={abrirFecharCadastroDesafios}
+                    abrirEditar={abrirFecharEditarDesafios}
                     funcPost={postDesafio}
                     modalidades={modalidadeData}
                     funcAtualizaCampo={atualizaCampo}

@@ -10,9 +10,9 @@ export default function FormParticipantes(props) {
 
     const [abrir, setAbrir] = useState(false);
     const [abrirEditar, setAbrirEditar] = useState(false);
-    const [updateAlunos, setUpdateAlunos] = useState(true);
+    const [updateEventos, setUpdateEventos] = useState(true);
 
-    const [alunosData, setAlunosData] = useState([]);
+    const [eventosData, setEventosData] = useState([]);
 
     useEffect(() => {
         setAbrir(props.abrir);
@@ -23,18 +23,18 @@ export default function FormParticipantes(props) {
     }, [props.abrirEditar]);
 
     useEffect(() => {
-        setAlunosData(alunosData);
-    }, [alunosData]);
+        setEventosData(eventosData);
+    }, [eventosData]);
 
     useEffect(() => {
-        if (updateAlunos) {
-            getAlunos();
-            setUpdateAlunos(false);
+        if (updateEventos) {
+            getEventos();
+            setUpdateEventos(false);
         }
-    }, [updateAlunos]);
+    }, [updateEventos]);
 
     useEffect(() => {
-        getAlunos(props.codigoDesafio);
+        getEventos(props.codigoDesafio);
     }, [props.codigoDesafio]);
 
     const abrirModal = () => {
@@ -42,9 +42,9 @@ export default function FormParticipantes(props) {
         props.funcAbrir(abrir);
     }
 
-    const getAlunos = async (codigoDesafio) => {
-        await Api.get("desafio/alunos/" + codigoDesafio).then(response => {
-            setAlunosData(response.data);
+    const getEventos = async (codigoEvento) => {
+        await Api.get("evento/alunos/" + codigoEvento).then(response => {
+            setEventosData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -64,10 +64,10 @@ export default function FormParticipantes(props) {
                     </thead>
                     <tbody>
                         <div></div>
-                        {alunosData.map((aluno) => (
-                            <tr key={aluno.aluCodigo}>
-                                <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td>
-                                <td className="pt-3">{aluno.aluNome}</td>
+                        {eventosData.map((evento) => (
+                            <tr key={evento.aluCodigo}>
+                                <td className=""><img src={alunoUrl + evento.aluImagem} alt="" /></td>
+                                <td className="pt-3">{evento.aluNome}</td>
                                 <td>
                                     <button className="btn btn-warning">
                                         <i className="fa fa-pencil"></i>

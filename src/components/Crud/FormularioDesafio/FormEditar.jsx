@@ -27,7 +27,7 @@ export default function FormEditar(props) {
     const [desafiosData, setDesafiosData] = useState([]);
 
     useEffect(() => {
-        buscaDesafio(props.desafio.desCodigo);
+        buscaDesafio();
         setAbrir(props.abrir);
     }, [props.abrir]);
 
