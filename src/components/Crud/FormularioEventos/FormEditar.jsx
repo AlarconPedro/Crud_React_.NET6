@@ -143,12 +143,12 @@ export default function FormEditar(props) {
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" id="gridCheck"
                                 name="eveExclusivoAluno"
+                                checked={eventosData.eveExclusivoAluno}
                                 onChange={e => props.funcAtualizaCampoAtivo(e)}
                                 value={true} />
                             <label className="form-check-label">Exclusivo Aluno</label>
                         </div>
                     </div>
-
                 </form>
             </ModalBody>
             <ModalFooter>

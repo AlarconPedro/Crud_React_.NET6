@@ -6,16 +6,13 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Crud/FormularioAluno/FormInserir";
-import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
-import FormParticipantes from "../../components/Crud/FormularioAluno/FormParticipantes";
+import FormInserir from "../../components/Crud/FormularioAtividade/FormInserir";
+import FormEditar from "../../components/Crud/FormularioAtividade/FormEditar";
+import FormExcluir from "../../components/Crud/FormularioAtividade/FormExcluir";
 
 import { BsJustify } from "react-icons/bs";
 
-import { Link } from "react-router-dom";
-
-import "./AlunosCrud.css";
+import "./AtividadesCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
 
@@ -106,23 +103,7 @@ export default function AlunosCrud() {
         setAbrirParticipantes(!abrirParticipantes);
     }
 
-    const mascaraTelefone = (e) => {
-        let input = e.target;
-        input.value = phoneMask(input.value);
-        setAluno({ ...aluno, [e.target.name]: input.value });
-    }
-
-    const phoneMask = (value) => {
-        if (!value) return ""
-        value = value.replace(/\D/g, '')
-        value = value.replace(/(\d{2})(\d)/, "($1) $2")
-        value = value.replace(/(\d)(\d{4})$/, "$1-$2")
-        return value
-    }
-
     const selecionarAluno = (aluno, opcao) => {
-        // setAluno(aluno);
-        // (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
         if (opcao === "Atividades") {
             abrirFecharParticipantes();
         } else if (opcao === "Editar") {
@@ -175,12 +156,6 @@ export default function AlunosCrud() {
         });
         return [day, month, year].join('-');
     }
-
-    // const converteMd5 = (senha) => {
-    //     var md5 = require('md5');
-    //     return md5(senha);
-    // }
-
 
     const getAlunos = async (skip = 0) => {
         setCarregando(true);
@@ -277,19 +252,6 @@ export default function AlunosCrud() {
         setCarregando(false);
     }
 
-    const converterDataToIdade = (data) => {
-        const today = new Date();
-
-        var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
-        const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
-
-        if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
-            idade--;
-        }
-
-        return data !== "" ? idade : "-";
-    }
-
     useEffect(() => {
         if (updateAlunos) {
             getAlunos();
@@ -327,22 +289,12 @@ export default function AlunosCrud() {
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
     }
 
-    const verificaSexo = (sexo) => {
-        if (sexo === "M") {
-            return "Masculino";
-        } else if (sexo === "F") {
-            return "Feminino";
-        } else {
-            return "Outro";
-        }
-    }
-
     return (
-        <Mestre icon="user" title="Cadastro Alunos" subtitle="Painel Sou+Fit">
-            <div className="alunos-container">
+        <Mestre icon="user" title="Atividades do Alunos" subtitle="Painel Sou+Fit">
+            <div className="atividades-container">
                 <header>
-                    <h3>Alunos</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Alunos</button>
+                    <h3>Atividades</h3>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Atividade</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
@@ -361,42 +313,31 @@ export default function AlunosCrud() {
                     : <table className="table table-striped">
                         <thead>
                             <tr>
-                                {/* <th>Id</th> */}
-                                <th>Avatar</th>
-                                <th>Nome</th>
-                                <th>Telefone</th>
-                                <th>Idade</th>
-                                <th>Ativo</th>
-                                <th>Atividades</th>
-                                <th className="acoes">Ações</th>
+                                <th>Modalidade</th>
+                                <th>Data/Hora</th>
+                                <th>Medida</th>
+                                <th>Duração</th>
+                                <th>Intensidade</th>
+                                <th>Imagens</th>
+                                <th className="pl-4 acoes">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {alunosData.map((aluno) => (
-                                <tr key={aluno.aluCodigo}>
-                                    {/* <td>{aluno.aluCodigo}</td> */}
-                                    <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td>
-                                    <td className="pt-3">{aluno.aluNome}</td>
-                                    <td className="pt-3">{aluno.aluFone}</td>
-                                    <td className="pt-3"><div className="idade">{converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
-                                    <td className="pt-3">
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} value={true} />
-                                        </div>
-                                    </td>
-                                    <Link className="text-decoration-none" to={"/atividades"}>
-                                        <td className="pl-5 pt-3 listar" onClick={() => selecionarAluno(aluno, "Atividades")}><BsJustify /></td>
-                                    </Link>
+                            <div></div>
+                            {/* {eventosData.map((evento) => (
+                                <tr key={evento.aluCodigo}>
+                                    <td className=""><img src={alunoUrl + evento.aluImagem} alt="" /></td>
+                                    <td className="pt-3">{evento.aluNome}</td>
                                     <td>
-                                        <button className="btn btn-warning" onClick={() => selecionarAluno(aluno, "Editar")}>
+                                        <button className="btn btn-warning">
                                             <i className="fa fa-pencil"></i>
                                         </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarAluno(aluno, "Excluir")}>
+                                        <button className="btn btn-danger">
                                             <i className="fa fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
-                            ))}
+                            ))} */}
                         </tbody>
                     </table>
                 }
@@ -412,20 +353,6 @@ export default function AlunosCrud() {
                     </nav>
                 </div>
 
-                <FormParticipantes
-                    nome={"Aluno"}
-                    abrir={abrirParticipantes}
-                    aluDados={aluno}
-                    funcAbrir={abrirFecharParticipantes}
-                    funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
-                />
-
                 <FormInserir
                     nome={"Aluno"}
                     abrir={abrirCadastroAlunos}
@@ -433,7 +360,6 @@ export default function AlunosCrud() {
                     funcPost={postAluno}
                     funcAbrir={abrirFecharCadastroAlunos}
                     funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
                     funcSexo={sexo}
@@ -450,7 +376,6 @@ export default function AlunosCrud() {
                     funcPut={putAluno}
                     funcAbrir={abrirFecharEditarAlunos}
                     funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
                     funcSexo={sexo}
