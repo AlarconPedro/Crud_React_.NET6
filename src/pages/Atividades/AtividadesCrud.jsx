@@ -22,11 +22,9 @@ export default function AlunosCrud() {
 
     const [dataAtual, setDataAtual] = useState(new Date());
 
-    const [alunosData, setAlunosData] = useState([]);
+    const [atividadesData, setAtividadesData] = useState([]);
 
-    const [treinadoresData, setTreinadoresData] = useState([]);
-
-    const [alunoInitialState] = useState({
+    const [atividadeInitialState] = useState({
         aluCodigo: 0,
         aluNome: '',
         aluDataNasc: new Date("01/01/1900"),
@@ -48,7 +46,7 @@ export default function AlunosCrud() {
     });
 
 
-    const [aluno, setAluno] = useState({
+    const [atividade, setAtividade] = useState({
         aluCodigo: 0,
         aluNome: '',
         aluDataNasc: new Date(dataAtual),
@@ -69,54 +67,49 @@ export default function AlunosCrud() {
         treCodigoNavigation: null,
     });
 
-    const sexo = [
-        { id: "M", nome: 'Masculino' },
-        { id: "F", nome: 'Feminino' },
-    ];
-
     const [nomeBusca, setNomeBusca] = useState({
         aluNome: ''
     });
 
     const [pagina, setPagina] = useState(1);
 
-    const [abrirCadastroAlunos, setAbrirCadastroAlunos] = useState(false);
-    const [abrirEditarAlunos, setAbrirEditarAlunos] = useState(false);
-    const [abrirExcluirAlunos, setAbrirExcluirAlunos] = useState(false);
-    const [abrirParticipantes, setAbrirParticipantes] = useState(false);
+    const [abrirCadastroAtividades, setAbrirCadastroAtividades] = useState(false);
+    const [abrirEditarAtividades, setAbrirEditarAtividades] = useState(false);
+    const [abrirExcluirAtividades, setAbrirExcluirAtividades] = useState(false);
+    const [abrirImagens, setAbrirImagens] = useState(false);
     const [updateAlunos, setUpdateAlunos] = useState(true);
 
-    const abrirFecharCadastroAlunos = (abrirCadastroAlunos) => {
-        setAbrirCadastroAlunos(!abrirCadastroAlunos);
-        setAluno(alunoInitialState);
+    const abrirFecharCadastroAtividades = (abrirCadastroAtividades) => {
+        setAbrirCadastroAtividades(!abrirCadastroAtividades);
+        setAtividade(atividadeInitialState);
     }
 
-    const abrirFecharEditarAlunos = (abrirEditarAlunos) => {
-        setAbrirEditarAlunos(!abrirEditarAlunos);
+    const abrirFecharEditarAtividades = (abrirEditarAtividades) => {
+        setAbrirEditarAtividades(!abrirEditarAtividades);
     }
 
-    const abrirFecharExcluirAlunos = (abrirExcluirAlunos) => {
-        setAbrirExcluirAlunos(!abrirExcluirAlunos);
+    const abrirFecharExcluirAtividades = (abrirExcluirAtividades) => {
+        setAbrirExcluirAtividades(!abrirExcluirAtividades);
     }
 
-    const abrirFecharParticipantes = (abrirParticipantes) => {
-        setAbrirParticipantes(!abrirParticipantes);
+    const abrirFecharImagens = (abrirImagens) => {
+        setAbrirImagens(!abrirImagens);
     }
 
-    const selecionarAluno = (aluno, opcao) => {
+    const selecionarAtividade = (atividade, opcao) => {
         if (opcao === "Atividades") {
-            abrirFecharParticipantes();
+            abrirFecharImagens();
         } else if (opcao === "Editar") {
-            abrirFecharEditarAlunos();
+            abrirFecharEditarAtividades();
         } else {
-            abrirFecharExcluirAlunos();
+            abrirFecharExcluirAtividades();
         }
     }
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
-        setAluno({
-            ...aluno,
+        setAtividade({
+            ...atividade,
             [name]: value
         });
     }
@@ -131,15 +124,15 @@ export default function AlunosCrud() {
 
     const atualizaCampoAtivo = e => {
         const { name, value } = e.target;
-        setAluno({
-            ...aluno,
+        setAtividade({
+            ...atividade,
             [name]: value === "true" ? true : false
         });
     }
 
     const dataAuxiliar = (date) => {
-        setDataAtual(date);
-        console.log(date);
+        // setDataAtual(date);
+        // console.log(date);
         var data = new Date(date),
             month = '' + (data.getMonth() + 1),
             day = '' + (data.getDate() + 1),
@@ -150,81 +143,63 @@ export default function AlunosCrud() {
         if (day.length < 2)
             day = '0' + day;
 
-        setAluno({
-            ...aluno,
-            aluDataNasc: [year, month, day].join('-')
-        });
-        return [day, month, year].join('-');
+        // setAtividade({
+        //     ...atividade,
+        //     aluDataNasc: [year, month, day].join('-')
+        // });
+        return [day, month, year].join('/');
     }
 
-    const getAlunos = async (skip = 0) => {
+    const getAtividades = async (idAluno = 31) => {
         setCarregando(true);
-        await Api.get(`aluno?skip=${skip}`).then(response => {
-            setAlunosData(response.data);
+        await Api.get("aluno/atividades/" + idAluno).then(response => {
+            setAtividadesData(response.data);
         }).catch(error => {
             console.log(error);
         });
         setCarregando(false);
-    }
-
-    const getTreinadores = async (skip = 0) => {
-        setCarregando(true);
-        await Api.get(`treinador?skip=${skip}`).then(response => {
-            setTreinadoresData(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
-        setCarregando(false);
-    }
-
-    const getTreinadorId = async (id) => {
-        await Api.get(`treinador/${id}`).then(response => {
-            setTreinadoresData(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
     }
 
     const postAluno = async () => {
         await dataAuxiliar(dataAtual);
-        await Api.post("aluno/", aluno).then(response => {
-            setAluno(response.data);
+        await Api.post("aluno/", atividade).then(response => {
+            setAtividade(response.data);
             setUpdateAlunos(true);
             // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
-        setAluno(alunoInitialState);
+        setAtividade(atividadeInitialState);
     }
 
-    const putAluno = async (codigo = aluno.aluCodigo) => {
+    const putAluno = async (codigo = atividade.aluCodigo) => {
         await dataAuxiliar(dataAtual);
-        await Api.put("aluno/" + codigo, aluno).then(response => {
-            var alunosAuxiliar = alunosData;
+        await Api.put("aluno/" + codigo, atividade).then(response => {
+            var alunosAuxiliar = atividadesData;
             alunosAuxiliar.map(alunoMap => {
-                if (alunoMap.aluCodigo === aluno.aluCodigo) {
-                    alunoMap.aluNome = aluno.aluNome;
-                    alunoMap.aluDataNasc = aluno.aluDataNasc;
-                    alunoMap.aluEmail = aluno.aluEmail;
-                    alunoMap.aluSenha = aluno.aluSenha;
-                    alunoMap.treCodigo = aluno.treCodigo;
-                    alunoMap.aluOneSignalId = aluno.aluOneSignalId;
-                    alunoMap.aluId = aluno.aluId;
-                    alunoMap.aluFone = aluno.aluFone;
-                    alunoMap.aluSexo = aluno.aluSexo;
-                    alunoMap.aluAtivo = aluno.aluAtivo;
-                    alunoMap.aluObs = aluno.aluObs;
-                    alunoMap.aluStravaCode = aluno.aluStravaCode;
-                    alunoMap.aluStravaToken = aluno.aluStravaToken;
-                    alunoMap.aluStravaRefreshToken = aluno.aluStravaRefreshToken;
-                    alunoMap.aluStravaExpiresAt = aluno.aluStravaExpiresAt;
-                    alunoMap.aluStravaExpiresIn = aluno.aluStravaExpiresIn;
-                    alunoMap.aluStravaScope = aluno.aluStravaScope;
-                    alunoMap.aluStravaTokenType = aluno.aluStravaTokenType;
+                if (alunoMap.aluCodigo === atividade.aluCodigo) {
+                    alunoMap.aluNome = atividade.aluNome;
+                    alunoMap.aluDataNasc = atividade.aluDataNasc;
+                    alunoMap.aluEmail = atividade.aluEmail;
+                    alunoMap.aluSenha = atividade.aluSenha;
+                    alunoMap.treCodigo = atividade.treCodigo;
+                    alunoMap.aluOneSignalId = atividade.aluOneSignalId;
+                    alunoMap.aluId = atividade.aluId;
+                    alunoMap.aluFone = atividade.aluFone;
+                    alunoMap.aluSexo = atividade.aluSexo;
+                    alunoMap.aluAtivo = atividade.aluAtivo;
+                    alunoMap.aluObs = atividade.aluObs;
+                    alunoMap.aluStravaCode = atividade.aluStravaCode;
+                    alunoMap.aluStravaToken = atividade.aluStravaToken;
+                    alunoMap.aluStravaRefreshToken = atividade.aluStravaRefreshToken;
+                    alunoMap.aluStravaExpiresAt = atividade.aluStravaExpiresAt;
+                    alunoMap.aluStravaExpiresIn = atividade.aluStravaExpiresIn;
+                    alunoMap.aluStravaScope = atividade.aluStravaScope;
+                    alunoMap.aluStravaTokenType = atividade.aluStravaTokenType;
                 }
                 return alunoMap;
             });
-            setAlunosData(alunosAuxiliar);
+            setAtividadesData(alunosAuxiliar);
             // setAluno(response.data);
             setUpdateAlunos(true);
             // abrirFecharEditarAlunos();
@@ -245,7 +220,7 @@ export default function AlunosCrud() {
     const getAlunoNome = async () => {
         setCarregando(true);
         await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
-            setAlunosData(response.data);
+            setAtividadesData(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -254,38 +229,30 @@ export default function AlunosCrud() {
 
     useEffect(() => {
         if (updateAlunos) {
-            getAlunos();
+            getAtividades();
             setUpdateAlunos(false);
         }
     }, [updateAlunos]);
-
-    useEffect(() => {
-        getTreinadores();
-    }, [setAbrirCadastroAlunos]);
-
-    useEffect(() => {
-        getTreinadorId(aluno.treCodigo);
-    }, [setAbrirEditarAlunos]);
 
     function handleDefault(e) {
         e.preventDefault();
     }
 
     const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > alunosData.length ? avancarPagina()
+        e === "&gt;" ? pagina > atividadesData.length ? avancarPagina()
             : avancarPagina(pagina * 10)
             : voltarPagina(pagina * 10);
     }
 
     const avancarPagina = async (skip) => {
-        getAlunos(skip);
-        pagina > alunosData.length ? setPagina(1) :
+        getAtividades(skip);
+        pagina > atividadesData.length ? setPagina(1) :
             setPagina(pagina + 1);
     }
 
     const voltarPagina = async (skip) => {
         skip = skip - 20;
-        getAlunos(skip);
+        getAtividades(skip);
         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
     }
 
@@ -294,7 +261,7 @@ export default function AlunosCrud() {
             <div className="atividades-container">
                 <header>
                     <h3>Atividades</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Atividade</button>
+                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAtividades()}><strong>+</strong> Adicionar Atividade</button>
                 </header>
                 <hr />
                 <form onSubmit={handleDefault}>
@@ -324,10 +291,15 @@ export default function AlunosCrud() {
                         </thead>
                         <tbody>
                             <div></div>
-                            {/* {eventosData.map((evento) => (
-                                <tr key={evento.aluCodigo}>
-                                    <td className=""><img src={alunoUrl + evento.aluImagem} alt="" /></td>
-                                    <td className="pt-3">{evento.aluNome}</td>
+                            {atividadesData.map((atividade) => (
+                                <tr key={atividade.modCodigo}>
+                                    <td className="pt-3">{atividade.modNome}</td>
+                                    <td className="pt-3">{dataAuxiliar(atividade.aluAtiDataHora)}</td>
+                                    <td className="pt-3">{atividade.aluAtiMedida}</td>
+                                    <td className="pt-3">{atividade.aluAtiDuracaoSeg}</td>
+                                    <td className="pt-3">{atividade.aluAtiIntensidade}</td>
+                                    {/* <td className="pt-3">{atividade.modNome}</td> */}
+                                    <td className=""><img src={alunoUrl + atividade.aluAtiImgImagem} alt="" /></td>
                                     <td>
                                         <button className="btn btn-warning">
                                             <i className="fa fa-pencil"></i>
@@ -337,7 +309,7 @@ export default function AlunosCrud() {
                                         </button>
                                     </td>
                                 </tr>
-                            ))} */}
+                            ))}
                         </tbody>
                     </table>
                 }
@@ -353,44 +325,38 @@ export default function AlunosCrud() {
                     </nav>
                 </div>
 
-                <FormInserir
+                {/* <FormInserir
                     nome={"Aluno"}
-                    abrir={abrirCadastroAlunos}
-                    aluDados={aluno}
+                    abrir={abrirCadastroAtividades}
+                    aluDados={atividade}
                     funcPost={postAluno}
-                    funcAbrir={abrirFecharCadastroAlunos}
+                    funcAbrir={abrirFecharCadastroAtividades}
                     funcData={dataAuxiliar}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormEditar
                     nome={"Aluno"}
-                    abrir={abrirEditarAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno}
+                    abrir={abrirEditarAtividades}
+                    aluNome={atividade && atividade.aluNome}
+                    aluDados={atividade}
                     dataAtual={dataAtual}
                     funcPut={putAluno}
-                    funcAbrir={abrirFecharEditarAlunos}
+                    funcAbrir={abrirFecharEditarAtividades}
                     funcData={dataAuxiliar}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
                 />
 
                 <FormExcluir
                     nome={"Aluno"}
-                    abrir={abrirExcluirAlunos}
-                    aluNome={aluno && aluno.aluNome}
-                    aluDados={aluno.aluCodigo}
+                    abrir={abrirExcluirAtividades}
+                    aluNome={atividade && atividade.aluNome}
+                    aluDados={atividade.aluCodigo}
                     funcDelete={deleteAluno}
-                    funcAbrir={abrirFecharExcluirAlunos}
-                />
+                    funcAbrir={abrirFecharExcluirAtividades}
+                /> */}
             </div>
         </Mestre >
     );
