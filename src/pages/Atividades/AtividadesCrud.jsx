@@ -9,6 +9,7 @@ import Api from "../../services/Api";
 import FormInserir from "../../components/Crud/FormularioAtividade/FormInserir";
 import FormEditar from "../../components/Crud/FormularioAtividade/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioAtividade/FormExcluir";
+import FormImagens from "../../components/Crud/FormularioAtividade/FormImagens";
 
 import { BsJustify } from "react-icons/bs";
 
@@ -16,7 +17,7 @@ import "./AtividadesCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
 
-export default function AlunosCrud() {
+export default function AlunosCrud(props) {
 
     const [carregando, setCarregando] = useState(false);
 
@@ -25,50 +26,28 @@ export default function AlunosCrud() {
     const [atividadesData, setAtividadesData] = useState([]);
 
     const [atividadeInitialState] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        aluDataNasc: new Date("01/01/1900"),
-        aluEmail: '',
-        aluSenha: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: true,
-        aluObs: '',
-        aluStravaCode: null,
-        tbAlunoAtividades: [],
-        tbAlunoDesafios: [],
-        tbAlunoEventos: [],
-        treCodigoNavigation: null,
+        modCodigo: 0,
+        modNome: '',
+        aluAtiDataHora: new Date("01/01/1900"),
+        aluAtiMedida: 0,
+        aluAtiDuracaoSeg: 0,
+        aluAtiIntensidade: 0,
+        aluAtiImgImagem: '',
     });
 
 
     const [atividade, setAtividade] = useState({
-        aluCodigo: 0,
-        aluNome: '',
-        aluDataNasc: new Date(dataAtual),
-        aluEmail: '',
-        aluSenha: '',
-        treCodigo: '',
-        aluOneSignalId: null,
-        aluImagem: '',
-        aluId: '',
-        aluFone: '',
-        aluSexo: '',
-        aluAtivo: true,
-        aluObs: '',
-        aluStravaCode: null,
-        tbAlunoAtividades: [],
-        tbAlunoDesafios: [],
-        tbAlunoEventos: [],
-        treCodigoNavigation: null,
+        modCodigo: 0,
+        modNome: '',
+        aluAtiDataHora: new Date(dataAtual),
+        aluAtiMedida: 0,
+        aluAtiDuracaoSeg: 0,
+        aluAtiIntensidade: 0,
+        aluAtiImgImagem: '',
     });
 
     const [nomeBusca, setNomeBusca] = useState({
-        aluNome: ''
+        modNome: ''
     });
 
     const [pagina, setPagina] = useState(1);
@@ -97,7 +76,11 @@ export default function AlunosCrud() {
     }
 
     const selecionarAtividade = (atividade, opcao) => {
-        if (opcao === "Atividades") {
+        if (opcao === "Imagens") {
+            setAtividade({
+                ...atividade,
+                aluAtiImgImagem: atividade.aluAtiImgImagem
+            });
             abrirFecharImagens();
         } else if (opcao === "Editar") {
             abrirFecharEditarAtividades();
@@ -122,17 +105,8 @@ export default function AlunosCrud() {
         });
     }
 
-    const atualizaCampoAtivo = e => {
-        const { name, value } = e.target;
-        setAtividade({
-            ...atividade,
-            [name]: value === "true" ? true : false
-        });
-    }
-
     const dataAuxiliar = (date) => {
         // setDataAtual(date);
-        // console.log(date);
         var data = new Date(date),
             month = '' + (data.getMonth() + 1),
             day = '' + (data.getDate() + 1),
@@ -150,10 +124,11 @@ export default function AlunosCrud() {
         return [day, month, year].join('/');
     }
 
-    const getAtividades = async (idAluno = 31) => {
+    const getAtividades = async (skip = 0) => {
         setCarregando(true);
-        await Api.get("aluno/atividades/" + idAluno).then(response => {
+        await Api.get(`aluno/atividades/${props.aluno.aluCodigo}?skip=${skip}`).then(response => {
             setAtividadesData(response.data);
+            console.log(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -217,9 +192,9 @@ export default function AlunosCrud() {
         });
     }
 
-    const getAlunoNome = async () => {
+    const getAtividadesNome = async (idAluno = 31, skip = 0) => {
         setCarregando(true);
-        await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
+        await Api.get(`aluno/atividades/${idAluno}/${nomeBusca.modNome}?skip=${skip}`).then(response => {
             setAtividadesData(response.data);
         }).catch(error => {
             console.log(error);
@@ -266,8 +241,8 @@ export default function AlunosCrud() {
                 <hr />
                 <form onSubmit={handleDefault}>
                     <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getAlunoNome()} type="submit">
+                        <input type="search" className="form-control rounded" name="modNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
+                        <button className="botaoBusca" onClick={() => getAtividadesNome()} type="submit">
                             <span className="input-group-text border-0" id="search-addon">
                                 <i className="fa fa-search"></i>
                             </span>
@@ -299,7 +274,8 @@ export default function AlunosCrud() {
                                     <td className="pt-3">{atividade.aluAtiDuracaoSeg}</td>
                                     <td className="pt-3">{atividade.aluAtiIntensidade}</td>
                                     {/* <td className="pt-3">{atividade.modNome}</td> */}
-                                    <td className=""><img src={alunoUrl + atividade.aluAtiImgImagem} alt="" /></td>
+                                    {/* <td className=""><img src={alunoUrl + atividade.aluAtiImgImagem} alt="" /></td> */}
+                                    <td className="pt-3 listar" onClick={() => selecionarAtividade(atividade, "Imagens")}><BsJustify /></td>
                                     <td>
                                         <button className="btn btn-warning">
                                             <i className="fa fa-pencil"></i>
@@ -324,6 +300,13 @@ export default function AlunosCrud() {
                         </ul>
                     </nav>
                 </div>
+
+                <FormImagens
+                    nome={"Atividade Imagens"}
+                    abrir={abrirImagens}
+                    funcAbrir={abrirFecharImagens}
+                    imagens={atividade.aluAtiImgImagem}
+                />
 
                 {/* <FormInserir
                     nome={"Aluno"}

@@ -9,7 +9,7 @@ import Api from "../../services/Api";
 import FormInserir from "../../components/Crud/FormularioAluno/FormInserir";
 import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
-import FormParticipantes from "../../components/Crud/FormularioAluno/FormParticipantes";
+import FormAtividades from "../Atividades/AtividadesCrud";
 
 import { BsJustify } from "react-icons/bs";
 
@@ -86,7 +86,7 @@ export default function AlunosCrud() {
     const [abrirCadastroAlunos, setAbrirCadastroAlunos] = useState(false);
     const [abrirEditarAlunos, setAbrirEditarAlunos] = useState(false);
     const [abrirExcluirAlunos, setAbrirExcluirAlunos] = useState(false);
-    const [abrirParticipantes, setAbrirParticipantes] = useState(false);
+    const [abrirParticipantes, setAbrirAtividades] = useState(false);
     const [updateAlunos, setUpdateAlunos] = useState(true);
 
     const abrirFecharCadastroAlunos = (abrirCadastroAlunos) => {
@@ -102,8 +102,8 @@ export default function AlunosCrud() {
         setAbrirExcluirAlunos(!abrirExcluirAlunos);
     }
 
-    const abrirFecharParticipantes = (abrirParticipantes) => {
-        setAbrirParticipantes(!abrirParticipantes);
+    const abrirFecharAtividades = (abrirAtividades) => {
+        setAbrirAtividades(!abrirAtividades);
     }
 
     const mascaraTelefone = (e) => {
@@ -124,7 +124,7 @@ export default function AlunosCrud() {
         // setAluno(aluno);
         // (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
         if (opcao === "Atividades") {
-            abrirFecharParticipantes();
+            abrirFecharAtividades();
         } else if (opcao === "Editar") {
             abrirFecharEditarAlunos();
         } else {
@@ -412,11 +412,11 @@ export default function AlunosCrud() {
                     </nav>
                 </div>
 
-                <FormParticipantes
+                <FormAtividades
                     nome={"Aluno"}
                     abrir={abrirParticipantes}
                     aluDados={aluno}
-                    funcAbrir={abrirFecharParticipantes}
+                    funcAbrir={abrirFecharAtividades}
                     funcData={dataAuxiliar}
                     funcMascara={mascaraTelefone}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
