@@ -19,7 +19,7 @@ import "./AlunosCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
 
-export default function AlunosCrud() {
+export default function AlunosCrud(props) {
 
     const [carregando, setCarregando] = useState(false);
 
@@ -121,7 +121,7 @@ export default function AlunosCrud() {
     }
 
     const selecionarAluno = (aluno, opcao) => {
-        // setAluno(aluno);
+        setAluno(aluno);
         // (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
         if (opcao === "Atividades") {
             abrirFecharAtividades();
@@ -384,7 +384,7 @@ export default function AlunosCrud() {
                                             <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} value={true} />
                                         </div>
                                     </td>
-                                    <Link className="text-decoration-none" to={"/atividades"}>
+                                    <Link className="text-decoration-none" to={"/atividades"} state={{ codigo: (aluno.aluCodigo)}}>
                                         <td className="pl-5 pt-3 listar" onClick={() => selecionarAluno(aluno, "Atividades")}><BsJustify /></td>
                                     </Link>
                                     <td>
@@ -412,7 +412,7 @@ export default function AlunosCrud() {
                     </nav>
                 </div>
 
-                <FormAtividades
+                {/* <FormAtividades
                     nome={"Aluno"}
                     abrir={abrirParticipantes}
                     aluDados={aluno}
@@ -424,7 +424,7 @@ export default function AlunosCrud() {
                     funcSexo={sexo}
                     treinaData={treinadoresData}
                     funcBuscaTreinador={getTreinadorId}
-                />
+                /> */}
 
                 <FormInserir
                     nome={"Aluno"}

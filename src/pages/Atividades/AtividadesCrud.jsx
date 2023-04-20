@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from 'react-router-dom'
 
 import Mestre from "../../layout/Mestre/Mestre";
 
@@ -19,6 +20,9 @@ import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
 export default function AlunosCrud(props) {
 
+    const location = useLocation();
+    const { codigo } = location.state;
+
     const [carregando, setCarregando] = useState(false);
 
     const [dataAtual, setDataAtual] = useState(new Date());
@@ -32,7 +36,6 @@ export default function AlunosCrud(props) {
         aluAtiMedida: 0,
         aluAtiDuracaoSeg: 0,
         aluAtiIntensidade: 0,
-        aluAtiImgImagem: '',
     });
 
 
@@ -43,12 +46,13 @@ export default function AlunosCrud(props) {
         aluAtiMedida: 0,
         aluAtiDuracaoSeg: 0,
         aluAtiIntensidade: 0,
-        aluAtiImgImagem: '',
     });
 
     const [nomeBusca, setNomeBusca] = useState({
         modNome: ''
     });
+
+    const [aluCodigo, setAluCodigo] = useState(codigo);
 
     const [pagina, setPagina] = useState(1);
 
@@ -79,7 +83,7 @@ export default function AlunosCrud(props) {
         if (opcao === "Imagens") {
             setAtividade({
                 ...atividade,
-                aluAtiImgImagem: atividade.aluAtiImgImagem
+                aluCodigo: atividade.aluCodigo
             });
             abrirFecharImagens();
         } else if (opcao === "Editar") {
@@ -126,7 +130,7 @@ export default function AlunosCrud(props) {
 
     const getAtividades = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`aluno/atividades/${props.aluno.aluCodigo}?skip=${skip}`).then(response => {
+        await Api.get(`aluno/atividades/${codigo}?skip=${skip}`).then(response => {
             setAtividadesData(response.data);
             console.log(response.data);
         }).catch(error => {
@@ -147,7 +151,7 @@ export default function AlunosCrud(props) {
         setAtividade(atividadeInitialState);
     }
 
-    const putAluno = async (codigo = atividade.aluCodigo) => {
+    const putAluno = async () => {
         await dataAuxiliar(dataAtual);
         await Api.put("aluno/" + codigo, atividade).then(response => {
             var alunosAuxiliar = atividadesData;
@@ -183,8 +187,8 @@ export default function AlunosCrud(props) {
         });
     }
 
-    const deleteAluno = async (aluno = aluno.aluCodigo) => {
-        await Api.delete("aluno/" + aluno).then(response => {
+    const deleteAluno = async () => {
+        await Api.delete("aluno/" + codigo).then(response => {
             setUpdateAlunos(true);
             // abrirFecharExcluirAlunos();
         }).catch(error => {
@@ -192,9 +196,9 @@ export default function AlunosCrud(props) {
         });
     }
 
-    const getAtividadesNome = async (idAluno = 31, skip = 0) => {
+    const getAtividadesNome = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`aluno/atividades/${idAluno}/${nomeBusca.modNome}?skip=${skip}`).then(response => {
+        await Api.get(`aluno/atividades/${codigo}/${nomeBusca.modNome}?skip=${skip}`).then(response => {
             setAtividadesData(response.data);
         }).catch(error => {
             console.log(error);
@@ -304,6 +308,7 @@ export default function AlunosCrud(props) {
                 <FormImagens
                     nome={"Atividade Imagens"}
                     abrir={abrirImagens}
+                    codigo={aluCodigo}
                     funcAbrir={abrirFecharImagens}
                     imagens={atividade.aluAtiImgImagem}
                 />

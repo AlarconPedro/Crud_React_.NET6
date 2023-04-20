@@ -24,10 +24,14 @@ export default function FormImagens(props) {
         props.funcAbrir(abrir);
     }
 
-    // const deletarAulno = () => {
-    //     props.funcDelete(props.aluDados);
-    //     abrirModal();
-    // }
+    const buscarImagem = async () => {
+        await Api.get(`aluno/atividades/${codigo}?skip=${skip}`).then(response => {
+            setAtividadesData(response.data);
+            console.log(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
 
     return (
         <Modal isOpen={abrir}>
