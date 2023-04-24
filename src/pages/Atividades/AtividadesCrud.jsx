@@ -32,6 +32,7 @@ export default function AlunosCrud(props) {
     const [atividadeInitialState] = useState({
         modCodigo: 0,
         modNome: '',
+        aluAtiCodigo: 0,
         aluAtiDataHora: new Date("01/01/1900"),
         aluAtiMedida: 0,
         aluAtiDuracaoSeg: 0,
@@ -42,6 +43,7 @@ export default function AlunosCrud(props) {
     const [atividade, setAtividade] = useState({
         modCodigo: 0,
         modNome: '',
+        aluAtiCodigo: 0,
         aluAtiDataHora: new Date(dataAtual),
         aluAtiMedida: 0,
         aluAtiDuracaoSeg: 0,
@@ -80,11 +82,12 @@ export default function AlunosCrud(props) {
     }
 
     const selecionarAtividade = (atividade, opcao) => {
+        setAtividade(atividade);
         if (opcao === "Imagens") {
-            setAtividade({
-                ...atividade,
-                aluCodigo: atividade.aluCodigo
-            });
+            // setAtividade({
+            //     ...atividade,
+            //     aluAtiCodigo: atividade.aluAtiCodigo
+            // });
             abrirFecharImagens();
         } else if (opcao === "Editar") {
             abrirFecharEditarAtividades();
@@ -308,9 +311,9 @@ export default function AlunosCrud(props) {
                 <FormImagens
                     nome={"Atividade Imagens"}
                     abrir={abrirImagens}
-                    codigo={aluCodigo}
+                    codigo={atividade.aluAtiCodigo}
                     funcAbrir={abrirFecharImagens}
-                    imagens={atividade.aluAtiImgImagem}
+                    // imagens={atividade.aluAtiImgImagem}
                 />
 
                 {/* <FormInserir

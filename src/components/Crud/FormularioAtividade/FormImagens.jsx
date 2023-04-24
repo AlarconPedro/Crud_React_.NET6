@@ -4,20 +4,23 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import { atividadeUrl } from "../../../services/Imagens";
 
+import Api from "../../../services/Api";
+
 export default function FormImagens(props) {
 
     const [abrir, setAbrir] = useState(false);
 
-    const [imagem, setImagem] = useState([]);
+    const [imagemData, setImagemData] = useState([]);
 
     useEffect(() => {
+        buscarImagem();
         setAbrir(props.abrir);
     }, [props.abrir]);
 
-    useEffect(() => {
-        setImagem(props.imagens);
-        console.log(atividadeUrl + props.imagens);
-    }, [props.imagens]);
+    // useEffect(() => {
+    //     setImagemData(props.imagens);
+    //     console.log(atividadeUrl + props.imagens);
+    // }, [props.imagens]);
 
     const abrirModal = () => {
         setAbrir(!abrir);
@@ -25,9 +28,9 @@ export default function FormImagens(props) {
     }
 
     const buscarImagem = async () => {
-        await Api.get(`aluno/atividades/${codigo}?skip=${skip}`).then(response => {
-            setAtividadesData(response.data);
-            console.log(response.data);
+        await Api.get("aluno/atividades/imagens/" + props.codigo).then(response => {
+            setImagemData(response.data);
+            // console.log(response.data);
         }).catch(error => {
             console.log(error);
         });
@@ -40,7 +43,20 @@ export default function FormImagens(props) {
                 <form className="row g-3 form-group">
                     <div className="col-md-4 mt-5">
                         <label className="form-label mb-0">Imagem:</label>
-                        <img className="imagem" src={atividadeUrl + props.imagens} alt="" />
+                        {imagemData.map((imagem) => {
+                            console.log(imagem);
+                            return (
+                                <img key={imagem.aluAtiImgCodigo} className="imagem" src={atividadeUrl + imagem.aluAtiImgImagem} alt="" />
+                            )
+                        })
+                        }
+                        {/* {imagemData.forEach(element => {
+                            console.log(element);
+                            <img className="imagem" src={atividadeUrl + element} alt="" />
+                        })} */}
+                        {/* {imagemData.map((imagem) => (
+                            <img className="imagem" src={atividadeUrl + imagem} alt="" />
+                        ))} */}
                     </div>
                 </form>
             </ModalBody>
