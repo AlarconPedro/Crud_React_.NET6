@@ -17,11 +17,6 @@ export default function FormImagens(props) {
         setAbrir(props.abrir);
     }, [props.abrir]);
 
-    // useEffect(() => {
-    //     setImagemData(props.imagens);
-    //     console.log(atividadeUrl + props.imagens);
-    // }, [props.imagens]);
-
     const abrirModal = () => {
         setAbrir(!abrir);
         props.funcAbrir(abrir);
@@ -30,7 +25,6 @@ export default function FormImagens(props) {
     const buscarImagem = async () => {
         await Api.get("aluno/atividades/imagens/" + props.codigo).then(response => {
             setImagemData(response.data);
-            // console.log(response.data);
         }).catch(error => {
             console.log(error);
         });

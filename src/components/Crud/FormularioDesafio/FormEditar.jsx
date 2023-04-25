@@ -24,11 +24,16 @@ export default function FormEditar(props) {
 
     const [modalidadesData, setModalidadesData] = useState([]);
 
+    const [modalidadeDesafio, setModalidadeDesafio] = useState([
+        { modNome: ""}
+    ]);
+
     const [desafiosData, setDesafiosData] = useState([]);
 
     useEffect(() => {
         buscaDesafio();
         setAbrir(props.abrir);
+        buscarModalidadesDesafio(props.desCodigo, props.modalidades.modCodigo);
     }, [props.abrir]);
 
     useEffect(() => {
@@ -61,6 +66,18 @@ export default function FormEditar(props) {
         abrirModal();
     }
 
+    const buscarModalidadesDesafio = async (desCodigo, modCodigo = 0) => {
+        setCarregando(true);
+        await Api.get(`desafio/modalidades/${desCodigo}/${modCodigo}`).then(response => {
+            setModalidadeDesafio(response.data);
+            console.log(response.data);
+            // listarModalidades();
+        }).catch(error => {
+            console.log(error);
+        });
+        setCarregando(false);
+    }
+
     const buscaDesafio = async () => {
         setCarregando(true);
         await Api.get("desafio/" + props.desCodigo).then(response => {
@@ -69,9 +86,27 @@ export default function FormEditar(props) {
         }).catch(error => {
             console.log(error);
         });
-        console.log(desafiosData);
         setCarregando(false);
     }
+
+    // async function listarModalidades() {
+    //     modalidadesData.forEach(async modalidade => {
+    //         await buscarModalidadesDesafio(props.desCodigo, modalidade.modCodigo);
+    //         console.log(modalidadeDesafio);
+    //     });
+        // return (
+        //     modalidadesData.map((modalidade) => {
+        //         return (
+        //             <div className="form-check" key={modalidade.modCodigo}>
+        //                 <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+        //                 <label className="form-check-label" for="flexCheckDefault">
+        //                     {modalidade.modNome}
+        //                 </label>
+        //             </div>
+        //         )
+        //     })
+        // )
+    // }
 
     return (
         <Modal isOpen={abrir} className="modal-editar">
@@ -202,7 +237,9 @@ export default function FormEditar(props) {
                             modalidadesData.map((modalidade) => {
                                 return (
                                     <div className="form-check" key={modalidade.modCodigo}>
-                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" 
+                                            checked={modalidade.modNome === modalidadeDesafio.modNome ? true : false}
+                                        />
                                         <label className="form-check-label" for="flexCheckDefault">
                                             {modalidade.modNome}
                                         </label>
