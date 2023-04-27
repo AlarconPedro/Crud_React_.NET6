@@ -5,6 +5,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
+import Api from "../../../services/Api";
+
 export default function FormInserir(props) {
 
     const [abrir, setAbrir] = useState(false);

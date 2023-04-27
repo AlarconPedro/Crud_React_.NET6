@@ -5,6 +5,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
+import CheckBox from "../../../layout/Objetos/CheckBox";
+
 import { desafioUrl } from "../../../services/Imagens";
 
 import Api from "../../../services/Api";
@@ -24,16 +26,13 @@ export default function FormEditar(props) {
 
     const [modalidadesData, setModalidadesData] = useState([]);
 
-    const [modalidadeDesafio, setModalidadeDesafio] = useState([
-        { modNome: ""}
-    ]);
+    const [modalidadeDesafio, setModalidadeDesafio] = useState([]);
 
     const [desafiosData, setDesafiosData] = useState([]);
 
     useEffect(() => {
         buscaDesafio();
         setAbrir(props.abrir);
-        buscarModalidadesDesafio(props.desCodigo, props.modalidades.modCodigo);
     }, [props.abrir]);
 
     useEffect(() => {
@@ -45,16 +44,21 @@ export default function FormEditar(props) {
     }, [props.desDataFim]);
 
     useEffect(() => {
-        setModalidadesData(props.modalidades);
-    }, [props.modalidades]);
-
-    useEffect(() => {
         setTreinadoresData(props.treinadoresData);
     }, [props.treinadoresData]);
 
     useEffect(() => {
         setDesafiosData(props.desafio);
     }, [props.desafio]);
+
+    useEffect(() => {
+        setModalidadesData(props.modalidades);
+    }, [props.modalidades]);
+
+    // useEffect(() => {
+    //     if (props.desCodigo !== 0)
+    //         buscarModalidadesDesafio(props.desCodigo);
+    // }, [props.desCodigo]);
 
     const abrirModal = () => {
         setAbrir(!abrir);
@@ -66,17 +70,23 @@ export default function FormEditar(props) {
         abrirModal();
     }
 
-    const buscarModalidadesDesafio = async (desCodigo, modCodigo = 0) => {
-        setCarregando(true);
-        await Api.get(`desafio/modalidades/${desCodigo}/${modCodigo}`).then(response => {
-            setModalidadeDesafio(response.data);
-            console.log(response.data);
-            // listarModalidades();
-        }).catch(error => {
-            console.log(error);
-        });
-        setCarregando(false);
-    }
+    // const buscarModalidadesDesafio = async (desCodigo) => {
+    //     await Api.get(`desafio/modalidades/${desCodigo}`).then(response => {
+    //         setModalidadeDesafio(response.data);
+    //         // listarModalidades();
+    //     }).catch(error => {
+    //         console.log(error);
+    //     });
+    //     // let response = '';
+    //     // let response = false;
+    //     // try {
+    //     //     response = (await Api.get(`desafio/modalidades/${desCodigo}/${modCodigo}`)).status === 200 ? true : false;
+    //     //     // response = (await Api.get(`desafio/modalidades/${desCodigo}/${modCodigo}`));
+    //     // } catch (error) {
+    //     //     console.log(error);
+    //     // }
+    //     // return response;
+    // }
 
     const buscaDesafio = async () => {
         setCarregando(true);
@@ -89,23 +99,36 @@ export default function FormEditar(props) {
         setCarregando(false);
     }
 
+    // function listarModalidades(modNome) {
+    //     let retorno = false;
+    //     modalidadeDesafio.filter(modalidade => {
+    //         if (modalidade.modNome === modNome) {
+    //             retorno = true;
+    //             // return true;
+    //         }
+    //         retorno = false;
+    //         // return false;
+    //     })
+    //     return retorno;
+    // }
+
     // async function listarModalidades() {
     //     modalidadesData.forEach(async modalidade => {
     //         await buscarModalidadesDesafio(props.desCodigo, modalidade.modCodigo);
     //         console.log(modalidadeDesafio);
     //     });
-        // return (
-        //     modalidadesData.map((modalidade) => {
-        //         return (
-        //             <div className="form-check" key={modalidade.modCodigo}>
-        //                 <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-        //                 <label className="form-check-label" for="flexCheckDefault">
-        //                     {modalidade.modNome}
-        //                 </label>
-        //             </div>
-        //         )
-        //     })
-        // )
+    // return (
+    //     modalidadesData.map((modalidade) => {
+    //         return (
+    //             <div className="form-check" key={modalidade.modCodigo}>
+    //                 <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+    //                 <label className="form-check-label" for="flexCheckDefault">
+    //                     {modalidade.modNome}
+    //                 </label>
+    //             </div>
+    //         )
+    //     })
+    // )
     // }
 
     return (
@@ -235,15 +258,14 @@ export default function FormEditar(props) {
                         <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
                         {
                             modalidadesData.map((modalidade) => {
+                                // let retorno = listarModalidades(modalidade.modNome);
+                                // console.log(retorno)
                                 return (
-                                    <div className="form-check" key={modalidade.modCodigo}>
-                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" 
-                                            checked={modalidade.modNome === modalidadeDesafio.modNome ? true : false}
-                                        />
-                                        <label className="form-check-label" for="flexCheckDefault">
-                                            {modalidade.modNome}
-                                        </label>
-                                    </div>
+                                    <CheckBox
+                                        modCodigo={modalidade.modCodigo}
+                                        modNome={modalidade.modNome}
+                                        desCodigo={props.desCodigo}
+                                    />
                                 )
                             })
                         }

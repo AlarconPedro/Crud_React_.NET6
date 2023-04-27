@@ -184,14 +184,6 @@ export default function DesafiosCrud() {
         return [day, month, year].join('/');
     }
 
-    const getModalidades = async () => {
-        await Api.get("modalidade").then(response => {
-            setModalidadeData(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
-    }
-
     const getDesafios = async (skip = 0) => {
         setCarregando(true);
         await Api.get(`desafio?skip=${skip}`).then(response => {
@@ -200,6 +192,14 @@ export default function DesafiosCrud() {
             console.log(error);
         });
         setCarregando(false);
+    }
+
+    const getModalidades = async () => {
+        await Api.get("modalidade").then(response => {
+            setModalidadeData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     const getTreinadores = async (skip = 0) => {
@@ -431,7 +431,6 @@ export default function DesafiosCrud() {
                     abrir={abrirEditarDesafios}
                     funcAbrir={abrirFecharEditarDesafios}
                     funcPut={putDesafio}
-                    modalidades={modalidadeData}
                     funcAtualizaCampo={atualizaCampo}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcDataInicio={dataInicio}
@@ -439,6 +438,7 @@ export default function DesafiosCrud() {
                     funcMascaraTelefone={mascaraTelefone}
                     treinadoresData={treinadoresData}
                     desafio={desafio}
+                    modalidades={modalidadeData}
                     desCodigo={desafio.desCodigo}
                     dataInicio={desafio.desDataInicio}
                     dataFim={desafio.desDataFim}
