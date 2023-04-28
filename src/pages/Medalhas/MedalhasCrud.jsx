@@ -314,6 +314,7 @@ export default function MedalhasCrud() {
                     funcPut={putMedalha}
                     funcAbrir={abrirFecharEditarMedalhas}
                     funcAtualizaCampo={atualizaCampo}
+                    medCodigo={medalha.medCodigo}
                 />
 
                 <FormExcluir

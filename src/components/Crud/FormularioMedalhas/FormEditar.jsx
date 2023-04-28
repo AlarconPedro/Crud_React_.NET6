@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
+import CheckBox from "../../../layout/Objetos/CheckBox";
+
 export default function FormEditar(props) {
 
     const [abrir, setAbrir] = useState(false);
@@ -58,12 +60,12 @@ export default function FormEditar(props) {
                         {
                             modalidadesData.map((modalidade) => {
                                 return (
-                                    <div className="form-check" key={modalidade.modCodigo}>
-                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                        <label className="form-check-label" for="flexCheckDefault">
-                                            {modalidade.modNome}
-                                        </label>
-                                    </div>
+                                    <CheckBox 
+                                        nome={modalidade.modNome}
+                                        codigo={modalidade.modCodigo}
+                                        codigoSelecionado={props.medCodigo}
+                                        url={`medalha/modalidade/${props.medCodigo}`}
+                                    />
                                 )
                             })
                         }

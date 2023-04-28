@@ -110,7 +110,6 @@ export default function DesafiosCrud() {
 
     const atualizaCampo = e => {
         const { name, value } = e.target;
-        console.log(name, value);
         setDesafio({
             ...desafio,
             [name]: value
