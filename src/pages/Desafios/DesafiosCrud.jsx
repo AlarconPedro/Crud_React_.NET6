@@ -231,34 +231,6 @@ export default function DesafiosCrud() {
         setDesafio(desafioInitialState);
     }
 
-    const putDesafio = async () => {
-        await dataInicio(dataAtual);
-        await Api.put("desafio/" + desafio.desCodigo, desafio).then(response => {
-            var desafiosAuxiliar = desafiosData;
-            desafiosAuxiliar.map(desafioMap => {
-                if (desafioMap.desCodigo === desafio.desCodigo) {
-                    desafioMap.desNome = desafio.desNome;
-                    desafioMap.desDataInicio = desafio.desDataInicio;
-                    desafioMap.desDataFim = desafio.desDataFim;
-                    desafioMap.desTipoDesafio = desafio.desTipoDesafio;
-                    desafioMap.desMedidaDesafio = desafio.desMedidaDesafio;
-                    desafioMap.treCodigo = desafio.treCodigo;
-                    desafioMap.desImagem = desafio.desImagem;
-                    desafioMap.desId = desafio.desId;
-                    desafioMap.desExclusivoAluno = desafio.desExclusivoAluno;
-                    desafioMap.desAtivo = desafio.desAtivo;
-                }
-                return desafioMap;
-            });
-            setDesafiosData(desafiosAuxiliar);
-            setDesafio(response.data);
-            setUpdateDesafios(true);
-            abrirFecharEditarDesafios();
-        }).catch(error => {
-            console.log(error);
-        });
-    }
-
     const deleteDesafio = async () => {
         await Api.delete("desafio/" + desafio.desCodigo).then(response => {
             setUpdateDesafios(true);
@@ -405,7 +377,7 @@ export default function DesafiosCrud() {
                     funcAbrir={abrirFecharParticipantes}
                     codigoDesafio={desafio.desCodigo}
                     funcAtualizaCampo={atualizaCampo}
-                    funcPut={putDesafio}
+                    // funcPut={putDesafio}
                 />
 
                 <FormInserir
@@ -429,7 +401,6 @@ export default function DesafiosCrud() {
                 <FormEditar
                     abrir={abrirEditarDesafios}
                     funcAbrir={abrirFecharEditarDesafios}
-                    funcPut={putDesafio}
                     funcAtualizaCampo={atualizaCampo}
                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
                     funcDataInicio={dataInicio}
