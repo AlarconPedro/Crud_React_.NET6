@@ -199,8 +199,8 @@ class EditarDesafio extends React.Component {
     render() {
         return (
             <div>
-                <Modal isOpen={this.state.abrir} toggle={this.abrirModal} size="lg" className="modal-editar">
-                    <ModalHeader toggle={this.abrirModal}>Editar Desafio</ModalHeader>
+                <Modal isOpen={this.state.abrir} size="lg" className="modal-editar">
+                    <ModalHeader>Editar Desafio</ModalHeader>
                     <ModalBody>
                         <form className="row g-3 form-group">
                             <div className="col-md-12">
