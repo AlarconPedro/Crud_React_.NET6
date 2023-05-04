@@ -13,6 +13,7 @@ import FormExcluir from "../../components/Crud/FormularioTreinador/FormExcluir";
 import "./TreinadoresCrud.css";
 import { treinadorUrl } from "../../services/Imagens";
 
+import Busca from "../../layout/Objetos/Busca";
 
 export default function AlunosCrud() {
 
@@ -188,9 +189,9 @@ export default function AlunosCrud() {
         });
     }
 
-    const getTreinadorNome = async () => {
+    const getTreinadorNome = async (busca) => {
         setCarregando(true);
-        await Api.get("treinador/" + nomeBusca.treNome).then(response => {
+        await Api.get("treinador/" + busca).then(response => {
             setTreinadoresData(response.data);
         }).catch(error => {
             console.log(error);
@@ -235,16 +236,7 @@ export default function AlunosCrud() {
                     <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroTreinadores()}><strong>+</strong> Adicionar Treinador</button>
                 </header>
                 <hr />
-                <form onSubmit={handleDefault}>
-                    <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="treNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getTreinadorNome()} type="submit">
-                            <span className="input-group-text border-0" id="search-addon">
-                                <i className="fa fa-search"></i>
-                            </span>
-                        </button>
-                    </div>
-                </form>
+                <Busca buscar={getTreinadorNome}/>
                 <br />
                 {carregando ? <div className="spinner-border loader" role="status">
                 </div>

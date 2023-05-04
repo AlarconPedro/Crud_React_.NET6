@@ -15,6 +15,8 @@ import { BsJustify } from "react-icons/bs";
 
 import { Link } from "react-router-dom";
 
+import Busca from "../../layout/Objetos/Busca";
+
 import "./AlunosCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
@@ -267,9 +269,9 @@ export default function AlunosCrud(props) {
         });
     }
 
-    const getAlunoNome = async () => {
+    const getAlunoNome = async (busca) => {
         setCarregando(true);
-        await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
+        await Api.get("aluno/" + busca).then(response => {
             setAlunosData(response.data);
         }).catch(error => {
             console.log(error);
@@ -345,16 +347,7 @@ export default function AlunosCrud(props) {
                     <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroAlunos()}><strong>+</strong> Adicionar Alunos</button>
                 </header>
                 <hr />
-                <form onSubmit={handleDefault}>
-                    <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getAlunoNome()} type="submit">
-                            <span className="input-group-text border-0" id="search-addon">
-                                <i className="fa fa-search"></i>
-                            </span>
-                        </button>
-                    </div>
-                </form>
+                <Busca buscar={getAlunoNome}/>
                 <br />
                 {carregando ? <div className="spinner-border loader" role="status">
                 </div>

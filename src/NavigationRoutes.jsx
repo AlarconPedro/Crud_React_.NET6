@@ -6,6 +6,7 @@ import Alunos from './pages/Alunos/AlunosCrud';
 import Atividades from './pages/Atividades/AtividadesCrud';
 import Treinadores from './pages/Treinadores/TreinadoresCrud';
 import Desafios from './pages/Desafios/DesafiosCrud';
+import ParticipantesDesafio from './pages/ParticipantesDesafio/ParticipantesDesafio';
 import Eventos from './pages/Eventos/EventosCrud';
 import Notificacao from './pages/Notificacao/NotificacaoCrud';
 import Modalidades from './pages/Modalidades/ModalidadesCrud';
@@ -19,6 +20,7 @@ export default nav =>
             <Route path="/atividades" element={<Atividades />} />
             <Route path="/treinadores" element={<Treinadores />} />
             <Route path="/desafios" element={<Desafios />} />
+            <Route path="/desafio/participantes" element={<ParticipantesDesafio />} />
             <Route path="/eventos" element={<Eventos />} />
             <Route path="/notificacao" element={<Notificacao />} />
             <Route path="/modalidade" element={<Modalidades />} />

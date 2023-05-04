@@ -16,6 +16,8 @@ import FormEditar from "../../components/Crud/FormularioDesafio/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioDesafio/FormExcluir";
 import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
+import Busca from "../../layout/Objetos/Busca";
+
 export default function DesafiosCrud() {
 
     const [carregando, setCarregando] = useState(false);
@@ -240,9 +242,9 @@ export default function DesafiosCrud() {
         });
     }
 
-    const getDesafioNome = async () => {
+    const getDesafioNome = async (nome) => {
         setCarregando(true);
-        await Api.get("desafio/" + nomeBusca.desNome).then(response => {
+        await Api.get("desafio/" + nome).then(response => {
             setDesafiosData(response.data);
         }).catch(error => {
             console.log(error);
@@ -268,6 +270,10 @@ export default function DesafiosCrud() {
     useEffect(() => {
         getModalidades();
     }, [setAbrirCadastroDesafios]);
+
+    useEffect(() => {
+        setUpdateDesafios(true);
+    }, [abrirCadastroDesafios]);
 
     function handleDefault(e) {
         e.preventDefault();
@@ -313,16 +319,7 @@ export default function DesafiosCrud() {
                     <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroDesafios()}><strong>+</strong> Adicionar Desafios</button>
                 </header>
                 <hr />
-                <form onSubmit={handleDefault}>
-                    <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="desNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getDesafioNome()} type="submit">
-                            <span className="input-group-text border-0" id="search-addon">
-                                <i className="fa fa-search"></i>
-                            </span>
-                        </button>
-                    </div>
-                </form>
+                <Busca buscar={getDesafioNome}/>
                 <br />
                 {carregando ? <div className="spinner-border loader" role="status">
                 </div>

@@ -4,6 +4,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import Api from "../../../services/Api";
 
+import { Link } from "react-router-dom";
+
 import { alunoUrl } from "../../../services/Imagens";
 
 export default function FormParticipantes(props) {
@@ -54,6 +56,14 @@ export default function FormParticipantes(props) {
         <Modal isOpen={abrir} className="modal-participantes">
             <ModalHeader>Listar Participantes</ModalHeader>
             <ModalBody className="mr-3">
+                <div className="desafio-container">
+                    <header>
+                        <Link className="text-decoration-none" to={"/desafio/participantes"} state={{ codigo: (props.codigoDesafio)}}>
+                            <button className="btn btn-success btn-adicionar"><strong>+</strong> Adicionar Alunos</button>
+                        </Link>
+                    </header>
+                    <hr />
+                </div>
                 <table className="table table-striped">
                     <thead>
                         <tr>

@@ -17,6 +17,8 @@ import FormEditar from "../../components/Crud/FormularioMedalhas/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioMedalhas/FormExcluir";
 import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/Niveis/FormNivelMedalha";
 
+import Busca from "../../layout/Objetos/Busca";
+
 import "./MedalhasCrud.css";
 
 export default function MedalhasCrud() {
@@ -174,9 +176,9 @@ export default function MedalhasCrud() {
         });
     }
 
-    const getMedalhaNome = async () => {
+    const getMedalhaNome = async (buscar) => {
         setCarregando(true);
-        await Api.get("aluno/" + nomeBusca.aluNome).then(response => {
+        await Api.get("medalha/" + buscar).then(response => {
             setMedalhasData(response.data);
         }).catch(error => {
             console.log(error);
@@ -234,16 +236,7 @@ export default function MedalhasCrud() {
                     <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroMedalhas()}><strong>+</strong> Adicionar Medalhas</button>
                 </header>
                 <hr />
-                <form onSubmit={handleDefault}>
-                    <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="aluNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getMedalhaNome()} type="submit">
-                            <span className="input-group-text border-0" id="search-addon">
-                                <i className="fa fa-search"></i>
-                            </span>
-                        </button>
-                    </div>
-                </form>
+                <Busca buscar={getMedalhaNome}/>
                 <br />
                 {carregando ? <div className="spinner-border loader" role="status">
                 </div>

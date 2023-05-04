@@ -15,6 +15,8 @@ import FormInserir from "../../components/Crud/FormularioModalidades/FormInserir
 import FormEditar from "../../components/Crud/FormularioModalidades/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioModalidades/FormExcluir";
 
+import Busca from "../../layout/Objetos/Busca";
+
 import "./ModalidadesCrud.css";
 
 export default function ModalidadesCrud() {
@@ -168,9 +170,9 @@ export default function ModalidadesCrud() {
         });
     }
 
-    const getModalidadeNome = async () => {
+    const getModalidadeNome = async (busca) => {
         setCarregando(true);
-        await Api.get("modalidade/" + nomeBusca.aluNome).then(response => {
+        await Api.get("modalidade/" + busca).then(response => {
             setModalidadesData(response.data);
         }).catch(error => {
             console.log(error);
@@ -223,16 +225,7 @@ export default function ModalidadesCrud() {
                     <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroModalidades()}><strong>+</strong> Adicionar Modalidades</button>
                 </header>
                 <hr />
-                <form onSubmit={handleDefault}>
-                    <div className="input-group rounded">
-                        <input type="search" className="form-control rounded" name="modNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={atualizaCampoBusca} />
-                        <button className="botaoBusca" onClick={() => getModalidadeNome()} type="submit">
-                            <span className="input-group-text border-0" id="search-addon">
-                                <i className="fa fa-search"></i>
-                            </span>
-                        </button>
-                    </div>
-                </form>
+                <Busca buscar={getModalidadeNome}/>
                 <br />
                 {carregando ? <div className="spinner-border loader" role="status">
                 </div>
