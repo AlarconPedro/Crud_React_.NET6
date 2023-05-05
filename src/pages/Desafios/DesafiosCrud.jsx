@@ -17,6 +17,7 @@ import FormExcluir from "../../components/Crud/FormularioDesafio/FormExcluir";
 import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
 import Busca from "../../layout/Objetos/Busca";
+import ConverteData from "../../funcoes/ConverteData";
 
 export default function DesafiosCrud() {
 
@@ -136,53 +137,26 @@ export default function DesafiosCrud() {
 
     const dataFim = (date) => {
         setDataFinal(date);
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
+        let data = ConverteData(date)
         setDesafio({
             ...desafio,
-            desDataFim: [year, month, day].join('/')
+            desDataFim: data
         });
     }
 
     const dataInicio = (date) => {
         setDataAtual(date);
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
+        let data = ConverteData(date)
         setDesafio({
             ...desafio,
-            desDataInicio: [year, month, day].join('/')
+            desDataInicio: data
         });
-        return [day, month, year].join('-');
+        return data;
     }
 
     const dataInicioExibicao = (date) => {
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('/');
+        let data = ConverteData(date)
+        return data;
     }
 
     const getDesafios = async (skip = 0) => {

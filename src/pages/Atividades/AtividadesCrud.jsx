@@ -14,6 +14,8 @@ import FormImagens from "../../components/Crud/FormularioAtividade/FormImagens";
 
 import { BsJustify } from "react-icons/bs";
 
+import ConverteData from "../../funcoes/ConverteData";
+
 import "./AtividadesCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
@@ -113,22 +115,13 @@ export default function AlunosCrud(props) {
     }
 
     const dataAuxiliar = (date) => {
-        // setDataAtual(date);
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        // setAtividade({
-        //     ...atividade,
-        //     aluDataNasc: [year, month, day].join('-')
-        // });
-        return [day, month, year].join('/');
+        setDataAtual(date);
+        let data = ConverteData(date);
+        setAtividade({
+            ...atividade,
+            aluAtiDataHora: data
+        });
+        return data;
     }
 
     const getAtividades = async (skip = 0) => {
