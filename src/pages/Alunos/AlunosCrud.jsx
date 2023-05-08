@@ -28,9 +28,101 @@ class AlunoCrud extends React.Component {
         super(props);
         this.state = {
             abrir: false,
+            abrirAtividades: false,
+            abrirCadastroAlunos: false,
+            abrirEditarAlunos: false,
+            abrirExcluirAlunos: false,
             carregando: false,
             urlApi: "aluno/",
             alunosData: [],
+            treinadoresData: [],
+            sexo: [
+                { id: "M", nome: 'Masculino' },
+                { id: "F", nome: 'Feminino' },
+            ],
+            alunoInitialState: {
+                aluCodigo: 0,
+                aluNome: '',
+                aluDataNasc: new Date("01/01/1900"),
+                aluEmail: '',
+                aluSenha: '',
+                treCodigo: '',
+                aluOneSignalId: null,
+                aluImagem: '',
+                aluId: '',
+                aluFone: '',
+                aluSexo: '',
+                aluAtivo: true,
+                aluObs: '',
+                aluStravaCode: null,
+                tbAlunoAtividades: [],
+                tbAlunoDesafios: [],
+                tbAlunoEventos: [],
+                treCodigoNavigation: null,
+            },
+            aluno: {
+                aluCodigo: 0,
+                aluNome: '',
+                aluDataNasc: new Date("01/01/1900"),
+                aluEmail: '',
+                aluSenha: '',
+                treCodigo: '',
+                aluOneSignalId: null,
+                aluImagem: '',
+                aluId: '',
+                aluFone: '',
+                aluSexo: '',
+                aluAtivo: true,
+                aluObs: '',
+                aluStravaCode: null,
+                tbAlunoAtividades: [],
+                tbAlunoDesafios: [],
+                tbAlunoEventos: [],
+                treCodigoNavigation: null,
+            }
+        }
+    }
+
+    abrirFecharCadastroAlunos = (abrirCadastro) => {
+        this.setState({ abrirCadastroAlunos: !abrirCadastro });
+        this.setState({ aluno: this.state.alunoInitialState });
+    }
+
+    abrirFecharAtividades = (abrirAtividades) => {
+        this.setState({ abrirAtividades: !abrirAtividades });
+    }
+
+    abrirFecharEditarAlunos = (abrirEditar) => {
+        this.setState({ abrirEditarAlunos: !abrirEditar });
+    }
+
+    abrirFecharExcluirAlunos = (abrirExcluir) => {
+        this.setState({ abrirExcluirAlunos: !abrirExcluir });
+    }
+
+    converterDataToIdade = (data) => {
+        const today = new Date();
+
+        var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
+        const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
+
+        if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
+            idade--;
+        }
+
+        return data !== "" ? idade : "-";
+    }
+
+    selecionarAluno = (aluno, opcao) => {
+        // this.setState(aluno);
+        this.setState({ aluno: aluno });
+        // (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
+        if (opcao === "Atividades") {
+            this.abrirFecharAtividades();
+        } else if (opcao === "Editar") {
+            this.abrirFecharEditarAlunos();
+        } else {
+            this.abrirFecharExcluirAlunos();
         }
     }
 
@@ -44,6 +136,16 @@ class AlunoCrud extends React.Component {
     //     setCarregando(false);
     // }
 
+    getAlunos = async (skip = 0) => {
+        this.setState({ carregando: true });
+        await Api.get(`${this.state.urlApi}?skip=${skip}`).then(response => {
+            this.setState({ alunosData: response.data });
+        }).catch(error => {
+            console.log(error);
+        });
+        this.setState({ carregando: false });
+    }
+
     getAlunoNome = async (busca) => {
         this.setState({ carregando: true });
         await Api.get(this.state.urlApi + busca).then(response => {
@@ -54,109 +156,133 @@ class AlunoCrud extends React.Component {
         this.setState({ carregando: false });
     }
 
+    componentDidMount() {
+        this.setState({ carregando: true });
+        this.getAlunos();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.alunosData !== this.state.alunosData) {
+            this.setState({ carregando: false });
+        }
+        if (prevState.aluno !== this.state.aluno) {
+            this.setState({ carregando: false });
+        }
+    }
+
     render() {
         return (
-            <Modelo
-                urlApi="aluno?skip="
-                titulo="Cadastro Alunos"
-                subtitulo="Painel Sou+Fit"
-                icone="user"
-                Cabecalho="Alunos"
-                BotaoAdd="Adicionar Alunos"
-                getByNome={this.getAlunoNome}
-                colunas={[
-                    { nome: "Id" },
-                    { nome: "Avatar" },
-                    { nome: "Nome" },
-                    { nome: "Telefone" },
-                    { nome: "Idade" },
-                    { nome: "Ativo" },
-                    { nome: "Atividades" },
-                    { nome: "Ações" },
-                    // { api: "aluCodigo", nome: "Id" },
-                    // { api: "aluImagem", nome: "Avatar" },
-                    // { api: "aluNome", nome: "Nome" },
-                    // { api: "aluFone", nome: "Telefone" },
-                    // { api: "aluDataNasc", nome: "Idade" },
-                    // { api: "aluAtivo", nome: "Ativo" },
-                    // { api: "aluCodigo", nome: "Atividades" },
-                    // { api: "acoes", nome: "Ações" },
-                ]}
-                variaveis={
-                    [
-                        "treinador/",
-                        "aluno/",
-                        "aluno?skip=",
-                    ]
-                }
-            />
+            <React.Fragment>
+                <Modelo
+                    urlApi="aluno?skip="
+                    titulo="Cadastro Alunos"
+                    subtitulo="Painel Sou+Fit"
+                    icone="user"
+                    Cabecalho="Alunos"
+                    BotaoAdd="Adicionar Alunos"
+                    getByNome={this.getAlunoNome}
+                    colunas={[
+                        { nome: "Avatar" },
+                        { nome: "Nome" },
+                        { nome: "Telefone" },
+                        { nome: "Idade" },
+                        { nome: "Ativo" },
+                        { nome: "Atividades" },
+                        // { api: "aluCodigo", nome: "Id" },
+                        // { api: "aluImagem", nome: "Avatar" },
+                        // { api: "aluNome", nome: "Nome" },
+                        // { api: "aluFone", nome: "Telefone" },
+                        // { api: "aluDataNasc", nome: "Idade" },
+                        // { api: "aluAtivo", nome: "Ativo" },
+                        // { api: "aluCodigo", nome: "Atividades" },
+                        // { api: "acoes", nome: "Ações" },
+                    ]}
+                    variaveis={
+                        [
+                            "treinador/",
+                            "aluno/",
+                            "aluno?skip=",
+                        ]
+                    }
+                >
+                    {this.state.carregando ? <div className="spinner-border loader" role="status" />
+                        :
+                        <tbody>
+                            {this.state.alunosData.map((aluno) => (
+                                <tr key={aluno.aluCodigo}>
+                                    <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td>
+                                    <td className="pt-3">{aluno.aluNome}</td>
+                                    <td className="pt-3">{aluno.aluFone}</td>
+                                    <td className="pt-3"><div className="idade">{this.converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
+                                    <td className="pt-3">
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="checkbox" checked={aluno.aluAtivo} value={true} />
+                                        </div>
+                                    </td>
+                                    <Link className="text-decoration-none" to={"/atividades"} state={{ codigo: (aluno.aluCodigo) }}>
+                                        <td className="pl-5 pt-3 listar" onClick={() => this.selecionarAluno(aluno, "Atividades")}><BsJustify /></td>
+                                    </Link>
+                                    <td>
+                                        <button className="btn btn-warning" onClick={() => this.selecionarAluno(aluno, "Editar")}>
+                                            <i className="fa fa-pencil"></i>
+                                        </button>{" "}
+                                        <button className="btn btn-danger" onClick={() => this.selecionarAluno(aluno, "Excluir")}>
+                                            <i className="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    }
+                </Modelo>
+                {/* <FormInserir
+                    nome={"Aluno"}
+                    abrir={abrirCadastroAlunos}
+                    aluDados={aluno}
+                    funcPost={postAluno}
+                    funcAbrir={abrirFecharCadastroAlunos}
+                    funcData={dataAuxiliar}
+                    funcMascara={mascaraTelefone}
+                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                    funcAtualizaCampo={atualizaCampo}
+                    funcSexo={sexo}
+                    treinaData={treinadoresData}
+                    funcBuscaTreinador={getTreinadorId}
+                /> */}
+
+                <FormEditar
+                    nome={"Aluno"}
+                    abrir={this.state.abrirEditarAlunos}
+                    aluNome={this.state.aluno && this.state.aluno.aluNome}
+                    aluDados={this.state.aluno}
+                    // dataAtual={dataAtual}
+                    // funcPut={putAluno}
+                    funcAbrir={this.abrirFecharEditarAlunos}
+                    // funcData={dataAuxiliar}
+                    // funcMascara={mascaraTelefone}
+                    // funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                    // funcAtualizaCampo={atualizaCampo}
+                    // funcSexo={sexo}
+                    // treinaData={treinadoresData}
+                    // funcBuscaTreinador={getTreinadorId}
+                />
+
+                <FormExcluir
+                    nome={"Aluno"}
+                    abrir={this.state.abrirExcluirAlunos}
+                    aluNome={this.state.aluno && this.state.aluno.aluNome}
+                    aluDados={this.state.aluno.aluCodigo}
+                    // funcDelete={deleteAluno}
+                    funcAbrir={this.abrirFecharExcluirAlunos}
+                />
+            </React.Fragment>
         )
     }
 }
 
 export default AlunoCrud;
 
-// export default function AlunosCrud(props) {
 
-//     const [carregando, setCarregando] = useState(false);
-
-//     const [dataAtual, setDataAtual] = useState(new Date());
-
-//     const [alunosData, setAlunosData] = useState([]);
-
-//     const [treinadoresData, setTreinadoresData] = useState([]);
-
-//     const [alunoInitialState] = useState({
-//         aluCodigo: 0,
-//         aluNome: '',
-//         aluDataNasc: new Date("01/01/1900"),
-//         aluEmail: '',
-//         aluSenha: '',
-//         treCodigo: '',
-//         aluOneSignalId: null,
-//         aluImagem: '',
-//         aluId: '',
-//         aluFone: '',
-//         aluSexo: '',
-//         aluAtivo: true,
-//         aluObs: '',
-//         aluStravaCode: null,
-//         tbAlunoAtividades: [],
-//         tbAlunoDesafios: [],
-//         tbAlunoEventos: [],
-//         treCodigoNavigation: null,
-//     });
-
-
-//     const [aluno, setAluno] = useState({
-//         aluCodigo: 0,
-//         aluNome: '',
-//         aluDataNasc: new Date(dataAtual),
-//         aluEmail: '',
-//         aluSenha: '',
-//         treCodigo: '',
-//         aluOneSignalId: null,
-//         aluImagem: '',
-//         aluId: '',
-//         aluFone: '',
-//         aluSexo: '',
-//         aluAtivo: true,
-//         aluObs: '',
-//         aluStravaCode: null,
-//         tbAlunoAtividades: [],
-//         tbAlunoDesafios: [],
-//         tbAlunoEventos: [],
-//         treCodigoNavigation: null,
-//     });
-
-//     const sexo = [
-//         { id: "M", nome: 'Masculino' },
-//         { id: "F", nome: 'Feminino' },
-//     ];
-
-//     const [nomeBusca, setNomeBusca] = useState({
-//         aluNome: ''
-//     });
 
 //     const [pagina, setPagina] = useState(1);
 
@@ -183,31 +309,17 @@ export default AlunoCrud;
 //         setAbrirAtividades(!abrirAtividades);
 //     }
 
-//     const mascaraTelefone = (e) => {
-//         let input = e.target;
-//         input.value = phoneMask(input.value);
-//         setAluno({ ...aluno, [e.target.name]: input.value });
+// const selecionarAluno = (aluno, opcao) => {
+//     setAluno(aluno);
+//     // (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
+//     if (opcao === "Atividades") {
+//         abrirFecharAtividades();
+//     } else if (opcao === "Editar") {
+//         abrirFecharEditarAlunos();
+//     } else {
+//         abrirFecharExcluirAlunos();
 //     }
-
-//     const phoneMask = (value) => {
-//         if (!value) return ""
-//         value = value.replace(/\D/g, '')
-//         value = value.replace(/(\d{2})(\d)/, "($1) $2")
-//         value = value.replace(/(\d)(\d{4})$/, "$1-$2")
-//         return value
-//     }
-
-//     const selecionarAluno = (aluno, opcao) => {
-//         setAluno(aluno);
-//         // (opcao === "Editar") ? abrirFecharEditarAlunos() : abrirFecharExcluirAlunos();
-//         if (opcao === "Atividades") {
-//             abrirFecharAtividades();
-//         } else if (opcao === "Editar") {
-//             abrirFecharEditarAlunos();
-//         } else {
-//             abrirFecharExcluirAlunos();
-//         }
-//     }
+// }
 
 //     const atualizaCampo = e => {
 //         const { name, value } = e.target;
@@ -344,18 +456,18 @@ export default AlunoCrud;
 //         setCarregando(false);
 //     }
 
-//     const converterDataToIdade = (data) => {
-//         const today = new Date();
+// const converterDataToIdade = (data) => {
+//     const today = new Date();
 
-//         var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
-//         const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
+//     var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
+//     const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
 
-//         if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
-//             idade--;
-//         }
-
-//         return data !== "" ? idade : "-";
+//     if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
+//         idade--;
 //     }
+
+//     return data !== "" ? idade : "-";
+// }
 
 //     useEffect(() => {
 //         if (updateAlunos) {
@@ -470,60 +582,60 @@ export default AlunoCrud;
 //                     </nav>
 //                 </div>
 
-//                 {/* <FormAtividades
-//                     nome={"Aluno"}
-//                     abrir={abrirParticipantes}
-//                     aluDados={aluno}
-//                     funcAbrir={abrirFecharAtividades}
-//                     funcData={dataAuxiliar}
-//                     funcMascara={mascaraTelefone}
-//                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
-//                     funcAtualizaCampo={atualizaCampo}
-//                     funcSexo={sexo}
-//                     treinaData={treinadoresData}
-//                     funcBuscaTreinador={getTreinadorId}
-//                 /> */}
+{/* <FormAtividades
+                    nome={"Aluno"}
+                    abrir={abrirParticipantes}
+                    aluDados={aluno}
+                    funcAbrir={abrirFecharAtividades}
+                    funcData={dataAuxiliar}
+                    funcMascara={mascaraTelefone}
+                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                    funcAtualizaCampo={atualizaCampo}
+                    funcSexo={sexo}
+                    treinaData={treinadoresData}
+                    funcBuscaTreinador={getTreinadorId}
+                /> */}
 
-//                 <FormInserir
-//                     nome={"Aluno"}
-//                     abrir={abrirCadastroAlunos}
-//                     aluDados={aluno}
-//                     funcPost={postAluno}
-//                     funcAbrir={abrirFecharCadastroAlunos}
-//                     funcData={dataAuxiliar}
-//                     funcMascara={mascaraTelefone}
-//                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
-//                     funcAtualizaCampo={atualizaCampo}
-//                     funcSexo={sexo}
-//                     treinaData={treinadoresData}
-//                     funcBuscaTreinador={getTreinadorId}
-//                 />
+                // <FormInserir
+                //     nome={"Aluno"}
+                //     abrir={abrirCadastroAlunos}
+                //     aluDados={aluno}
+                //     funcPost={postAluno}
+                //     funcAbrir={abrirFecharCadastroAlunos}
+                //     funcData={dataAuxiliar}
+                //     funcMascara={mascaraTelefone}
+                //     funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                //     funcAtualizaCampo={atualizaCampo}
+                //     funcSexo={sexo}
+                //     treinaData={treinadoresData}
+                //     funcBuscaTreinador={getTreinadorId}
+                // />
 
-//                 <FormEditar
-//                     nome={"Aluno"}
-//                     abrir={abrirEditarAlunos}
-//                     aluNome={aluno && aluno.aluNome}
-//                     aluDados={aluno}
-//                     dataAtual={dataAtual}
-//                     funcPut={putAluno}
-//                     funcAbrir={abrirFecharEditarAlunos}
-//                     funcData={dataAuxiliar}
-//                     funcMascara={mascaraTelefone}
-//                     funcAtualizaCampoAtivo={atualizaCampoAtivo}
-//                     funcAtualizaCampo={atualizaCampo}
-//                     funcSexo={sexo}
-//                     treinaData={treinadoresData}
-//                     funcBuscaTreinador={getTreinadorId}
-//                 />
+                // <FormEditar
+                //     nome={"Aluno"}
+                //     abrir={abrirEditarAlunos}
+                //     aluNome={aluno && aluno.aluNome}
+                //     aluDados={aluno}
+                //     dataAtual={dataAtual}
+                //     funcPut={putAluno}
+                //     funcAbrir={abrirFecharEditarAlunos}
+                //     funcData={dataAuxiliar}
+                //     funcMascara={mascaraTelefone}
+                //     funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                //     funcAtualizaCampo={atualizaCampo}
+                //     funcSexo={sexo}
+                //     treinaData={treinadoresData}
+                //     funcBuscaTreinador={getTreinadorId}
+                // />
 
-//                 <FormExcluir
-//                     nome={"Aluno"}
-//                     abrir={abrirExcluirAlunos}
-//                     aluNome={aluno && aluno.aluNome}
-//                     aluDados={aluno.aluCodigo}
-//                     funcDelete={deleteAluno}
-//                     funcAbrir={abrirFecharExcluirAlunos}
-//                 />
+                // <FormExcluir
+                //     nome={"Aluno"}
+                //     abrir={abrirExcluirAlunos}
+                //     aluNome={aluno && aluno.aluNome}
+                //     aluDados={aluno.aluCodigo}
+                //     funcDelete={deleteAluno}
+                //     funcAbrir={abrirFecharExcluirAlunos}
+                // />
 //             </div>
 //         </Mestre >
 //     );

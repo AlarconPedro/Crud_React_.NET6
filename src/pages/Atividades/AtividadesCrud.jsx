@@ -265,7 +265,6 @@ export default function AlunosCrud(props) {
                             </tr>
                         </thead>
                         <tbody>
-                            <div></div>
                             {atividadesData.map((atividade) => (
                                 <tr key={atividade.modCodigo}>
                                     <td className="pt-3">{atividade.modNome}</td>

@@ -101,11 +101,11 @@ export default function FormEditar(props) {
                             selected={treinadoresData}
                             onChange={e => props.funcAtualizaCampo(e)}>
                             {
-                                treinadoresData.map((item, index) => {
-                                    return (
-                                        <option key={item.treCodigo} value={item.treCodigo}>{item.treNome}</option>
-                                    )
-                                })
+                                // treinadoresData.map((item, index) => {
+                                //     return (
+                                //         <option key={item.treCodigo} value={item.treCodigo}>{item.treNome}</option>
+                                //     )
+                                // })
                             }
                         </select>
                     </div>

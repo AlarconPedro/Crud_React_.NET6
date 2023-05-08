@@ -8,7 +8,6 @@ class Modelo extends React.Component {
         super(props);
         this.state = {
             abrir: false,
-            carregando: false,
             urlApi: "",
             variaveis: [...this.props.variaveis],
             icone: "",
@@ -18,11 +17,6 @@ class Modelo extends React.Component {
             BotaoAdd: "",
             pagina: 1,
         }
-    }
-
-    componentDidMount() {
-        this.setState({ carregando: true });
-        // this.getDados();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -47,12 +41,6 @@ class Modelo extends React.Component {
         if (prevState.variaveis !== this.props.variaveis) {
             this.setState({ variaveis: this.props.variaveis });
         }
-        if (prevProps.children !== this.props.children) {
-            this.setState({ carregando: false });
-        }
-        if (prevProps.colunas !== this.props.colunas) {
-            this.setState({ carregando: false });
-        }
     }
 
     alterarPagina = (operacao) => {
@@ -70,28 +58,21 @@ class Modelo extends React.Component {
     abrirFecharCadastro = () => {
         this.setState({ abrir: !this.state.abrir });
     }
-    
+
     render() {
         return (
             <Mestre icon={this.state.icone} title={this.state.titulo} subtitle={this.state.subtitulo}>
-            <div className="alunos-container">
-                <header>
-                    <h3>{this.state.Cabecalho}</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => this.abrirFecharCadastro()}><strong>+</strong>{this.state.BotaoAdd}</button>
-                </header>
-                <hr />
-                <Busca buscar={this.props.getByNome}/>
-                <br />
-                {/* {this.state.carregando ? <div className="spinner-border loader" role="status"> */}
-                {/* </div> */}
+                <div className="alunos-container">
+                    <header>
+                        <h3>{this.state.Cabecalho}</h3>
+                        <button className="btn btn-success btn-adicionar" onClick={() => this.abrirFecharCadastro()}><strong>+</strong>{this.state.BotaoAdd}</button>
+                    </header>
+                    <hr />
+                    <Busca buscar={this.props.getByNome} />
+                    <br />
                     <table className="table table-striped">
                         <thead>
                             <tr>
-                                {/* {this.props.colunas.map((coluna, index) => {
-                                    return (
-                                        <th key={index}>{coluna}</th>
-                                    )
-                                })} */}
                                 {this.props.colunas.map((coluna, index) => {
                                     return (
                                         <th key={index}>{coluna.nome}</th>
@@ -100,26 +81,23 @@ class Modelo extends React.Component {
                                 <th className="acoes">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {this.props.children}
-                        </tbody>
+                        {this.props.children}
                     </table>
-                {/* } */}
-                <hr />
-                <br />
-                <div className="d-flex justify-content-center">
-                    <nav aria-label="Page navigation example">
-                        <ul className="pagination">
-                            <li className="page-item" onClick={() => this.alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-                            <li className="page-item active"><p className="page-link">{this.state.pagina}</p></li>
-                            <li className="page-item"><a className="page-link" onClick={() => this.alterarPagina("&gt;")}>&gt;</a></li>
-                        </ul>
-                    </nav>
-                </div>
+                    <hr />
+                    <br />
+                    <div className="d-flex justify-content-center">
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination">
+                                <li className="page-item" onClick={() => this.alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
+                                <li className="page-item active"><p className="page-link">{this.state.pagina}</p></li>
+                                <li className="page-item"><a className="page-link" onClick={() => this.alterarPagina("&gt;")}>&gt;</a></li>
+                            </ul>
+                        </nav>
+                    </div>
 
-                {/* <Modal isOpen={modal} toggle={() => abrirFecharModal()}> */}
-            </div>
-        </Mestre >
+                    {/* <Modal isOpen={modal} toggle={() => abrirFecharModal()}> */}
+                </div>
+            </Mestre >
         )
     }
 }
