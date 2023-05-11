@@ -2,6 +2,7 @@ import React from "react";
 
 import Mestre from "../layout/Mestre/Mestre";
 import Busca from "../layout/Objetos/Busca";
+import ControlePaginas from "../funcoes/ControlePagina";
 
 class Modelo extends React.Component {
     constructor(props) {
@@ -42,19 +43,7 @@ class Modelo extends React.Component {
             this.setState({ variaveis: this.props.variaveis });
         }
     }
-
-    alterarPagina = (operacao) => {
-        if (operacao === "&lt;") {
-            if (this.state.pagina > 1) {
-                this.setState({ pagina: this.state.pagina - 1 });
-            }
-        } else if (operacao === "&gt;") {
-            if (this.state.pagina < this.state.dadosApi.length) {
-                this.setState({ pagina: this.state.pagina + 1 });
-            }
-        }
-    }
-
+    
     abrirFecharCadastro = () => {
         this.setState({ abrir: !this.state.abrir });
     }
@@ -85,17 +74,11 @@ class Modelo extends React.Component {
                     </table>
                     <hr />
                     <br />
-                    <div className="d-flex justify-content-center">
-                        <nav aria-label="Page navigation example">
-                            <ul className="pagination">
-                                <li className="page-item" onClick={() => this.alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-                                <li className="page-item active"><p className="page-link">{this.state.pagina}</p></li>
-                                <li className="page-item"><a className="page-link" onClick={() => this.alterarPagina("&gt;")}>&gt;</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-
-                    {/* <Modal isOpen={modal} toggle={() => abrirFecharModal()}> */}
+                    <ControlePaginas 
+                        pagina={this.state.pagina}
+                        dadosApi={this.props.dadosApi}
+                        getAlunos={this.props.getAlunos}
+                    />
                 </div>
             </Mestre >
         )

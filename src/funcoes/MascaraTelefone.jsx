@@ -1,8 +1,7 @@
-export default function MascaraTelefone(telefone) {
-    const mascara = (telefone) => {
+export default function mascara(telefone) {
         let input = telefone.target;
         input.value = phoneMask(input.value);
-        setAluno({ ...aluno, [telefone.target.name]: input.value });
+        return input.value;
     }
 
     const phoneMask = (value) => {
@@ -12,6 +11,3 @@ export default function MascaraTelefone(telefone) {
         value = value.replace(/(\d)(\d{4})$/, "$1-$2")
         return value
     }
-
-    return mascara;
-}
