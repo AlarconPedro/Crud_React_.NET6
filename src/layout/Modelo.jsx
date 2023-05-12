@@ -1,7 +1,7 @@
 import React from "react";
 
-import Mestre from "../layout/Mestre/Mestre";
-import Busca from "../layout/Objetos/Busca";
+import Mestre from "./Mestre/Mestre";
+import Busca from "./Objetos/Busca";
 import ControlePaginas from "../funcoes/ControlePagina";
 
 class Modelo extends React.Component {
@@ -45,7 +45,8 @@ class Modelo extends React.Component {
     }
     
     abrirFecharCadastro = () => {
-        this.setState({ abrir: !this.state.abrir });
+        this.setState({ abrir: this.state.abrir });
+        this.props.funcAbrir(this.state.abrir);
     }
 
     render() {

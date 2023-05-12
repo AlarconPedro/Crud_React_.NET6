@@ -9,7 +9,6 @@ export default function Calendario() {
 
     const selectDate = (value) => {
         value.Date = value.getDate();
-        console.log(value);
     }
 
     return (

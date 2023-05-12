@@ -10,9 +10,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import Api from "../../services/Api";
 import { aluno, treinador } from "../../services/RotasApi";
 
-import FormInserir from "../../components/Crud/FormularioAluno/FormInserir";
-import FormEditar from "../../components/Crud/FormularioAluno/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioAluno/FormExcluir";
+import FormInserir from "../../components/Forms/FormInserir";
+import FormEditar from "../../components/Forms/FormEditar";
+import FormExcluir from "../../components/Forms/FormExcluir";
 import FormAtividades from "../Atividades/AtividadesCrud";
 
 import { BsJustify } from "react-icons/bs";
@@ -24,7 +24,7 @@ import ConverteData from "../../funcoes/ConverteData";
 import AtualizaCampo from "../../funcoes/AtualizaCampo";
 import MascaraTelefone from "../../funcoes/MascaraTelefone";
 
-import Modelo from "../Modelo";
+import Modelo from "../../layout/Modelo";
 
 import "./AlunosCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
@@ -35,9 +35,9 @@ class AlunoCrud extends React.Component {
         this.state = {
             abrir: false,
             abrirAtividades: false,
-            abrirCadastroAlunos: false,
+            abrirCadastro: false,
             abrirEditar: false,
-            abrirExcluirAlunos: false,
+            abrirExcluir: false,
             carregando: false,
             updateAlunos: false,
             alunosData: [],
@@ -89,8 +89,8 @@ class AlunoCrud extends React.Component {
         }
     }
 
-    abrirFecharCadastroAlunos = (abrirCadastro) => {
-        this.setState({ abrirCadastroAlunos: !abrirCadastro });
+    abrirFecharCadastro = (abrir) => {
+        this.setState({ abrirCadastro: !abrir || !this.state.abrirCadastro });
         this.setState({ aluno: this.state.alunoInitialState });
     }
 
@@ -102,7 +102,7 @@ class AlunoCrud extends React.Component {
         this.setState({ abrirEditar: !abrirEditar || !this.state.abrirEditar });
     }
 
-    abrirFecharExcluirAlunos = (abrirExcluir) => {
+    abrirFecharExcluir = (abrirExcluir) => {
         this.setState({ abrirExcluirAlunos: !abrirExcluir });
     }
 
@@ -127,11 +127,11 @@ class AlunoCrud extends React.Component {
             this.abrirFecharEditar();
             this.getTreinadores();
         } else {
-            this.abrirFecharExcluirAlunos();
+            this.abrirFecharExcluir();
         }
     }
 
-     getAlunos = async (skip = 0) => {
+    getAlunos = async (skip = 0) => {
         this.setState({ carregando: true });
         await Api.get(`${aluno}?skip=${skip}`).then(response => {
             this.setState({ alunosData: response.data });
@@ -176,7 +176,7 @@ class AlunoCrud extends React.Component {
         await Api.post(aluno, this.state.aluno).then(response => {
             this.setState({ aluno: response.data });
             this.setState({ updateAlunos: true });
-            this.abrirFecharCadastroAlunos();
+            this.abrirFecharCadastro();
         }).catch(error => {
             console.log(error);
         });
@@ -193,7 +193,17 @@ class AlunoCrud extends React.Component {
             console.log(error);
         });
         this.setState({ aluno: this.state.alunoInitialState });
-        this.setState({ updateAlunos: true})
+        this.setState({ updateAlunos: true })
+    }
+
+    deleteAluno = async (id) => {
+        await Api.delete(aluno + id).then(response => {
+            this.setState({ updateAlunos: true });
+            this.abrirFecharExcluir();
+        }).catch(error => {
+            console.log(error);
+        });
+        this.setState({ aluno: this.state.alunoInitialState });
     }
 
     atualizaCampo = e => {
@@ -201,9 +211,8 @@ class AlunoCrud extends React.Component {
         this.setState({ aluno: { ...this.state.aluno, [name]: value } });
     }
 
-    atualizaCampoAtivo = e => {
-        const { name, value } = e.target;
-        this.setState({ aluno: { ...this.state.aluno, [name]: value === "true" ? true : false } });
+    atualizaCampoAtivo = (e) => {
+        this.setState({ aluno: { ...this.state.aluno, aluAtivo: e.target.checked } });
     }
 
     atualizaCampoData = e => {
@@ -255,6 +264,7 @@ class AlunoCrud extends React.Component {
                     dadosApi={this.state.alunosData}
                     getAlunos={this.getAlunos}
                     getByNome={this.getAlunoNome}
+                    funcAbrir={this.abrirFecharCadastro}
                     colunas={[
                         { nome: "Avatar" },
                         { nome: "Nome" },
@@ -315,6 +325,109 @@ class AlunoCrud extends React.Component {
                     treinaData={treinadoresData}
                     funcBuscaTreinador={getTreinadorId}
                 /> */}
+
+                <FormInserir
+                    nome={"Aluno"}
+                    abrir={this.state.abrirCadastro}
+                    funcAbrir={this.abrirFecharCadastro}
+                    funcPost={this.postAluno}
+                >
+                    <form className="row g-3 form-group">
+                        <div className="col-md-6">
+                            <label className="form-label mb-0">Nome:</label>
+                            <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                                name="aluNome" onChange={e => this.atualizaCampo(e)} />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0">Data Nascimento:</label>
+                            <DatePicker
+                                className="form-control"
+                                name="aluDataNasc"
+                                selected={new Date(this.state.aluno.aluDataNasc)}
+                                onChange={date => this.atualizaCampoData(date)}
+                                dateFormat={"dd/MM/yyyy"}
+                                timeFormat="yyyy-MM-dd"
+                                customInput={
+                                    <InputMask
+                                        type="text"
+                                        mask="99/99/9999"
+                                    />
+                                }
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0">Sexo:</label>
+                            <select className="form-select w-100 h-50"
+                                name="aluSexo" onChange={e => this.atualizaCampo(e)}>
+                                <option value=""></option>
+                                {
+                                    // sexo.map((item, index) => {
+                                    //     return (
+                                    //         <option key={index} value={item.id}>{item.nome}</option>
+                                    //     )
+                                    // })
+                                }
+                            </select>
+                        </div>
+                        <div className="col-md-6">
+                            <label className="form-label mb-0 mt-2">Treinador:</label>
+                            <select className="form-select w-100 h-50"
+                                name="treCodigo"
+                                onChange={e => this.atualizaCampo(e)}>
+                                <option value=""></option>
+                                {
+                                    // treinadoresData.map((item, index) => {
+                                    //     return (
+                                    //         <option key={index} value={item.treCodigo}>{item.treNome}</option>
+                                    //     )
+                                    // })
+                                }
+                            </select>
+                        </div>
+                        <div className="col-6">
+                            <label className="form-label mb-0 mt-2">Telefone:</label>
+                            <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
+                                name="aluFone"
+                                onKeyUp={e => this.adicionarMascara(e)}
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label className="form-label mb-0 mt-2">Email:</label>
+                            <input type="email" className="form-control" placeholder="exemplo@gmail.com"
+                                name="aluEmail" onChange={e => this.atualizaCampo(e)} />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0 mt-2">Senha:</label>
+                            <input type="password" className="form-control" placeholder="****"
+                                name="aluSenha" onChange={e => this.atualizaCampo(e)} />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
+                            <input type="password" className="form-control" placeholder="****"
+                                name="aluSenha" onChange={e => this.atualizaCampo(e)} />
+                        </div>
+                        <div className="col-md-6">
+                            <label className="form-label mb-0">Observação:</label>
+                            <input type="text" className="form-control" placeholder="Obs."
+                                name="aluObs" onChange={e => this.atualizaCampo(e)} />
+                        </div>
+                        <div className="col-2 mt-5">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="gridCheck"
+                                    name="aluAtivo"
+                                    onChange={e => this.atualizaCampoAtivo(e)}
+                                    value={true} />
+                                <label className="form-check-label">Ativo</label>
+                            </div>
+                        </div>
+                        <div className="col-md-4 mt-5">
+                            <label className="form-label mb-0">Imagem:</label>
+                            <input type="file" className="form-control"
+                                name="treImagem" />
+                        </div>
+                    </form>
+                </FormInserir>
 
                 <FormEditar
                     nome={"Aluno"}
@@ -436,11 +549,11 @@ class AlunoCrud extends React.Component {
 
                 <FormExcluir
                     nome={"Aluno"}
-                    abrir={this.state.abrirExcluirAlunos}
+                    abrir={this.state.abrirExcluir}
                     aluNome={this.state.aluno && this.state.aluno.aluNome}
                     aluDados={this.state.aluno.aluCodigo}
-                    // funcDelete={deleteAluno}
-                    funcAbrir={this.abrirFecharExcluirAlunos}
+                    funcDelete={this.deleteAluno}
+                    funcAbrir={this.abrirFecharExcluir}
                 />
             </React.Fragment>
         )

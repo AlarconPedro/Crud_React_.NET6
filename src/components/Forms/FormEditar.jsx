@@ -2,8 +2,6 @@ import React from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import { alunoUrl } from "../../../services/Imagens";
-
 class FormEditar extends React.Component {
     constructor(props) {
         super(props);
