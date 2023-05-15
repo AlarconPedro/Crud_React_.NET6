@@ -10,12 +10,14 @@ import FormInserir from "../../components/Crud/FormularioTreinador/FormInserir";
 import FormEditar from "../../components/Crud/FormularioTreinador/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioTreinador/FormExcluir";
 
+import Modelo from "../../layout/Modelo";
+
 import "./TreinadoresCrud.css";
 import { treinadorUrl } from "../../services/Imagens";
 
 import Busca from "../../layout/Objetos/Busca";
 
-export default function AlunosCrud() {
+export default function TreinadoresCrud() {
 
     const [carregando, setCarregando] = useState(false);
 
@@ -78,20 +80,6 @@ export default function AlunosCrud() {
 
     const abrirFecharExcluirTreinadores = (abrirExcluirTreinadores) => {
         setAbrirExcluirTreinadores(!abrirExcluirTreinadores);
-    }
-
-    const mascaraTelefone = (e) => {
-        let input = e.target;
-        input.value = phoneMask(input.value);
-        setTreinador({ ...treinador, [e.target.name]: input.value });
-    }
-
-    const phoneMask = (value) => {
-        if (!value) return ""
-        value = value.replace(/\D/g, '')
-        value = value.replace(/(\d{2})(\d)/, "($1) $2")
-        value = value.replace(/(\d)(\d{4})$/, "$1-$2")
-        return value
     }
 
     const selecionaImagem = (e) => {
@@ -210,122 +198,142 @@ export default function AlunosCrud() {
         e.preventDefault();
     }
 
-    const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > treinadoresData.length ? avancarPagina()
-            : avancarPagina(pagina * 10)
-            : voltarPagina(pagina * 10);
-    }
-
-    const avancarPagina = async (skip) => {
-        getTreinadores(skip);
-        pagina > treinadoresData.length ? setPagina(1) :
-            setPagina(pagina + 1);
-    }
-
-    const voltarPagina = async (skip) => {
-        skip = skip - 20;
-        getTreinadores(skip);
-        pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
-    }
-
     return (
-        <Mestre icon="graduation-cap" title="Cadastro Treinadores" subtitle="Painel Sou+Fit">
-            <div className="treinadores-container">
-                <header>
-                    <h3>Treinadores</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroTreinadores()}><strong>+</strong> Adicionar Treinador</button>
-                </header>
-                <hr />
-                <Busca buscar={getTreinadorNome}/>
-                <br />
-                {carregando ? <div className="spinner-border loader" role="status">
-                </div>
-                    : <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                {/* <th>Id</th> */}
-                                <th>Avatar</th>
-                                <th>Nome</th>
-                                <th>Telefone</th>
-                                <th>Ativo</th>
-                                <th className="acoes">Ações</th>
+        <React.Fragment>
+            <Modelo
+                urlApi="treinador?skip="
+                titulo="Cadastro Treinadores"
+                subtitulo="Painel Sou+Fit"
+                icone="graduation-cap"
+                tipoContainer="treinadores-container"
+                Cabecalho="Treinadores"
+                BotaoAdd="Adicionar Treinador"
+                dadosApi={treinadoresData}
+                getDados={getTreinadores}
+                getByNome={getTreinadorNome}
+                funcAbrirCadastro={abrirFecharCadastroTreinadores}
+                colunas={[
+                    { nome: "Avatar" },
+                    { nome: "Nome" },
+                    { nome: "Telefone" },
+                    { nome: "Ativo" },
+                ]}
+            >
+                {carregando ? <div className="spinner-border loader" role="status"></div>
+                    :
+                    <tbody>
+                        {treinadoresData.map((treinador) => (
+                            <tr key={treinador.treCodigo}>
+                                {/* <td>{aluno.aluCodigo}</td> */}
+                                <td className=""><img src={treinadorUrl + treinador.treImagem} alt="" /></td>
+                                <td className="pt-3">{treinador.treNome}</td>
+                                <td className="pt-3">{treinador.treFone}</td>
+                                <td className="pt-3">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" checked={treinador.treCodigo} value={true} />
+                                    </div>
+                                </td>
+                                <td>
+                                    <button className="btn btn-warning" onClick={() => selecionarTreinador(treinador, "Editar")}>
+                                        <i className="fa fa-pencil"></i>
+                                    </button>{" "}
+                                    <button className="btn btn-danger" onClick={() => selecionarTreinador(treinador, "Excluir")}>
+                                        <i className="fa fa-trash"></i>
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {treinadoresData.map((treinador) => (
-                                <tr key={treinador.treCodigo}>
-                                    {/* <td>{aluno.aluCodigo}</td> */}
-                                    <td className=""><img src={treinadorUrl + treinador.treImagem} alt="" /></td>
-                                    <td className="pt-3">{treinador.treNome}</td>
-                                    <td className="pt-3">{treinador.treFone}</td>
-                                    <td className="pt-3">
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={treinador.treCodigo} value={true} />
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button className="btn btn-warning" onClick={() => selecionarTreinador(treinador, "Editar")}>
-                                            <i className="fa fa-pencil"></i>
-                                        </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarTreinador(treinador, "Excluir")}>
-                                            <i className="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                        ))}
+                    </tbody>
                 }
-                <hr />
-                <br />
-                <div className="d-flex justify-content-center">
-                    <nav aria-label="Page navigation example">
-                        <ul className="pagination">
-                            <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-                            <li className="page-item active"><p className="page-link">{pagina}</p></li>
-                            <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
-                        </ul>
-                    </nav>
-                </div>
+            </Modelo>
 
-                <FormInserir
-                    nome={"Treinador"}
-                    abrir={abrirCadastroTreinadores}
-                    treDados={treinador}
-                    funcPost={postTreinador}
-                    funcAbrir={abrirFecharCadastroTreinadores}
-                    funcMascara={mascaraTelefone}
-                    funcSelectImagem={selecionaImagem}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcAtualizaCampo={atualizaCampo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
-                />
+            <FormInserir
+                nome={"Treinador"}
+                abrir={abrirCadastroTreinadores}
+                funcAbrir={}
+                funcPost={}
+            >
 
-                <FormEditar
-                    nome={"Treinador"}
-                    abrir={abrirEditarTreinadores}
-                    treNome={treinador && treinador.treNome}
-                    treDados={treinador}
-                    funcPut={putTreinador}
-                    funcAbrir={abrirFecharEditarTreinadores}
-                    funcSelectImagem={selecionaImagem}
-                    funcMascara={mascaraTelefone}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcAtualizaCampo={atualizaCampo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
-                />
+            </FormInserir>
 
-                <FormExcluir
-                    nome={"Treinador"}
-                    abrir={abrirExcluirTreinadores}
-                    aluNome={treinador && treinador.treNome}
-                    aluDados={treinador.treCodigo}
-                    funcDelete={deleteTreinador}
-                    funcAbrir={abrirFecharExcluirTreinadores}
-                />
-            </div>
-        </Mestre >
+            <FormEditar
+                nome={"Treinador"}
+                abrir={abrirEditarTreinadores}
+                funcAbrir={}
+                funcPut={}
+            >
+
+            </FormEditar>
+
+            <FormExcluir
+                nome={"Treinador"}
+                abrir={abrirExcluirTreinadores}
+                funcAbrir={}
+                funcDelete={}
+            >
+            
+            </FormExcluir>
+        </React.Fragment>
+        // <Mestre icon="graduation-cap" title="Cadastro Treinadores" subtitle="Painel Sou+Fit">
+        //     <div className="treinadores-container">
+        //         <header>
+        //             <h3>Treinadores</h3>
+        //             <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroTreinadores()}><strong>+</strong> Adicionar Treinador</button>
+        //         </header>
+        //         <hr />
+        //         <Busca buscar={getTreinadorNome}/>
+        //         <br />
+
+        //         <hr />
+        //         <br />
+        //         <div className="d-flex justify-content-center">
+        //             <nav aria-label="Page navigation example">
+        //                 <ul className="pagination">
+        //                     <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
+        //                     <li className="page-item active"><p className="page-link">{pagina}</p></li>
+        //                     <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
+        //                 </ul>
+        //             </nav>
+        //         </div>
+
+                // <FormInserir
+                //     nome={"Treinador"}
+                //     abrir={abrirCadastroTreinadores}
+                //     treDados={treinador}
+                //     funcPost={postTreinador}
+                //     funcAbrir={abrirFecharCadastroTreinadores}
+                //     funcMascara={mascaraTelefone}
+                //     funcSelectImagem={selecionaImagem}
+                //     funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                //     funcAtualizaCampo={atualizaCampo}
+                //     treinaData={treinadoresData}
+                //     funcBuscaTreinador={getTreinadorId}
+                // />
+
+                // <FormEditar
+                //     nome={"Treinador"}
+                //     abrir={abrirEditarTreinadores}
+                //     treNome={treinador && treinador.treNome}
+                //     treDados={treinador}
+                //     funcPut={putTreinador}
+                //     funcAbrir={abrirFecharEditarTreinadores}
+                //     funcSelectImagem={selecionaImagem}
+                //     funcMascara={mascaraTelefone}
+                //     funcAtualizaCampoAtivo={atualizaCampoAtivo}
+                //     funcAtualizaCampo={atualizaCampo}
+                //     treinaData={treinadoresData}
+                //     funcBuscaTreinador={getTreinadorId}
+                // />
+
+                // <FormExcluir
+                //     nome={"Treinador"}
+                //     abrir={abrirExcluirTreinadores}
+                //     aluNome={treinador && treinador.treNome}
+                //     aluDados={treinador.treCodigo}
+                //     funcDelete={deleteTreinador}
+                //     funcAbrir={abrirFecharExcluirTreinadores}
+                // />
+        //     </div>
+        // </Mestre >
     );
 }

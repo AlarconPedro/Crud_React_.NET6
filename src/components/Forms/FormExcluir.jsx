@@ -14,14 +14,20 @@ class FormExcluir extends React.Component {
         this.setState({ abrir: this.props.abrir });
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.abrir !== this.props.abrir) {
+            this.setState({ abrir: this.props.abrir });
+        }
+    }
+
     abrirModal = () => {
         this.setState({ abrir: !this.state.abrir });
         this.props.funcAbrir(this.state.abrir);
     }
 
     deletarAluno = () => {
-        this.props.funcDelete(this.props.aluDados);
-        this.abrirModal();
+        this.props.funcDelete();
+        // this.props.funcAbrir(this.state.abrir);
     }
 
     render() {
@@ -29,7 +35,7 @@ class FormExcluir extends React.Component {
             <Modal isOpen={this.state.abrir}>
                 <ModalHeader>Excluir {this.props.nome}</ModalHeader>
                 <ModalBody>
-                    Deseja excluir o Aluno : {this.props.aluNome}?
+                    Deseja excluir o Aluno : {this.props.dados}?
                 </ModalBody>
                 <ModalFooter>
                     <button className="btn btn-danger" onClick={() => this.deletarAluno()}>Sim</button>

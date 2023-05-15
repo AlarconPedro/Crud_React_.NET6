@@ -22,7 +22,7 @@ class Busca extends React.Component {
     atualizaCampoBusca = (event) => {
         this.setState({ value: event.target.value });
     }
-    
+
     buscar = () => {
         this.props.buscar(this.state.value);
     }

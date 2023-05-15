@@ -7,7 +7,7 @@ class ControlePaginas extends React.Component {
         this.state = {
             pagina: 1,
             dadosApi: [props.dados],
-            getAlunos: props.getAlunos,
+            getDados: props.getDados,
         }
     }
 
@@ -18,8 +18,8 @@ class ControlePaginas extends React.Component {
         if (prevProps.dadosApi !== this.props.dadosApi) {
             this.setState({ dadosApi: this.props.dadosApi });
         }
-        if (prevProps.getAlunos !== this.props.getAlunos) {
-            this.setState({ getAlunos: this.props.getAlunos });
+        if (prevProps.getDados !== this.props.getDados) {
+            this.setState({ getDados: this.props.getDados });
         }
     }
 
@@ -50,14 +50,14 @@ class ControlePaginas extends React.Component {
     }
 
     avancarPagina = async (skip) => {
-        this.state.getAlunos(skip);
+        this.state.getDados(skip);
         this.state.pagina > this.state.dadosApi.length ? this.setState({ pagina: 1 }) :
         this.setState({ pagina: this.state.pagina + 1 });
     }
 
     voltarPagina = async (skip) => {
         skip = skip - 20;
-        this.state.getAlunos(skip);
+        this.state.getDados(skip);
         this.state.pagina > 1 ? this.setState({ pagina: this.state.pagina - 1 }) : this.setState({ pagina: 1 });
     }
 }

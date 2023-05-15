@@ -13,21 +13,18 @@ import { aluno, treinador } from "../../services/RotasApi";
 import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
-import FormAtividades from "../Atividades/AtividadesCrud";
 
 import { BsJustify } from "react-icons/bs";
 
 import { Link } from "react-router-dom";
 
-import Busca from "../../layout/Objetos/Busca";
 import ConverteData from "../../funcoes/ConverteData";
-import AtualizaCampo from "../../funcoes/AtualizaCampo";
 import MascaraTelefone from "../../funcoes/MascaraTelefone";
 
 import Modelo from "../../layout/Modelo";
 
 import "./AlunosCrud.css";
-import { alunoUrl, treinadorUrl } from "../../services/Imagens";
+import { alunoUrl } from "../../services/Imagens";
 
 class AlunoCrud extends React.Component {
     constructor(props) {
@@ -90,8 +87,9 @@ class AlunoCrud extends React.Component {
     }
 
     abrirFecharCadastro = (abrir) => {
-        this.setState({ abrirCadastro: !abrir || !this.state.abrirCadastro });
+        this.setState({ abrirCadastro: !this.state.abrirCadastro });
         this.setState({ aluno: this.state.alunoInitialState });
+        this.getTreinadores();
     }
 
     abrirFecharAtividades = (abrirAtividades) => {
@@ -103,7 +101,7 @@ class AlunoCrud extends React.Component {
     }
 
     abrirFecharExcluir = (abrirExcluir) => {
-        this.setState({ abrirExcluirAlunos: !abrirExcluir });
+        this.setState({ abrirExcluir: !this.state.abrirExcluir });
     }
 
     converterDataToIdade = (data) => {
@@ -172,7 +170,8 @@ class AlunoCrud extends React.Component {
     }
 
     postAluno = async () => {
-        await this.dataAuxiliar(this.state.dataAtual);
+        // console.log(this.state.aluno);
+        // await this.dataAuxiliar(this.state.dataAtual);
         await Api.post(aluno, this.state.aluno).then(response => {
             this.setState({ aluno: response.data });
             this.setState({ updateAlunos: true });
@@ -196,8 +195,8 @@ class AlunoCrud extends React.Component {
         this.setState({ updateAlunos: true })
     }
 
-    deleteAluno = async (id) => {
-        await Api.delete(aluno + id).then(response => {
+    deleteAluno = async () => {
+        await Api.delete(aluno + this.state.aluno.aluCodigo).then(response => {
             this.setState({ updateAlunos: true });
             this.abrirFecharExcluir();
         }).catch(error => {
@@ -259,12 +258,13 @@ class AlunoCrud extends React.Component {
                     titulo="Cadastro Alunos"
                     subtitulo="Painel Sou+Fit"
                     icone="user"
+                    tipoContainer="alunos-container"
                     Cabecalho="Alunos"
                     BotaoAdd="Adicionar Alunos"
                     dadosApi={this.state.alunosData}
-                    getAlunos={this.getAlunos}
+                    getDados={this.getAlunos}
                     getByNome={this.getAlunoNome}
-                    funcAbrir={this.abrirFecharCadastro}
+                    funcAbrirCadastro={this.abrirFecharCadastro}
                     colunas={[
                         { nome: "Avatar" },
                         { nome: "Nome" },
@@ -273,13 +273,6 @@ class AlunoCrud extends React.Component {
                         { nome: "Ativo" },
                         { nome: "Atividades" },
                     ]}
-                    variaveis={
-                        [
-                            { urlTreinador: "treinador/" },
-                            { urlAluno: "aluno/" },
-                            { urlAlunoSkip: "aluno?skip=" },
-                        ]
-                    }
                 >
                     {this.state.carregando ? <div className="spinner-border loader" role="status" />
                         :
@@ -311,20 +304,6 @@ class AlunoCrud extends React.Component {
                         </tbody>
                     }
                 </Modelo>
-                {/* <FormInserir
-                    nome={"Aluno"}
-                    abrir={abrirCadastroAlunos}
-                    aluDados={aluno}
-                    funcPost={postAluno}
-                    funcAbrir={abrirFecharCadastroAlunos}
-                    funcData={dataAuxiliar}
-                    funcMascara={mascaraTelefone}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcAtualizaCampo={atualizaCampo}
-                    funcSexo={sexo}
-                    treinaData={treinadoresData}
-                    funcBuscaTreinador={getTreinadorId}
-                /> */}
 
                 <FormInserir
                     nome={"Aluno"}
@@ -361,11 +340,11 @@ class AlunoCrud extends React.Component {
                                 name="aluSexo" onChange={e => this.atualizaCampo(e)}>
                                 <option value=""></option>
                                 {
-                                    // sexo.map((item, index) => {
-                                    //     return (
-                                    //         <option key={index} value={item.id}>{item.nome}</option>
-                                    //     )
-                                    // })
+                                    this.state.sexo.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item.id}>{item.nome}</option>
+                                        )
+                                    })
                                 }
                             </select>
                         </div>
@@ -376,11 +355,11 @@ class AlunoCrud extends React.Component {
                                 onChange={e => this.atualizaCampo(e)}>
                                 <option value=""></option>
                                 {
-                                    // treinadoresData.map((item, index) => {
-                                    //     return (
-                                    //         <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                    //     )
-                                    // })
+                                    this.state.treinadoresData.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item.treCodigo}>{item.treNome}</option>
+                                        )
+                                    })
                                 }
                             </select>
                         </div>
@@ -550,8 +529,7 @@ class AlunoCrud extends React.Component {
                 <FormExcluir
                     nome={"Aluno"}
                     abrir={this.state.abrirExcluir}
-                    aluNome={this.state.aluno && this.state.aluno.aluNome}
-                    aluDados={this.state.aluno.aluCodigo}
+                    dados={this.state.aluno.aluNome}
                     funcDelete={this.deleteAluno}
                     funcAbrir={this.abrirFecharExcluir}
                 />

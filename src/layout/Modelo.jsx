@@ -10,7 +10,6 @@ class Modelo extends React.Component {
         this.state = {
             abrir: false,
             urlApi: "",
-            variaveis: [...this.props.variaveis],
             icone: "",
             titulo: "",
             subtitulo: "",
@@ -46,13 +45,13 @@ class Modelo extends React.Component {
     
     abrirFecharCadastro = () => {
         this.setState({ abrir: this.state.abrir });
-        this.props.funcAbrir(this.state.abrir);
+        this.props.funcAbrirCadastro(this.state.abrir);
     }
 
     render() {
         return (
             <Mestre icon={this.state.icone} title={this.state.titulo} subtitle={this.state.subtitulo}>
-                <div className="alunos-container">
+                <div className={this.props.tipoContainer}>
                     <header>
                         <h3>{this.state.Cabecalho}</h3>
                         <button className="btn btn-success btn-adicionar" onClick={() => this.abrirFecharCadastro()}><strong>+</strong>{this.state.BotaoAdd}</button>
@@ -78,7 +77,7 @@ class Modelo extends React.Component {
                     <ControlePaginas 
                         pagina={this.state.pagina}
                         dadosApi={this.props.dadosApi}
-                        getAlunos={this.props.getAlunos}
+                        getDados={this.props.getAlunos}
                     />
                 </div>
             </Mestre >
