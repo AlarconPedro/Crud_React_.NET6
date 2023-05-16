@@ -19,7 +19,7 @@ class FormInserir extends React.Component {
             // ]
         }
 
-        this.abrirModal = this.fecharModal.bind(this);
+        // this.abrirModal = this.fecharModal.bind(this);
     }
 
     componentDidUpdate(prevProps) {

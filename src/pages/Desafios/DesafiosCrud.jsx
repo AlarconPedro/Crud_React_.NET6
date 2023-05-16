@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import Mestre from "../../layout/Mestre/Mestre";
-
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
@@ -16,8 +14,13 @@ import FormEditar from "../../components/Crud/FormularioDesafio/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioDesafio/FormExcluir";
 import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
-import Busca from "../../layout/Objetos/Busca";
+import Modelo from "../../layout/Modelo";
+
 import ConverteData from "../../funcoes/ConverteData";
+import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
+
+import CheckBox from "../../../layout/Objetos/CheckBox";
 
 export default function DesafiosCrud() {
 
@@ -74,8 +77,6 @@ export default function DesafiosCrud() {
     const [nomeBusca, setNomeBusca] = useState({
         desNome: ''
     });
-
-    const [pagina, setPagina] = useState(1);
 
     const [abrirCadastroDesafios, setAbrirCadastroDesafios] = useState(false);
     const [abrirEditarDesafios, setAbrirEditarDesafios] = useState(false);
@@ -135,30 +136,6 @@ export default function DesafiosCrud() {
         });
     }
 
-    const dataFim = (date) => {
-        setDataFinal(date);
-        let data = ConverteData(date)
-        setDesafio({
-            ...desafio,
-            desDataFim: data
-        });
-    }
-
-    const dataInicio = (date) => {
-        setDataAtual(date);
-        let data = ConverteData(date)
-        setDesafio({
-            ...desafio,
-            desDataInicio: data
-        });
-        return data;
-    }
-
-    const dataInicioExibicao = (date) => {
-        let data = ConverteData(date)
-        return data;
-    }
-
     const getDesafios = async (skip = 0) => {
         setCarregando(true);
         await Api.get(`desafio?skip=${skip}`).then(response => {
@@ -196,7 +173,7 @@ export default function DesafiosCrud() {
     }
 
     const postDesafio = async () => {
-        await dataInicio(dataAtual);
+        // await dataInicio(dataAtual);
         await Api.post("desafio/", desafio).then(response => {
             setDesafio(response.data);
             setUpdateDesafios(true);
@@ -253,145 +230,304 @@ export default function DesafiosCrud() {
         e.preventDefault();
     }
 
-    const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > desafiosData.length ? avancarPagina()
-            : avancarPagina(pagina * 10)
-            : voltarPagina(pagina * 10);
-    }
-
-    const avancarPagina = async (skip) => {
-        getDesafios(skip);
-        pagina > desafiosData.length ? setPagina(1) :
-            setPagina(pagina + 1);
-    }
-
-    const voltarPagina = async (skip) => {
-        skip = skip - 20;
-        getDesafios(skip);
-        pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
-    }
-
-    const mascaraTelefone = (e) => {
-        let input = e.target;
-        input.value = phoneMask(input.value);
-        setDesafio({ ...desafio, [e.target.name]: input.value });
-    }
-
-    const phoneMask = (value) => {
-        if (!value) return ""
-        value = value.replace(/\D/g, '')
-        value = value.replace(/(\d{2})(\d)/, "($1) $2")
-        value = value.replace(/(\d)(\d{3})$/, "$1-$2")
-        return value
-    }
-
     return (
-        <Mestre icon="trophy" title="Cadastro Desafios" subtitle="Painel Sou+Fit">
-            <div className="desafio-container">
-                <header>
-                    <h3>Desafios</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroDesafios()}><strong>+</strong> Adicionar Desafios</button>
-                </header>
-                <hr />
-                <Busca buscar={getDesafioNome}/>
-                <br />
-                {carregando ? <div className="spinner-border loader" role="status">
-                </div>
-                    : <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Avatar</th>
-                                <th>Nome</th>
-                                <th>Data Inicio</th>
-                                <th>Data Fim</th>
-                                <th>Participantes</th>
-                                <th>Alunos</th>
-                                <th className="pl-4 acoes">Ações</th>
+        <React.Fragment>
+            <Modelo
+                urlApi="desafio?skip="
+                titulo="Cadastro Desafios"
+                subtitulo="Painel Sou+Fit"
+                icone="trophy"
+                tipoContainer="desafio-container"
+                Cabecalho="Desafios"
+                BotaoAdd="Adicionar Desafios"
+                dadosApi={desafiosData}
+                getDados={getDesafios}
+                getByNome={getDesafioNome}
+                funcAbrirCadastro={abrirFecharCadastroDesafios}
+                colunas={[
+                    { nome: "Avatar" },
+                    { nome: "Nome" },
+                    { nome: "Data Inicio" },
+                    { nome: "Data Fim" },
+                    { nome: "Participantes" },
+                    { nome: "Alunos" },
+                ]}
+            >
+                {carregando ? <div className="spinner-border loader" role="status"></div>
+                    :
+                    <tbody>
+                        {desafiosData.map((desafio) => (
+                            <tr key={desafio.desCodigo}>
+                                <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
+                                <td className="pt-3">{desafio.desNome}</td>
+                                <td className="pt-3">{ConverteData(desafio.desDataInicio)}</td>
+                                <td className="pt-3">{ConverteData(desafio.desDataFim)}</td>
+                                <td className="pt-3 pl-5">{desafio.total}</td>
+                                <td className="pl-4 pt-3 listar" onClick={() => selecionarDesafio(desafio, "Participantes")}><BsJustify /></td>
+                                <td>
+                                    <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
+                                        <i className="fa fa-pencil"></i>
+                                    </button>{" "}
+                                    <button className="btn btn-danger" onClick={() => selecionarDesafio(desafio, "Excluir")}>
+                                        <i className="fa fa-trash"></i>
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {desafiosData.map((desafio) => (
-                                <tr key={desafio.desCodigo}>
-                                    <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
-                                    <td className="pt-3">{desafio.desNome}</td>
-                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
-                                    <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
-                                    <td className="pt-3 pl-5">{desafio.total}</td>
-                                    <td className="pl-4 pt-3 listar" onClick={() => selecionarDesafio(desafio, "Participantes")}><BsJustify /></td>
-                                    <td>
-                                        <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
-                                            <i className="fa fa-pencil"></i>
-                                        </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarDesafio(desafio, "Excluir")}>
-                                            <i className="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                        ))}
+                    </tbody>
                 }
-                <hr />
-                <br />
-                <div className="d-flex justify-content-center">
-                    <nav aria-label="Page navigation example">
-                        <ul className="pagination">
-                            <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-                            <li className="page-item active"><p className="page-link">{pagina}</p></li>
-                            <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
-                        </ul>
-                    </nav>
-                </div>
+            </Modelo>
 
-                <FormParticipantes
-                    abrir={abrirParticipantes}
-                    funcAbrir={abrirFecharParticipantes}
-                    codigoDesafio={desafio.desCodigo}
-                    funcAtualizaCampo={atualizaCampo}
-                    // funcPut={putDesafio}
-                />
+            <FormInserir
+                nome={"Desafio"}
+                abrir={abrirCadastroDesafios}
+                funcAbrir={abrirFecharCadastroDesafios}
+                funcPost={postDesafio}
+            >
+                <form className="row g-3 form-group">
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desNome"
+                            onChange={(e) => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Início:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataInicio"
+                            selected={new Date(this.state.dataInicio)}
+                            onChange={date => atualizaCampo(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Fim:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataFim"
+                            selected={new Date(this.state.dataFim)}
+                            onChange={date => this.dataFim(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo do Desafio:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoDesafio"
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo da Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoMedida"
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desMedidaDesafio"
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-6 mt-2">
+                        <label className="form-label mb-0">Observação:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Obs."
+                            name="desObs"
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataInicioExibicao"
+                            selected={new Date(this.state.dataExibicao)}
+                            onChange={date => this.dataExibicao(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-2 mt-5">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" id="gridCheck"
+                                name="desExclusivoAluno"
+                                onChange={e => atualizaCampoAtivo(e)}
+                                checked={this.state.desafio.desExclusivoAluno}
+                                value={true} />
+                            <label className="form-check-label">Exclusivo Aluno</label>
+                        </div>
+                    </div>
+                    <div className="selecionarModalidade ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+                            this.state.modalidadesData.map((modalidade) => {
+                                return (
+                                    <CheckBox
+                                        codigo={modalidade.modCodigo}
+                                        nome={modalidade.modNome}
+                                        codigoSelecionado={this.props.desCodigo}
+                                        url={`desafio/modalidades/${this.props.desCodigo}`}
+                                    />
+                                )
+                            })
+                        }
+                    </div>
+                    <div className="col-md-5"></div>
+                    <div className="col-md-4 mt-5 logoDesafio">
+                        <label className="form-label mb-0">Imagem:</label>
+                        {/* <img className="imagem" src={desafioUrl + this.state.desafio.desImagem} alt="" /> */}
+                    </div>
+                </form>
+            </FormInserir>
 
-                <FormInserir
-                    abrir={abrirCadastroDesafios}
-                    funcAbrir={abrirFecharCadastroDesafios}
-                    abrirEditar={abrirFecharEditarDesafios}
-                    funcPost={postDesafio}
-                    modalidades={modalidadeData}
-                    funcAtualizaCampo={atualizaCampo}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcDataInicio={dataInicio}
-                    funcDataFim={dataFim}
-                    funcMascaraTelefone={mascaraTelefone}
-                    treinadoresData={treinadoresData}
-                    desafio={desafio}
-                    desCodigo={desafio.desCodigo}
-                    dataInicio={desafio.desDataInicio}
-                    dataFim={desafio.desDataFim}
-                />
+            <FormEditar>
 
-                <FormEditar
-                    abrir={abrirEditarDesafios}
-                    funcAbrir={abrirFecharEditarDesafios}
-                    funcAtualizaCampo={atualizaCampo}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcDataInicio={dataInicio}
-                    funcDataFim={dataFim}
-                    funcMascaraTelefone={mascaraTelefone}
-                    treinadoresData={treinadoresData}
-                    desafio={desafio}
-                    modalidades={modalidadeData}
-                    desCodigo={desafio.desCodigo}
-                    dataInicio={desafio.desDataInicio}
-                    dataFim={desafio.desDataFim}
-                />
+            </FormEditar>
 
-                <FormExcluir
-                    abrir={abrirExcluirDesafios}
-                    funcAbrir={abrirFecharExcluirDesafios}
-                    funcDelete={deleteDesafio}
-                    desafio={desafio}
-                />
-            </div>
-        </Mestre >
+            <FormExcluir>
+
+            </FormExcluir>
+        </React.Fragment>
+        // <Mestre icon="trophy" title="Cadastro Desafios" subtitle="Painel Sou+Fit">
+        //     <div className="desafio-container">
+        //         <header>
+        //             <h3>Desafios</h3>
+        //             <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroDesafios()}><strong>+</strong> Adicionar Desafios</button>
+        //         </header>
+        //         <hr />
+        //         <Busca buscar={getDesafioNome}/>
+        //         <br />
+        //         {carregando ? <div className="spinner-border loader" role="status">
+        //         </div>
+        //             : <table className="table table-striped">
+        //                 <thead>
+        //                     <tr>
+        //                         <th>Avatar</th>
+        //                         <th>Nome</th>
+        //                         <th>Data Inicio</th>
+        //                         <th>Data Fim</th>
+        //                         <th>Participantes</th>
+        //                         <th>Alunos</th>
+        //                         <th className="pl-4 acoes">Ações</th>
+        //                     </tr>
+        //                 </thead>
+        // <tbody>
+        //     {desafiosData.map((desafio) => (
+        //         <tr key={desafio.desCodigo}>
+        //             <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
+        //             <td className="pt-3">{desafio.desNome}</td>
+        //             <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
+        //             <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
+        //             <td className="pt-3 pl-5">{desafio.total}</td>
+        //             <td className="pl-4 pt-3 listar" onClick={() => selecionarDesafio(desafio, "Participantes")}><BsJustify /></td>
+        //             <td>
+        //                 <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
+        //                     <i className="fa fa-pencil"></i>
+        //                 </button>{" "}
+        //                 <button className="btn btn-danger" onClick={() => selecionarDesafio(desafio, "Excluir")}>
+        //                     <i className="fa fa-trash"></i>
+        //                 </button>
+        //             </td>
+        //         </tr>
+        //     ))}
+        // </tbody>
+        //             </table>
+        //         }
+        //         <hr />
+        //         <br />
+        //         <div className="d-flex justify-content-center">
+        //             <nav aria-label="Page navigation example">
+        //                 <ul className="pagination">
+        //                     <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
+        //                     <li className="page-item active"><p className="page-link">{pagina}</p></li>
+        //                     <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
+        //                 </ul>
+        //             </nav>
+        //         </div>
+
+        //         <FormParticipantes
+        //             abrir={abrirParticipantes}
+        //             funcAbrir={abrirFecharParticipantes}
+        //             codigoDesafio={desafio.desCodigo}
+        //             funcAtualizaCampo={atualizaCampo}
+        //             // funcPut={putDesafio}
+        //         />
+
+        //         <FormInserir
+        //             abrir={abrirCadastroDesafios}
+        //             funcAbrir={abrirFecharCadastroDesafios}
+        //             abrirEditar={abrirFecharEditarDesafios}
+        //             funcPost={postDesafio}
+        //             modalidades={modalidadeData}
+        //             funcAtualizaCampo={atualizaCampo}
+        //             funcAtualizaCampoAtivo={atualizaCampoAtivo}
+        //             funcDataInicio={dataInicio}
+        //             funcDataFim={dataFim}
+        //             funcMascaraTelefone={mascaraTelefone}
+        //             treinadoresData={treinadoresData}
+        //             desafio={desafio}
+        //             desCodigo={desafio.desCodigo}
+        //             dataInicio={desafio.desDataInicio}
+        //             dataFim={desafio.desDataFim}
+        //         />
+
+        //         <FormEditar
+        //             abrir={abrirEditarDesafios}
+        //             funcAbrir={abrirFecharEditarDesafios}
+        //             funcAtualizaCampo={atualizaCampo}
+        //             funcAtualizaCampoAtivo={atualizaCampoAtivo}
+        //             funcDataInicio={dataInicio}
+        //             funcDataFim={dataFim}
+        //             funcMascaraTelefone={mascaraTelefone}
+        //             treinadoresData={treinadoresData}
+        //             desafio={desafio}
+        //             modalidades={modalidadeData}
+        //             desCodigo={desafio.desCodigo}
+        //             dataInicio={desafio.desDataInicio}
+        //             dataFim={desafio.desDataFim}
+        //         />
+
+        //         <FormExcluir
+        //             abrir={abrirExcluirDesafios}
+        //             funcAbrir={abrirFecharExcluirDesafios}
+        //             funcDelete={deleteDesafio}
+        //             desafio={desafio}
+        //         />
+        //     </div>
+        // </Mestre >
     );
 }

@@ -86,7 +86,7 @@ class AlunoCrud extends React.Component {
         }
     }
 
-    abrirFecharCadastro = (abrir) => {
+    abrirFecharCadastro = () => {
         this.setState({ abrirCadastro: !this.state.abrirCadastro });
         this.setState({ aluno: this.state.alunoInitialState });
         this.getTreinadores();

@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-import Mestre from "../../layout/Mestre/Mestre";
-
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Crud/FormularioTreinador/FormInserir";
-import FormEditar from "../../components/Crud/FormularioTreinador/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioTreinador/FormExcluir";
+import FormInserir from "../../components/Forms/FormInserir";
+import FormEditar from "../../components/Forms/FormEditar";
+import FormExcluir from "../../components/Forms/FormExcluir";
 
 import Modelo from "../../layout/Modelo";
 
 import "./TreinadoresCrud.css";
 import { treinadorUrl } from "../../services/Imagens";
 
-import Busca from "../../layout/Objetos/Busca";
+import MascaraTelefone from "../../funcoes/MascaraTelefone";
 
 export default function TreinadoresCrud() {
 
@@ -62,15 +60,13 @@ export default function TreinadoresCrud() {
         treNome: ''
     });
 
-    const [pagina, setPagina] = useState(1);
-
     const [abrirCadastroTreinadores, setAbrirCadastroTreinadores] = useState(false);
     const [abrirEditarTreinadores, setAbrirEditarTreinadores] = useState(false);
     const [abrirExcluirTreinadores, setAbrirExcluirTreinadores] = useState(false);
     const [updateTreinadores, setUpdateTreinadores] = useState(true);
 
-    const abrirFecharCadastroTreinadores = (abrirCadastroTreinadores) => {
-        setAbrirCadastroTreinadores(!abrirCadastroTreinadores);
+    const abrirFecharCadastroTreinadores = (abrir) => {
+        setAbrirCadastroTreinadores(!abrir || !abrirCadastroTreinadores);
         setTreinador(treinadorInitialState);
     }
 
@@ -89,7 +85,11 @@ export default function TreinadoresCrud() {
 
     const selecionarTreinador = (treinador, opcao) => {
         setTreinador(treinador);
-        (opcao === "Editar") ? abrirFecharEditarTreinadores() : abrirFecharExcluirTreinadores();
+        if (opcao === "Editar") {
+            abrirFecharEditarTreinadores();
+        } else {
+            abrirFecharExcluirTreinadores();
+        }
     }
 
     const atualizaCampo = e => {
@@ -117,6 +117,14 @@ export default function TreinadoresCrud() {
         });
     }
 
+    const mascaraTelefone = e => {
+        MascaraTelefone(e);
+        setTreinador({
+            ...treinador,
+            [e.target.name]: e.target.value
+        });
+    }
+
     const getTreinadores = async (skip = 0) => {
         setCarregando(true);
         await Api.get(`treinador?skip=${skip}`).then(response => {
@@ -138,12 +146,12 @@ export default function TreinadoresCrud() {
     const postTreinador = async () => {
         await Api.post("treinador/", treinador).then(response => {
             setTreinador(response.data);
-            // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
         setUpdateTreinadores(!updateTreinadores);
         setTreinador(treinadorInitialState);
+        abrirFecharCadastroTreinadores(true);
     }
 
     const putTreinador = async (codigo = treinador.treCodigo) => {
@@ -169,8 +177,9 @@ export default function TreinadoresCrud() {
         });
     }
 
-    const deleteTreinador = async (treinador = treinador.treCodigo) => {
-        await Api.delete("treinador/" + treinador).then(response => {
+    const deleteTreinador = async () => {
+        await Api.delete("treinador/" + treinador.treCodigo).then(response => {
+            abrirFecharExcluirTreinadores(true);
             setUpdateTreinadores(true);
         }).catch(error => {
             console.log(error);
@@ -250,90 +259,144 @@ export default function TreinadoresCrud() {
             <FormInserir
                 nome={"Treinador"}
                 abrir={abrirCadastroTreinadores}
-                funcAbrir={}
-                funcPost={}
+                funcAbrir={abrirFecharCadastroTreinadores}
+                funcPost={postTreinador}
             >
-
+                <form className="row g-3 form-group">
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="treNome" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-6">
+                        <label className="form-label mb-0">Telefone:</label>
+                        <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
+                            name="treFone"
+                            onKeyUp={e => mascaraTelefone(e)}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0 mt-2">Email:</label>
+                        <input type="email" className="form-control" placeholder="exemplo@gmail.com"
+                            name="treEmail" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Senha:</label>
+                        <input type="password" className="form-control" placeholder="****"
+                            name="treSenha" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
+                        <input type="password" className="form-control" placeholder="****"
+                            name="treSenha" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Observação:</label>
+                        <input type="text" className="form-control" placeholder="Obs."
+                            name="treBio" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-2 mt-5">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" id="gridCheck"
+                                name="treAtivo"
+                                onChange={e => atualizaCampoAtivo(e)}
+                                value={true} />
+                            <label className="form-check-label">Ativo</label>
+                        </div>
+                    </div>
+                    <div className="col-md-4 mt-5">
+                        <label className="form-label mb-0">Imagem:</label>
+                        <input type="file" alt="imagem"
+                            className="container border-dark"
+                            name="aluImagem"
+                            accept="image/png, image/gif, image/jpeg"
+                        // onChange={e => props.funcSelectImagem(e)}
+                        />
+                    </div>
+                </form>
             </FormInserir>
 
             <FormEditar
                 nome={"Treinador"}
                 abrir={abrirEditarTreinadores}
-                funcAbrir={}
-                funcPut={}
+                funcAbrir={abrirFecharEditarTreinadores}
+                funcPut={putTreinador}
             >
-
+                <form className="row g-3 form-group">
+                    <div className="col-md-12">
+                        <label className="mb-0">Id: </label>
+                        <input type="number" className="form-control mb-2" readOnly disabled
+                            value={treinador.treCodigo}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="treNome"
+                            onChange={e => atualizaCampo(e)}
+                            value={treinador.treNome}
+                        />
+                    </div>
+                    <div className="col-6">
+                        <label className="form-label mb-0">Telefone:</label>
+                        <input type="tel" class="form-control" maxLength={15}
+                            name="treFone"
+                            onKeyUp={e => mascaraTelefone(e)}
+                            onChange={e => atualizaCampo(e)}
+                            value={treinador.treFone}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0 mt-2">Email:</label>
+                        <input type="email" className="form-control" name="treEmail"
+                            onChange={e => atualizaCampo(e)} value={treinador.treEmail} />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Senha:</label>
+                        <input type="password" className="form-control" name="treSenha"
+                            onChange={e => atualizaCampo(e)} value={treinador.treSenha} />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
+                        <input type="password" className="form-control" name="treSenha"
+                            onChange={e => atualizaCampo(e)} value={treinador.treSenha} />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Observação:</label>
+                        <input type="text" className="form-control" name="treBio"
+                            onChange={e => atualizaCampo(e)} value={treinador.treBio} />
+                    </div>
+                    <div className="col-2 mt-5">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" id="gridCheck"
+                                name="treAtivo"
+                                onChange={e => atualizaCampoAtivo(e)}
+                                checked={treinador.treAtivo}
+                                value={true} />
+                            <label className="form-check-label">Ativo</label>
+                        </div>
+                    </div>
+                    <div className="col-md-4 mt-5">
+                        <label className="form-label mb-0">Imagem:</label>
+                        <input type="file" className="form-control"
+                            name="treImagem"
+                        // onChange={e => props.funcSelectImagem(e)} 
+                        />
+                        {treinador.treImagem === null
+                            ? <div></div>
+                            : <img src={treinadorUrl + treinador.treImagem} alt="imagem" />}
+                    </div>
+                </form>
             </FormEditar>
 
             <FormExcluir
                 nome={"Treinador"}
                 abrir={abrirExcluirTreinadores}
-                funcAbrir={}
-                funcDelete={}
-            >
-            
-            </FormExcluir>
+                dados={treinador.treNome}
+                funcAbrir={abrirFecharExcluirTreinadores}
+                funcDelete={deleteTreinador}
+            />
         </React.Fragment>
-        // <Mestre icon="graduation-cap" title="Cadastro Treinadores" subtitle="Painel Sou+Fit">
-        //     <div className="treinadores-container">
-        //         <header>
-        //             <h3>Treinadores</h3>
-        //             <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroTreinadores()}><strong>+</strong> Adicionar Treinador</button>
-        //         </header>
-        //         <hr />
-        //         <Busca buscar={getTreinadorNome}/>
-        //         <br />
-
-        //         <hr />
-        //         <br />
-        //         <div className="d-flex justify-content-center">
-        //             <nav aria-label="Page navigation example">
-        //                 <ul className="pagination">
-        //                     <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-        //                     <li className="page-item active"><p className="page-link">{pagina}</p></li>
-        //                     <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
-        //                 </ul>
-        //             </nav>
-        //         </div>
-
-                // <FormInserir
-                //     nome={"Treinador"}
-                //     abrir={abrirCadastroTreinadores}
-                //     treDados={treinador}
-                //     funcPost={postTreinador}
-                //     funcAbrir={abrirFecharCadastroTreinadores}
-                //     funcMascara={mascaraTelefone}
-                //     funcSelectImagem={selecionaImagem}
-                //     funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                //     funcAtualizaCampo={atualizaCampo}
-                //     treinaData={treinadoresData}
-                //     funcBuscaTreinador={getTreinadorId}
-                // />
-
-                // <FormEditar
-                //     nome={"Treinador"}
-                //     abrir={abrirEditarTreinadores}
-                //     treNome={treinador && treinador.treNome}
-                //     treDados={treinador}
-                //     funcPut={putTreinador}
-                //     funcAbrir={abrirFecharEditarTreinadores}
-                //     funcSelectImagem={selecionaImagem}
-                //     funcMascara={mascaraTelefone}
-                //     funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                //     funcAtualizaCampo={atualizaCampo}
-                //     treinaData={treinadoresData}
-                //     funcBuscaTreinador={getTreinadorId}
-                // />
-
-                // <FormExcluir
-                //     nome={"Treinador"}
-                //     abrir={abrirExcluirTreinadores}
-                //     aluNome={treinador && treinador.treNome}
-                //     aluDados={treinador.treCodigo}
-                //     funcDelete={deleteTreinador}
-                //     funcAbrir={abrirFecharExcluirTreinadores}
-                // />
-        //     </div>
-        // </Mestre >
     );
 }
