@@ -15,6 +15,10 @@ import FormImagens from "../../components/Crud/FormularioAtividade/FormImagens";
 import { BsJustify } from "react-icons/bs";
 
 import ConverteData from "../../funcoes/ConverteData";
+import ConverteTempo from "../../funcoes/ConverteTempo";
+import ConverteDistancia from "../../funcoes/ConverteDistancia";
+import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
 
 import "./AtividadesCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
@@ -36,10 +40,24 @@ export default function AlunosCrud(props) {
         modCodigo: 0,
         modNome: '',
         aluAtiCodigo: 0,
-        aluAtiDataHora: new Date("01/01/1900"),
+        aluAtiDataHora: new Date("01/01/1990"),
         aluAtiMedida: 0,
         aluAtiDuracaoSeg: 0,
+        aluAtiObs: '',
         aluAtiIntensidade: 0,
+        aluAtiID: '',
+        aluAtiStrava: '',
+        aluAtiTipo: '',
+        aluAtiVelocidade: 0,
+        aluAtiElevacao: 0,
+        aluAtiCalorias: 0,
+        aluAtiFC: 0,
+        aluAtiCadencia: 0,
+        aluAtiPotencia: 0,
+        aluAtiDescricao: '',
+        aluAtiCidade: '',
+        aluAtiEstado: '',
+        total: 0,
     });
 
 
@@ -50,11 +68,21 @@ export default function AlunosCrud(props) {
         aluAtiDataHora: new Date(dataAtual),
         aluAtiMedida: 0,
         aluAtiDuracaoSeg: 0,
+        aluAtiObs: '',
         aluAtiIntensidade: 0,
-    });
-
-    const [nomeBusca, setNomeBusca] = useState({
-        modNome: ''
+        aluAtiID: '',
+        aluAtiStrava: '',
+        aluAtiTipo: '',
+        aluAtiVelocidade: 0,
+        aluAtiElevacao: 0,
+        aluAtiCalorias: 0,
+        aluAtiFC: 0,
+        aluAtiCadencia: 0,
+        aluAtiPotencia: 0,
+        aluAtiDescricao: '',
+        aluAtiCidade: '',
+        aluAtiEstado: '',
+        total: 0,
     });
 
     const [aluCodigo, setAluCodigo] = useState(codigo);
@@ -63,7 +91,7 @@ export default function AlunosCrud(props) {
     const [abrirEditarAtividades, setAbrirEditarAtividades] = useState(false);
     const [abrirExcluirAtividades, setAbrirExcluirAtividades] = useState(false);
     const [abrirImagens, setAbrirImagens] = useState(false);
-    const [updateAlunos, setUpdateAlunos] = useState(true);
+    const [updateAtividades, setUpdateAtividades] = useState(true);
 
     const abrirFecharCadastroAtividades = (abrirCadastroAtividades) => {
         setAbrirCadastroAtividades(!abrirCadastroAtividades);
@@ -105,14 +133,6 @@ export default function AlunosCrud(props) {
         });
     }
 
-    const atualizaCampoBusca = e => {
-        const { name, value } = e.target;
-        setNomeBusca({
-            ...nomeBusca,
-            [name]: value
-        });
-    }
-
     const dataAuxiliar = (date) => {
         setDataAtual(date);
         let data = ConverteData(date);
@@ -125,20 +145,28 @@ export default function AlunosCrud(props) {
 
     const getAtividades = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`aluno/atividades/${codigo}?skip=${skip}`).then(response => {
+        await Api.get(`aluno/atividades/alunoid/${codigo}?skip=${skip}`).then(response => {
             setAtividadesData(response.data);
-            console.log(response.data);
         }).catch(error => {
             console.log(error);
         });
         setCarregando(false);
     }
 
+    const getAtividadeId = async () => {
+        await Api.get(`aluno/atividades/${atividade.aluAtiCodigo}`).then(response => {
+            setAtividade(response.data);
+            console.log(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     const postAtividade = async () => {
         await dataAuxiliar(dataAtual);
         await Api.post("aluno/", atividade).then(response => {
             setAtividade(response.data);
-            setUpdateAlunos(true);
+            setUpdateAtividades(true);
             // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
@@ -175,25 +203,16 @@ export default function AlunosCrud(props) {
             });
             setAtividadesData(alunosAuxiliar);
             // setAluno(response.data);
-            setUpdateAlunos(true);
+            setUpdateAtividades(true);
             // abrirFecharEditarAlunos();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const deleteAtividade = async () => {
-        await Api.delete("aluno/" + codigo).then(response => {
-            setUpdateAlunos(true);
-            // abrirFecharExcluirAlunos();
-        }).catch(error => {
-            console.log(error);
-        });
-    }
-
-    const getAtividadesNome = async (skip = 0) => {
+    const getAtividadesNome = async (nome) => {
         setCarregando(true);
-        await Api.get(`aluno/atividades/${codigo}/${nomeBusca.modNome}?skip=${skip}`).then(response => {
+        await Api.get(`aluno/atividades/alunoid/${codigo}/` + nome).then(response => {
             setAtividadesData(response.data);
         }).catch(error => {
             console.log(error);
@@ -201,12 +220,25 @@ export default function AlunosCrud(props) {
         setCarregando(false);
     }
 
+    const deleteAtividade = async () => {
+        await Api.delete("aluno/" + codigo).then(response => {
+            setUpdateAtividades(true);
+            // abrirFecharExcluirAlunos();
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     useEffect(() => {
-        if (updateAlunos) {
+        if (updateAtividades) {
             getAtividades();
-            setUpdateAlunos(false);
+            setUpdateAtividades(false);
         }
-    }, [updateAlunos]);
+    }, [updateAtividades]);
+
+    useEffect(() => {
+        getAtividadeId();
+    }, [atividade.aluAtiCodigo]);
 
     function handleDefault(e) {
         e.preventDefault();
@@ -235,28 +267,31 @@ export default function AlunosCrud(props) {
                     { nome: "Imagens" },
                 ]}
             >
-                <tbody>
-                    {atividadesData.map((atividade) => (
-                        <tr key={atividade.modCodigo}>
-                            <td className="pt-3">{atividade.modNome}</td>
-                            <td className="pt-3">{ConverteData(atividade.aluAtiDataHora)}</td>
-                            <td className="pt-3">{atividade.aluAtiMedida}</td>
-                            <td className="pt-3">{atividade.aluAtiDuracaoSeg}</td>
-                            <td className="pt-3">{atividade.aluAtiIntensidade}</td>
-                            {/* <td className="pt-3">{atividade.modNome}</td> */}
-                            {/* <td className=""><img src={alunoUrl + atividade.aluAtiImgImagem} alt="" /></td> */}
-                            <td className="pt-3 listar" onClick={() => selecionarAtividade(atividade, "Imagens")}><BsJustify /></td>
-                            <td>
-                                <button className="btn btn-warning">
-                                    <i className="fa fa-pencil"></i>
-                                </button>{" "}
-                                <button className="btn btn-danger">
-                                    <i className="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+                {carregando ? <div className="spinner-border loader" role="status" />
+                    :
+                    <tbody>
+                        {atividadesData.map((atividade) => (
+                            <tr key={atividade.modCodigo}>
+                                <td className="pt-3">{atividade.modNome}</td>
+                                <td className="pt-3">{ConverteData(atividade.aluAtiDataHora)}</td>
+                                <td className="pt-3">{ConverteDistancia(atividade.aluAtiMedida)}</td>
+                                <td className="pt-3">{ConverteTempo(atividade.aluAtiDuracaoSeg)}</td>
+                                <td className="pt-3">{atividade.aluAtiIntensidade}</td>
+                                {/* <td className="pt-3">{atividade.modNome}</td> */}
+                                {/* <td className=""><img src={alunoUrl + atividade.aluAtiImgImagem} alt="" /></td> */}
+                                <td className="pt-3 listar" onClick={() => selecionarAtividade(atividade, "Imagens")}><BsJustify /></td>
+                                <td>
+                                    <button className="btn btn-warning" onClick={() => selecionarAtividade(atividade, "Editar")}>
+                                        <i className="fa fa-pencil"></i>
+                                    </button>{" "}
+                                    <button className="btn btn-danger" onClick={() => selecionarAtividade(atividade, "Excluir")}>
+                                        <i className="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                }
             </Modelo>
 
             <FormImagens
@@ -273,7 +308,50 @@ export default function AlunosCrud(props) {
                 funcAbrir={abrirFecharCadastroAtividades}
                 funcPost={postAtividade}
             >
-
+                <form className="row g-3 form-group">
+                    <div className="col-md-12">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluNome" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Data/Hora:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="aluDataNasc"
+                            selected={new Date(dataAtual)}
+                            onChange={date => props.funcData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Medida:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluNome" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Duração:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluEmail" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Intensidade:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluEmail" onChange={e => atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-12">
+                        <label className="form-label mb-0 mt-2">Observação:</label>
+                        <input type="text" className="form-control" placeholder="Obs."
+                            name="aluObs" onChange={e => atualizaCampo(e)} />
+                    </div>
+                </form>
             </FormInserir>
 
             <FormEditar
@@ -282,7 +360,92 @@ export default function AlunosCrud(props) {
                 funcAbrir={abrirFecharEditarAtividades}
                 funcPut={putAtividade}
             >
-
+                <form className="row g-3 form-group">
+                    {/* <div className="col-md-12">
+                        <label className="mb-0">Id: </label>
+                        <input type="number" className="form-control mb-2" readOnly disabled
+                            value={atividade.aluAtiCodigo}
+                        />
+                    </div> */}
+                    <div className="col-md-6">
+                        <label className="form-label mb-0 mt-2">Modalidade:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluNome"
+                            onChange={e => atualizaCampo(e)}
+                            value={atividade.modNome}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0 mt-2">Descrição:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluNome"
+                            onChange={e => atualizaCampo(e)}
+                            value={atividade.aluAtiDescricao}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Data/Hora:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="aluDataNasc"
+                            selected={new Date(atividade.aluAtiDataHora)}
+                            onChange={date => props.funcData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Medida:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluNome"
+                            onChange={e => atualizaCampo(e)}
+                            value={atividade.aluAtiMedida}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Duração:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluNome"
+                            onChange={e => atualizaCampo(e)}
+                            value={atividade.aluAtiDuracaoSeg}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Intensidade:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluNome"
+                            onChange={e => atualizaCampo(e)}
+                            value={atividade.aluAtiIntensidade}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Cidade:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="aluAtiCidade"
+                            onChange={e => atualizaCampo(e)}
+                            value={atividade.aluAtiCidade}
+                        />
+                    </div>
+                    <div className="col-md-1">
+                        <label className="form-label mb-0 mt-2">UF:</label>
+                        <input type="text" className="form-control"
+                            name="aluAtiEstado"
+                            onChange={e => atualizaCampo(e)}
+                            value={atividade.aluAtiEstado}
+                        />
+                    </div>
+                    <div className="col-md-12">
+                        <label className="form-label mb-0 mt-2">Observação:</label>
+                        <input type="text" className="form-control" name="aluObs"
+                            onChange={e => atualizaCampo(e)} value={atividade.aluAtiObs} />
+                    </div>
+                </form>
             </FormEditar>
 
             <FormExcluir

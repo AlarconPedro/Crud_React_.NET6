@@ -1,6 +1,6 @@
 export default function ConverteData(data) {
     let dataAtual = new Date(data);
-    let dia = '' + (dataAtual.getDate() + 1);
+    let dia = '' + (dataAtual.getDate());
     let mes = '' + (dataAtual.getMonth() + 1);
     let ano = dataAtual.getFullYear();
 

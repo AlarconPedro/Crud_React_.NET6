@@ -77,7 +77,7 @@ class Modelo extends React.Component {
                     <ControlePaginas 
                         pagina={this.state.pagina}
                         dadosApi={this.props.dadosApi}
-                        getDados={this.props.getAlunos}
+                        getDados={this.props.getDados}
                     />
                 </div>
             </Mestre >

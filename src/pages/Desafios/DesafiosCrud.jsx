@@ -20,7 +20,7 @@ import ConverteData from "../../funcoes/ConverteData";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
-import CheckBox from "../../../layout/Objetos/CheckBox";
+import CheckBox from "../../layout/Objetos/CheckBox";
 
 export default function DesafiosCrud() {
 
@@ -89,11 +89,11 @@ export default function DesafiosCrud() {
         setDesafio(desafioInitialState);
     }
 
-    const abrirFecharEditarDesafios = () => {
+    const abrirFecharEditarDesafios = (abrirEditarDesafios) => {
         setAbrirEditarDesafios(!abrirEditarDesafios);
     }
 
-    const abrirFecharExcluirDesafios = () => {
+    const abrirFecharExcluirDesafios = (abrirExcluirDesafios) => {
         setAbrirExcluirDesafios(!abrirExcluirDesafios);
     }
 
@@ -120,13 +120,13 @@ export default function DesafiosCrud() {
         });
     }
 
-    const atualizaCampoBusca = e => {
-        const { name, value } = e.target;
-        setNomeBusca({
-            ...nomeBusca,
-            [name]: value
-        });
-    }
+    // const atualiaCampoData = e => {
+    //     const { name, value } = e.target;
+    //     setDesafio({
+    //         ...desafio,
+    //         [desafio.d]: value
+    //     });
+    // }
 
     const atualizaCampoAtivo = e => {
         const { name, value } = e.target;
@@ -182,6 +182,29 @@ export default function DesafiosCrud() {
             console.log(error);
         });
         setDesafio(desafioInitialState);
+    }
+
+    const updateDesafio = async () => {
+        await Api.put("desafio/" + desafio.desCodigo, desafio).then(response => {
+            var desafiosAuxiliar = desafiosData;
+            desafiosAuxiliar.map(desafioMap => {
+                if (desafioMap.desCodigo === this.state.desafio.desCodigo) {
+                    desafioMap.desNome = this.state.desafio.desNome;
+                    desafioMap.desDescricao = this.state.desafio.desDescricao;
+                    desafioMap.desDataInicio = this.state.desafio.desDataInicio;
+                    desafioMap.desDataFim = this.state.desafio.desDataFim;
+                    desafioMap.desTipoDesafio = this.state.desafio.desTipoDesafio;
+                    desafioMap.desMedidaDesafio = this.state.desafio.desMedidaDesafio;
+                    desafioMap.desExclusivoAluno = this.state.desafio.desExclusivoAluno;
+                    desafioMap.desDataInicioExibicao = this.state.desafio.desDataInicioExibicao;
+                    desafioMap.tbDesafioModalidades = this.state.desafio.tbDesafioModalidades;
+                }
+            });
+            setDesafiosData(desafiosAuxiliar);
+            abrirFecharEditarDesafios();
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     const deleteDesafio = async () => {
@@ -299,7 +322,7 @@ export default function DesafiosCrud() {
                         <DatePicker
                             className="form-control"
                             name="desDataInicio"
-                            selected={new Date(this.state.dataInicio)}
+                            selected={new Date(desafio.desDataInicio)}
                             onChange={date => atualizaCampo(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
@@ -316,8 +339,8 @@ export default function DesafiosCrud() {
                         <DatePicker
                             className="form-control"
                             name="desDataFim"
-                            selected={new Date(this.state.dataFim)}
-                            onChange={date => this.dataFim(date)}
+                            selected={new Date(desafio.desDataFim)}
+                            onChange={date => ConverteData(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
                             customInput={
@@ -369,8 +392,8 @@ export default function DesafiosCrud() {
                         <DatePicker
                             className="form-control"
                             name="desDataInicioExibicao"
-                            selected={new Date(this.state.dataExibicao)}
-                            onChange={date => this.dataExibicao(date)}
+                            selected={new Date(desafio.desDataInicioExibicao)}
+                            onChange={date => atualizaCampo(date)}
                             dateFormat={"dd/MM/yyyy"}
                             timeFormat="yyyy-MM-dd"
                             customInput={
@@ -386,7 +409,7 @@ export default function DesafiosCrud() {
                             <input className="form-check-input" type="checkbox" id="gridCheck"
                                 name="desExclusivoAluno"
                                 onChange={e => atualizaCampoAtivo(e)}
-                                checked={this.state.desafio.desExclusivoAluno}
+                                checked={desafio.desExclusivoAluno}
                                 value={true} />
                             <label className="form-check-label">Exclusivo Aluno</label>
                         </div>
@@ -394,13 +417,13 @@ export default function DesafiosCrud() {
                     <div className="selecionarModalidade ml-2">
                         <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
                         {
-                            this.state.modalidadesData.map((modalidade) => {
+                            modalidadeData.map((modalidade) => {
                                 return (
                                     <CheckBox
                                         codigo={modalidade.modCodigo}
                                         nome={modalidade.modNome}
-                                        codigoSelecionado={this.props.desCodigo}
-                                        url={`desafio/modalidades/${this.props.desCodigo}`}
+                                        codigoSelecionado={desafio.desCodigo}
+                                        url={`desafio/modalidades/${desafio.desCodigo}`}
                                     />
                                 )
                             })
@@ -414,13 +437,160 @@ export default function DesafiosCrud() {
                 </form>
             </FormInserir>
 
-            <FormEditar>
-
+            <FormEditar
+                nome={"Desafio"}
+                abrir={abrirEditarDesafios}
+                funcAbrir={abrirFecharEditarDesafios}
+                funcPut={updateDesafio}
+            >
+                <form className="row g-3 form-group">
+                    <div className="col-md-12">
+                        <label className="mb-0">Id: </label>
+                        <input type="number" className="form-control mb-2" readOnly disabled
+                            value={desafio.desCodigo}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desNome"
+                            value={desafio.desNome}
+                            onChange={(e) => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Início:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataInicio"
+                            selected={new Date(desafio.desDataInicio)}
+                            onChange={date => atualizaCampo(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Fim:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataFim"
+                            selected={new Date(desafio.desDataFim)}
+                            onChange={date => atualizaCampo(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo do Desafio:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoDesafio"
+                            value={desafio.desTipoDesafio}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Tipo da Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desTipoMedida"
+                            value={desafio.desTipoMedida}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <label className="form-label mb-0">Medida:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desMedidaDesafio"
+                            value={desafio.desMedidaDesafio}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-6 mt-2">
+                        <label className="form-label mb-0">Observação:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Obs."
+                            name="desObs"
+                            value={desafio.desObs}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataInicioExibicao"
+                            selected={new Date(desafio.desDataInicioExibicao)}
+                            onChange={date => atualizaCampo(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-2 mt-5">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" id="gridCheck"
+                                name="desExclusivoAluno"
+                                onChange={e => atualizaCampoAtivo(e)}
+                                checked={desafio.desExclusivoAluno}
+                                value={true} />
+                            <label className="form-check-label">Exclusivo Aluno</label>
+                        </div>
+                    </div>
+                    <div className="selecionarModalidade ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+                            modalidadeData.map((modalidade) => {
+                                return (
+                                    <CheckBox
+                                        codigo={modalidade.modCodigo}
+                                        nome={modalidade.modNome}
+                                        codigoSelecionado={desafio.desCodigo}
+                                        url={`desafio/modalidades/${desafio.desCodigo}`}
+                                    />
+                                )
+                            })
+                        }
+                    </div>
+                    <div className="col-md-5"></div>
+                    <div className="col-md-4 mt-5 logoDesafio">
+                        <label className="form-label mb-0">Imagem:</label>
+                        <img className="imagem" src={desafioUrl + desafio.desImagem} alt="" />
+                    </div>
+                </form>
             </FormEditar>
 
-            <FormExcluir>
-
-            </FormExcluir>
+            <FormExcluir 
+                nome={"Desafio"}
+                dados={desafio.desNome}
+                abrir={abrirExcluirDesafios}
+                funcAbrir={abrirFecharExcluirDesafios}
+                funcDelete={deleteDesafio}
+            />
         </React.Fragment>
         // <Mestre icon="trophy" title="Cadastro Desafios" subtitle="Painel Sou+Fit">
         //     <div className="desafio-container">
