@@ -10,7 +10,6 @@ import CheckBox from "../../../layout/Objetos/CheckBox";
 import Api from "../../../services/Api";
 
 class InserirDesafio extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {

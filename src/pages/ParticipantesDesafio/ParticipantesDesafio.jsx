@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from 'react-router-dom'
+import React from "react";
 
 import Mestre from "../../layout/Mestre/Mestre";
 
@@ -7,26 +6,23 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Crud/FormularioAtividade/FormInserir";
-import FormEditar from "../../components/Crud/FormularioAtividade/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioAtividade/FormExcluir";
-import FormImagens from "../../components/Crud/FormularioAtividade/FormImagens";
+// import FormInserir from "../../components/Crud/FormularioAtividade/FormInserir";
+// import FormEditar from "../../components/Crud/FormularioAtividade/FormEditar";
+// import FormExcluir from "../../components/Crud/FormularioAtividade/FormExcluir";
+// import FormImagens from "../../components/Crud/FormularioAtividade/FormImagens";
 
-import { BsJustify } from "react-icons/bs";
+// import { BsJustify } from "react-icons/bs";
 
 import "./ParticipantesDesafio.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
 class ParticipantesDesafio extends React.Component {
     constructor(props) {
-        // const location = useLocation();
         super(props);
         this.state = {
             data: [],
             selectData: [],
             initialData: [],
-            // colunas: [{...props.colunas} || {...props.location.state.colunas}],
-            // variaveis: [{ ...props.location.state } || { ...props.variaveis }],
             refreshData: false,
             carregando: false,
             pagina: 1,
@@ -105,16 +101,6 @@ class ParticipantesDesafio extends React.Component {
                         <button className="btn btn-success btn-adicionar" onClick={() => this.abrirFecharCadastro()}><strong>+</strong> Adicionar Atividade</button>
                     </header>
                     <hr />
-                    <form onSubmit={this.handleDefault}>
-                        <div className="input-group rounded">
-                            <input type="search" className="form-control rounded" name="modNome" placeholder="Search" aria-label="Search" aria-describedby="search-addon" onChange={this.atualizaCampoBusca} />
-                            <button className="botaoBusca" onClick={() => this.getAtividadesNome()} type="submit">
-                                <span className="input-group-text border-0" id="search-addon">
-                                    <i className="fa fa-search"></i>
-                                </span>
-                            </button>
-                        </div>
-                    </form>
                     <br />
                     {this.state.carregando ? <div className="spinner-border loader" role="status">
                     </div>

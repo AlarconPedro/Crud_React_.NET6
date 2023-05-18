@@ -28,9 +28,9 @@ class ControlePaginas extends React.Component {
             <div className="d-flex justify-content-center">
                 <nav aria-label="Page navigation example">
                     <ul className="pagination">
-                        <li className="page-item" onClick={() => this.alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
+                        <li className="page-item" onClick={() => this.alterarPagina("&lt;")}><a className="page-link"><strong>&lt;</strong></a></li>
                         <li className="page-item active"><p className="page-link">{this.state.pagina}</p></li>
-                        <li className="page-item"><a className="page-link" onClick={() => this.alterarPagina("&gt;")}>&gt;</a></li>
+                        <li className="page-item"><a className="page-link" onClick={() => this.alterarPagina("&gt;")}><strong>&gt;</strong></a></li>
                     </ul>
                 </nav>
             </div>
@@ -43,15 +43,19 @@ class ControlePaginas extends React.Component {
                 this.voltarPagina(this.state.pagina * 10);
             }
         } else if (operacao === "&gt;") {
-            if (this.state.pagina < this.state.dadosApi.length) {
+            let total = this.state.dadosApi[0];
+            let quantidade = (total.total / 10);
+            if (this.state.pagina < quantidade) {
                 this.avancarPagina(this.state.pagina * 10);
             }
         }
     }
 
     avancarPagina = async (skip) => {
+        let total = this.state.dadosApi[0];
+        let quantidade = (total.total / 10);
         this.state.getDados(skip);
-        this.state.pagina > this.state.dadosApi.length ? this.setState({ pagina: 1 }) :
+        this.state.pagina > quantidade ? this.setState({ pagina: 1 }) :
         this.setState({ pagina: this.state.pagina + 1 });
     }
 

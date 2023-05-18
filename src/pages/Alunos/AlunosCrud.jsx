@@ -123,6 +123,7 @@ class AlunoCrud extends React.Component {
             this.abrirFecharAtividades();
         } else if (opcao === "Editar") {
             this.abrirFecharEditar();
+            this.getAlunoId(aluno.aluCodigo);
             this.getTreinadores();
         } else {
             this.abrirFecharExcluir();
@@ -133,6 +134,16 @@ class AlunoCrud extends React.Component {
         this.setState({ carregando: true });
         await Api.get(`${aluno}?skip=${skip}`).then(response => {
             this.setState({ alunosData: response.data });
+        }).catch(error => {
+            console.log(error);
+        });
+        this.setState({ carregando: false });
+    }
+
+    getAlunoId = async (id) => {
+        this.setState({ carregando: true });
+        await Api.get(`${aluno}${id}`).then(response => {
+            this.setState({ aluno: response.data });
         }).catch(error => {
             console.log(error);
         });

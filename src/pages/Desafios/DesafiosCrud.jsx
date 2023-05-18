@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
-import { desafioUrl } from "../../services/Imagens";
+import { desafioUrl, alunoUrl } from "../../services/Imagens";
 
 import { BsJustify } from "react-icons/bs";
 
 import "./DesafiosCrud.css";
 
 import FormInserir from "../../components/Crud/FormularioDesafio/FormInserir";
-import FormEditar from "../../components/Crud/FormularioDesafio/FormEditar";
+import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Crud/FormularioDesafio/FormExcluir";
 import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
@@ -39,7 +39,6 @@ export default function DesafiosCrud() {
         desCodigo: 0,
         desNome: '',
         desDescricao: '',
-        total: 0,
         desDataInicio: new Date("01/01/1900"),
         desDataFim: new Date("01/01/1900"),
         desTipoDesafio: '',
@@ -48,10 +47,12 @@ export default function DesafiosCrud() {
         desImagem: '',
         desId: '',
         desExclusivoAluno: false,
+        desTipoMedida: 0,
         desDataInicioExibicao: new Date("01/01/1900"),
         tbAlunoDesafios: [],
         tbDesafioModalidades: [],
         treCodigoNavigation: null,
+        total: 0,
     });
 
 
@@ -59,23 +60,20 @@ export default function DesafiosCrud() {
         desCodigo: 0,
         desNome: '',
         desDescricao: '',
-        total: 0,
-        desDataInicio: dataAtual,
-        desDataFim: dataFinal,
+        desDataInicio: new Date("01/01/1900"),
+        desDataFim: new Date("01/01/1900"),
         desTipoDesafio: '',
         desMedidaDesafio: '',
         treCodigo: '',
         desImagem: '',
         desId: '',
         desExclusivoAluno: false,
-        desDataInicioExibicao: dataAtual,
+        desTipoMedida: 6,
+        desDataInicioExibicao: new Date("01/01/1900"),
         tbAlunoDesafios: [],
         tbDesafioModalidades: [],
         treCodigoNavigation: null,
-    });
-
-    const [nomeBusca, setNomeBusca] = useState({
-        desNome: ''
+        total: 0,
     });
 
     const [abrirCadastroDesafios, setAbrirCadastroDesafios] = useState(false);
@@ -107,6 +105,7 @@ export default function DesafiosCrud() {
             abrirFecharParticipantes();
         } else if (opcao === "Editar") {
             abrirFecharEditarDesafios();
+            getDesafioId(desafio.desCodigo);
         } else {
             abrirFecharExcluirDesafios();
         }
@@ -120,14 +119,6 @@ export default function DesafiosCrud() {
         });
     }
 
-    // const atualiaCampoData = e => {
-    //     const { name, value } = e.target;
-    //     setDesafio({
-    //         ...desafio,
-    //         [desafio.d]: value
-    //     });
-    // }
-
     const atualizaCampoAtivo = e => {
         const { name, value } = e.target;
         setDesafio({
@@ -140,6 +131,17 @@ export default function DesafiosCrud() {
         setCarregando(true);
         await Api.get(`desafio?skip=${skip}`).then(response => {
             setDesafiosData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+        setCarregando(false);
+    }
+
+    const getDesafioId = async (id) => {
+        setCarregando(true);
+        await Api.get(`desafio/${id}`).then(response => {
+            setDesafio(response.data);
+            console.log(desafio);
         }).catch(error => {
             console.log(error);
         });
@@ -249,10 +251,6 @@ export default function DesafiosCrud() {
         setUpdateDesafios(true);
     }, [abrirCadastroDesafios]);
 
-    function handleDefault(e) {
-        e.preventDefault();
-    }
-
     return (
         <React.Fragment>
             <Modelo
@@ -300,6 +298,13 @@ export default function DesafiosCrud() {
                     </tbody>
                 }
             </Modelo>
+
+            <FormParticipantes
+                abrir={abrirParticipantes}
+                funcAbrir={abrirFecharParticipantes}
+                codigoDesafio={desafio.desCodigo}
+                alunoUrl={alunoUrl}
+           />
 
             <FormInserir
                 nome={"Desafio"}
