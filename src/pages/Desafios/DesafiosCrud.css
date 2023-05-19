@@ -11,6 +11,11 @@
     justify-content: space-between;
 }
 
+.imagem {
+    width: 250px;
+    height: 250px;
+}
+
 .modal-participantes {
     width: 100%;
     max-width: 700px;

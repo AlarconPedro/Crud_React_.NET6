@@ -9,9 +9,9 @@ import { BsJustify } from "react-icons/bs";
 
 import "./DesafiosCrud.css";
 
-import FormInserir from "../../components/Crud/FormularioDesafio/FormInserir";
+import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioDesafio/FormExcluir";
+import FormExcluir from "../../components/Forms/FormExcluir";
 import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
 import Modelo from "../../layout/Modelo";
@@ -22,173 +22,185 @@ import InputMask from 'react-input-mask';
 
 import CheckBox from "../../layout/Objetos/CheckBox";
 
-export default function DesafiosCrud() {
+class DesafioCrud extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            abrirCadastroDesafios: false,
+            abrirEditarDesafios: false,
+            abrirExcluirDesafios: false,
+            abrirParticipantes: false,
+            updateDesafios: false,
+            carregando: false,
+            desafiosData: [],
+            treinadoresData: [],
+            modalidadeData: [],
+            desafioInitialState: {
+                desCodigo: 0,
+                desNome: '',
+                desDescricao: '',
+                desDataInicio: new Date("01/01/1900"),
+                desDataFim: new Date("01/01/1900"),
+                desTipoDesafio: '',
+                desMedidaDesafio: '',
+                treCodigo: '',
+                desImagem: '',
+                desId: '',
+                desExclusivoAluno: false,
+                desTipoMedida: 0,
+                desDataInicioExibicao: new Date("01/01/1900"),
+                treCodigoNavigation: null,
+                tbDesafioModalidades: [],
+                total: 0,
+            },
+            desafio: {
+                desCodigo: 0,
+                desNome: '',
+                desDescricao: '',
+                desDataInicio: new Date("01/01/1900"),
+                desDataFim: new Date("01/01/1900"),
+                desTipoDesafio: '',
+                desMedidaDesafio: '',
+                treCodigo: '',
+                desImagem: '',
+                desId: '',
+                desExclusivoAluno: false,
+                desTipoMedida: 0,
+                desDataInicioExibicao: new Date("01/01/1900"),
+                treCodigoNavigation: null,
+                tbDesafioModalidades: [],
+                total: 0,
+            },
+        }
 
-    const [carregando, setCarregando] = useState(false);
-
-    const [dataAtual, setDataAtual] = useState(new Date());
-    const [dataFinal, setDataFinal] = useState(new Date());
-
-    const [desafiosData, setDesafiosData] = useState([]);
-
-    const [treinadoresData, setTreinadoresData] = useState([]);
-
-    const [modalidadeData, setModalidadeData] = useState([]);
-
-    const [desafioInitialState] = useState({
-        desCodigo: 0,
-        desNome: '',
-        desDescricao: '',
-        desDataInicio: new Date("01/01/1900"),
-        desDataFim: new Date("01/01/1900"),
-        desTipoDesafio: '',
-        desMedidaDesafio: '',
-        treCodigo: '',
-        desImagem: '',
-        desId: '',
-        desExclusivoAluno: false,
-        desTipoMedida: 0,
-        desDataInicioExibicao: new Date("01/01/1900"),
-        tbAlunoDesafios: [],
-        tbDesafioModalidades: [],
-        treCodigoNavigation: null,
-        total: 0,
-    });
-
-
-    const [desafio, setDesafio] = useState({
-        desCodigo: 0,
-        desNome: '',
-        desDescricao: '',
-        desDataInicio: new Date("01/01/1900"),
-        desDataFim: new Date("01/01/1900"),
-        desTipoDesafio: '',
-        desMedidaDesafio: '',
-        treCodigo: '',
-        desImagem: '',
-        desId: '',
-        desExclusivoAluno: false,
-        desTipoMedida: 6,
-        desDataInicioExibicao: new Date("01/01/1900"),
-        tbAlunoDesafios: [],
-        tbDesafioModalidades: [],
-        treCodigoNavigation: null,
-        total: 0,
-    });
-
-    const [abrirCadastroDesafios, setAbrirCadastroDesafios] = useState(false);
-    const [abrirEditarDesafios, setAbrirEditarDesafios] = useState(false);
-    const [abrirExcluirDesafios, setAbrirExcluirDesafios] = useState(false);
-    const [abrirParticipantes, setAbrirParticipantes] = useState(false);
-    const [updateDesafios, setUpdateDesafios] = useState(true);
-
-    const abrirFecharCadastroDesafios = (abrirCadastroDesafios) => {
-        setAbrirCadastroDesafios(!abrirCadastroDesafios);
-        setDesafio(desafioInitialState);
+        this.abrirFecharCadastroDesafios = this.abrirFecharCadastroDesafios.bind(this);
+        this.abrirFecharEditarDesafios = this.abrirFecharEditarDesafios.bind(this);
+        this.abrirFecharExcluirDesafios = this.abrirFecharExcluirDesafios.bind(this);
+        this.abrirFecharParticipantes = this.abrirFecharParticipantes.bind(this);
+        this.selecionarDesafio = this.selecionarDesafio.bind(this);
+        this.atualizaCampo = this.atualizaCampo.bind(this);
+        this.atualizaCampoAtivo = this.atualizaCampoAtivo.bind(this);
+        this.getDesafios = this.getDesafios.bind(this);
+        this.getDesafioId = this.getDesafioId.bind(this);
+        this.getModalidades = this.getModalidades.bind(this);
+        this.getTreinadores = this.getTreinadores.bind(this);
+        this.getTreinadorId = this.getTreinadorId.bind(this);
+        this.postDesafio = this.postDesafio.bind(this);
+        this.updateDesafio = this.updateDesafio.bind(this);
+        this.deleteDesafio = this.deleteDesafio.bind(this);
+        this.getDesafioNome = this.getDesafioNome.bind(this);
     }
 
-    const abrirFecharEditarDesafios = (abrirEditarDesafios) => {
-        setAbrirEditarDesafios(!abrirEditarDesafios);
+    abrirFecharCadastroDesafios = (abrir) => {
+        this.setState({ abrirCadastroDesafios: !abrir || !this.state.abrirCadastroDesafios });
+        this.setState({ desafio: this.state.desafioInitialState });
     }
 
-    const abrirFecharExcluirDesafios = (abrirExcluirDesafios) => {
-        setAbrirExcluirDesafios(!abrirExcluirDesafios);
+    abrirFecharEditarDesafios = (abrir) => {
+        this.setState({ abrirEditarDesafios: !this.state.abrirEditarDesafios || !abrir });
     }
 
-    const abrirFecharParticipantes = (abrirParticipantes) => {
-        setAbrirParticipantes(!abrirParticipantes);
+    abrirFecharExcluirDesafios = (abrir) => {
+        this.setState({ abrirExcluirDesafios: !abrir || !this.state.abrirExcluirDesafios });
     }
 
-    const selecionarDesafio = (desafio, opcao) => {
-        setDesafio(desafio);
+    abrirFecharParticipantes = (abrir) => {
+        this.setState({ abrirParticipantes: !abrir || !this.state.abrirParticipantes });
+    }
+
+    selecionarDesafio = (desafio, opcao) => {
+        this.setState({ desafio: desafio });
         if (opcao === "Participantes") {
-            abrirFecharParticipantes();
+            this.abrirFecharParticipantes();
         } else if (opcao === "Editar") {
-            abrirFecharEditarDesafios();
-            getDesafioId(desafio.desCodigo);
+            this.abrirFecharEditarDesafios();
+            this.getDesafioId(desafio.desCodigo);
         } else {
-            abrirFecharExcluirDesafios();
+            this.abrirFecharExcluirDesafios();
         }
     }
 
-    const atualizaCampo = e => {
+    atualizaCampo = e => {
         const { name, value } = e.target;
-        setDesafio({
-            ...desafio,
-            [name]: value
+        this.setState({
+            desafio: {
+                ...this.state.desafio,
+                [name]: value
+            }
         });
     }
 
-    const atualizaCampoAtivo = e => {
-        const { name, value } = e.target;
-        setDesafio({
-            ...desafio,
-            [name]: value === "true" ? true : false
+    atualizaCampoAtivo = e => {
+        // const { name, value } = e.target;
+        this.setState({
+            desafio: {
+                ...this.state.desafio,
+                desExclusivoAluno: e.target.checked
+            }
         });
     }
 
-    const getDesafios = async (skip = 0) => {
-        setCarregando(true);
+    getDesafios = async (skip = 0) => {
+        this.setState({ carregando: true });
         await Api.get(`desafio?skip=${skip}`).then(response => {
-            setDesafiosData(response.data);
+            this.setState({ desafiosData: response.data });
         }).catch(error => {
             console.log(error);
         });
-        setCarregando(false);
+        this.setState({ carregando: false });
     }
 
-    const getDesafioId = async (id) => {
-        setCarregando(true);
+    getDesafioId = async (id) => {
+        this.setState({ carregando: true });
         await Api.get(`desafio/${id}`).then(response => {
-            setDesafio(response.data);
-            console.log(desafio);
+            this.setState({ desafio: response.data });
         }).catch(error => {
             console.log(error);
         });
-        setCarregando(false);
+        this.setState({ carregando: false });
     }
 
-    const getModalidades = async () => {
+    getModalidades = async () => {
         await Api.get("modalidade").then(response => {
-            setModalidadeData(response.data);
+            this.setState({ modalidadeData: response.data });
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const getTreinadores = async (skip = 0) => {
-        setCarregando(true);
+    getTreinadores = async (skip = 0) => {
+        this.setState({ carregando: true });
         await Api.get(`treinador?skip=${skip}`).then(response => {
-            setTreinadoresData(response.data);
+            this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
         });
-        setCarregando(false);
+        this.setState({ carregando: false });
     }
 
-    const getTreinadorId = async (id) => {
+    getTreinadorId = async (id) => {
         await Api.get(`treinador/${id}`).then(response => {
-            setTreinadoresData(response.data);
+            this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const postDesafio = async () => {
+    postDesafio = async () => {
         // await dataInicio(dataAtual);
-        await Api.post("desafio/", desafio).then(response => {
-            setDesafio(response.data);
-            setUpdateDesafios(true);
-            abrirFecharCadastroDesafios();
+        await Api.post("desafio/", this.state.desafio).then(response => {
+            this.setState({ desafio: response.data });
+            this.setState({ updateDesafios: true });
+            this.abrirFecharCadastroDesafios();
         }).catch(error => {
             console.log(error);
         });
-        setDesafio(desafioInitialState);
+        this.setState({ desafio: this.state.desafioInitialState });
     }
 
-    const updateDesafio = async () => {
-        await Api.put("desafio/" + desafio.desCodigo, desafio).then(response => {
-            var desafiosAuxiliar = desafiosData;
+    updateDesafio = async () => {
+        await Api.put("desafio/" + this.state.desafio.desCodigo, this.state.desafio).then(response => {
+            var desafiosAuxiliar = this.state.desafiosData;
             desafiosAuxiliar.map(desafioMap => {
                 if (desafioMap.desCodigo === this.state.desafio.desCodigo) {
                     desafioMap.desNome = this.state.desafio.desNome;
@@ -202,507 +214,431 @@ export default function DesafiosCrud() {
                     desafioMap.tbDesafioModalidades = this.state.desafio.tbDesafioModalidades;
                 }
             });
-            setDesafiosData(desafiosAuxiliar);
-            abrirFecharEditarDesafios();
+            this.setState({ desafiosData: desafiosAuxiliar });
+            this.abrirFecharEditarDesafios();
         }).catch(error => {
             console.log(error);
         });
     }
 
-    const deleteDesafio = async () => {
-        await Api.delete("desafio/" + desafio.desCodigo).then(response => {
-            setUpdateDesafios(true);
-            abrirFecharExcluirDesafios();
+    deleteDesafio = async () => {
+        await Api.delete("desafio/" + this.state.desafio.desCodigo).then(response => {
+            this.setState({ updateDesafios: true });
+            this.abrirFecharExcluirDesafios(true);
         }).catch(error => {
             console.log(error);
         });
+        this.setState({ desafio: this.state.desafioInitialState });
     }
 
-    const getDesafioNome = async (nome) => {
-        setCarregando(true);
+    getDesafioNome = async (nome) => {
+        this.setState({ carregando: true });
         await Api.get("desafio/" + nome).then(response => {
-            setDesafiosData(response.data);
+            this.setState({ desafiosData: response.data });
         }).catch(error => {
             console.log(error);
         });
-        setCarregando(false);
+        this.setState({ carregando: false });
     }
 
-    useEffect(() => {
-        if (updateDesafios) {
-            getDesafios();
-            setUpdateDesafios(false);
+    componentDidMount() {
+        this.getDesafios();
+        this.getTreinadores();
+        this.getModalidades();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.updateDesafios !== this.state.updateDesafios) {
+            this.getDesafios();
+            this.setState({ updateDesafios: false });
         }
-    }, [updateDesafios]);
 
-    useEffect(() => {
-        getTreinadores();
-    }, [setAbrirCadastroDesafios]);
+        if (prevState.abrirCadastroDesafios !== this.state.abrirCadastroDesafios) {
+            this.getTreinadores();
+        }
 
-    useEffect(() => {
-        getTreinadorId(desafio.treCodigo);
-    }, [setAbrirEditarDesafios]);
+        if (prevState.abrirEditarDesafios !== this.state.abrirEditarDesafios) {
+            this.getTreinadorId(this.state.desafio.treCodigo);
+        }
 
-    useEffect(() => {
-        getModalidades();
-    }, [setAbrirCadastroDesafios]);
+        if (prevState.abrirCadastroDesafios !== this.state.abrirCadastroDesafios) {
+            this.getModalidades();
+        }
 
-    useEffect(() => {
-        setUpdateDesafios(true);
-    }, [abrirCadastroDesafios]);
+        if (prevState.abrirCadastroDesafios !== this.state.abrirCadastroDesafios) {
+            this.setState({ updateDesafios: true });
+        }
 
-    return (
-        <React.Fragment>
-            <Modelo
-                urlApi="desafio?skip="
-                titulo="Cadastro Desafios"
-                subtitulo="Painel Sou+Fit"
-                icone="trophy"
-                tipoContainer="desafio-container"
-                Cabecalho="Desafios"
-                BotaoAdd="Adicionar Desafios"
-                dadosApi={desafiosData}
-                getDados={getDesafios}
-                getByNome={getDesafioNome}
-                funcAbrirCadastro={abrirFecharCadastroDesafios}
-                colunas={[
-                    { nome: "Avatar" },
-                    { nome: "Nome" },
-                    { nome: "Data Inicio" },
-                    { nome: "Data Fim" },
-                    { nome: "Participantes" },
-                    { nome: "Alunos" },
-                ]}
-            >
-                {carregando ? <div className="spinner-border loader" role="status"></div>
-                    :
-                    <tbody>
-                        {desafiosData.map((desafio) => (
-                            <tr key={desafio.desCodigo}>
-                                <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
-                                <td className="pt-3">{desafio.desNome}</td>
-                                <td className="pt-3">{ConverteData(desafio.desDataInicio)}</td>
-                                <td className="pt-3">{ConverteData(desafio.desDataFim)}</td>
-                                <td className="pt-3 pl-5">{desafio.total}</td>
-                                <td className="pl-4 pt-3 listar" onClick={() => selecionarDesafio(desafio, "Participantes")}><BsJustify /></td>
-                                <td>
-                                    <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
-                                        <i className="fa fa-pencil"></i>
-                                    </button>{" "}
-                                    <button className="btn btn-danger" onClick={() => selecionarDesafio(desafio, "Excluir")}>
-                                        <i className="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                }
-            </Modelo>
+        if (prevState.desafio !== this.state.desafio) {
+            this.setState({ desafio: this.state.desafio });
+        }
 
-            <FormParticipantes
-                abrir={abrirParticipantes}
-                funcAbrir={abrirFecharParticipantes}
-                codigoDesafio={desafio.desCodigo}
-                alunoUrl={alunoUrl}
-           />
+        if (prevState.desafiosData !== this.state.desafiosData) {
+            this.setState({ desafiosData: this.state.desafiosData });
+        }
 
-            <FormInserir
-                nome={"Desafio"}
-                abrir={abrirCadastroDesafios}
-                funcAbrir={abrirFecharCadastroDesafios}
-                funcPost={postDesafio}
-            >
-                <form className="row g-3 form-group">
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Nome:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desNome"
-                            onChange={(e) => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0">Data Início:</label>
-                        <DatePicker
-                            className="form-control"
-                            name="desDataInicio"
-                            selected={new Date(desafio.desDataInicio)}
-                            onChange={date => atualizaCampo(date)}
-                            dateFormat={"dd/MM/yyyy"}
-                            timeFormat="yyyy-MM-dd"
-                            customInput={
-                                <InputMask
-                                    type="text"
-                                    mask="99/99/9999"
-                                />
-                            }
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0">Data Fim:</label>
-                        <DatePicker
-                            className="form-control"
-                            name="desDataFim"
-                            selected={new Date(desafio.desDataFim)}
-                            onChange={date => ConverteData(date)}
-                            dateFormat={"dd/MM/yyyy"}
-                            timeFormat="yyyy-MM-dd"
-                            customInput={
-                                <InputMask
-                                    type="text"
-                                    mask="99/99/9999"
-                                />
-                            }
-                        />
-                    </div>
-                    <div className="col-md-4 mt-2">
-                        <label className="form-label mb-0">Tipo do Desafio:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desTipoDesafio"
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-4 mt-2">
-                        <label className="form-label mb-0">Tipo da Medida:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desTipoMedida"
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-4 mt-2">
-                        <label className="form-label mb-0">Medida:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desMedidaDesafio"
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-6 mt-2">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Obs."
-                            name="desObs"
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
-                        <DatePicker
-                            className="form-control"
-                            name="desDataInicioExibicao"
-                            selected={new Date(desafio.desDataInicioExibicao)}
-                            onChange={date => atualizaCampo(date)}
-                            dateFormat={"dd/MM/yyyy"}
-                            timeFormat="yyyy-MM-dd"
-                            customInput={
-                                <InputMask
-                                    type="text"
-                                    mask="99/99/9999"
-                                />
-                            }
-                        />
-                    </div>
-                    <div className="col-2 mt-5">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" id="gridCheck"
-                                name="desExclusivoAluno"
-                                onChange={e => atualizaCampoAtivo(e)}
-                                checked={desafio.desExclusivoAluno}
-                                value={true} />
-                            <label className="form-check-label">Exclusivo Aluno</label>
+        if (prevState.treinadoresData !== this.state.treinadoresData) {
+            this.setState({ treinadoresData: this.state.treinadoresData });
+        }
+
+        if (prevState.modalidadeData !== this.state.modalidadeData) {
+            this.setState({ modalidadeData: this.state.modalidadeData });
+        }
+
+        if (prevState.carregando !== this.state.carregando) {
+            this.setState({ carregando: this.state.carregando });
+        }
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <Modelo
+                    urlApi="desafio?skip="
+                    titulo="Cadastro Desafios"
+                    subtitulo="Painel Sou+Fit"
+                    icone="trophy"
+                    tipoContainer="desafio-container"
+                    Cabecalho="Desafios"
+                    BotaoAdd="Adicionar Desafios"
+                    dadosApi={this.state.desafiosData}
+                    getDados={this.getDesafios}
+                    getByNome={this.getDesafioNome}
+                    funcAbrirCadastro={this.abrirFecharCadastroDesafios}
+                    colunas={[
+                        { nome: "Avatar" },
+                        { nome: "Nome" },
+                        { nome: "Data Inicio" },
+                        { nome: "Data Fim" },
+                        { nome: "Participantes" },
+                        { nome: "Alunos" },
+                    ]}
+                >
+                    {this.state.carregando ? <div className="spinner-border loader" role="status"></div>
+                        :
+                        <tbody>
+                            {this.state.desafiosData.map((desafio) => (
+                                <tr key={desafio.desCodigo}>
+                                    <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
+                                    <td className="pt-3">{desafio.desNome}</td>
+                                    <td className="pt-3">{ConverteData(desafio.desDataInicio)}</td>
+                                    <td className="pt-3">{ConverteData(desafio.desDataFim)}</td>
+                                    <td className="pt-3 pl-5">{desafio.total}</td>
+                                    <td className="pl-4 pt-3 listar" onClick={() => this.selecionarDesafio(desafio, "Participantes")}><BsJustify /></td>
+                                    <td>
+                                        <button className="btn btn-warning" onClick={() => this.selecionarDesafio(desafio, "Editar")}>
+                                            <i className="fa fa-pencil"></i>
+                                        </button>{" "}
+                                        <button className="btn btn-danger" onClick={() => this.selecionarDesafio(desafio, "Excluir")}>
+                                            <i className="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    }
+                </Modelo>
+
+                <FormParticipantes
+                    abrir={this.state.abrirParticipantes}
+                    funcAbrir={this.abrirFecharParticipantes}
+                    codigoDesafio={this.state.desafio.desCodigo}
+                    alunoUrl={alunoUrl}
+                />
+
+                <FormInserir
+                    nome={"Desafio"}
+                    abrir={this.state.abrirCadastroDesafios}
+                    funcAbrir={this.abrirFecharCadastroDesafios}
+                    funcPost={this.postDesafio}
+                >
+                    <form className="row g-3 form-group">
+                        <div className="col-md-6">
+                            <label className="form-label mb-0">Nome:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desNome"
+                                onChange={(e) => this.atualizaCampo(e)}
+                            />
                         </div>
-                    </div>
-                    <div className="selecionarModalidade ml-2">
-                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
-                        {
-                            modalidadeData.map((modalidade) => {
-                                return (
-                                    <CheckBox
-                                        codigo={modalidade.modCodigo}
-                                        nome={modalidade.modNome}
-                                        codigoSelecionado={desafio.desCodigo}
-                                        url={`desafio/modalidades/${desafio.desCodigo}`}
+                        <div className="col-md-3">
+                            <label className="form-label mb-0">Data Início:</label>
+                            <DatePicker
+                                className="form-control"
+                                name="desDataInicio"
+                                selected={new Date(this.state.desafio.desDataInicio)}
+                                onChange={date => this.atualizaCampo(date)}
+                                dateFormat={"dd/MM/yyyy"}
+                                timeFormat="yyyy-MM-dd"
+                                customInput={
+                                    <InputMask
+                                        type="text"
+                                        mask="99/99/9999"
                                     />
-                                )
-                            })
-                        }
-                    </div>
-                    <div className="col-md-5"></div>
-                    <div className="col-md-4 mt-5 logoDesafio">
-                        <label className="form-label mb-0">Imagem:</label>
-                        {/* <img className="imagem" src={desafioUrl + this.state.desafio.desImagem} alt="" /> */}
-                    </div>
-                </form>
-            </FormInserir>
-
-            <FormEditar
-                nome={"Desafio"}
-                abrir={abrirEditarDesafios}
-                funcAbrir={abrirFecharEditarDesafios}
-                funcPut={updateDesafio}
-            >
-                <form className="row g-3 form-group">
-                    <div className="col-md-12">
-                        <label className="mb-0">Id: </label>
-                        <input type="number" className="form-control mb-2" readOnly disabled
-                            value={desafio.desCodigo}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Nome:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desNome"
-                            value={desafio.desNome}
-                            onChange={(e) => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0">Data Início:</label>
-                        <DatePicker
-                            className="form-control"
-                            name="desDataInicio"
-                            selected={new Date(desafio.desDataInicio)}
-                            onChange={date => atualizaCampo(date)}
-                            dateFormat={"dd/MM/yyyy"}
-                            timeFormat="yyyy-MM-dd"
-                            customInput={
-                                <InputMask
-                                    type="text"
-                                    mask="99/99/9999"
-                                />
-                            }
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0">Data Fim:</label>
-                        <DatePicker
-                            className="form-control"
-                            name="desDataFim"
-                            selected={new Date(desafio.desDataFim)}
-                            onChange={date => atualizaCampo(date)}
-                            dateFormat={"dd/MM/yyyy"}
-                            timeFormat="yyyy-MM-dd"
-                            customInput={
-                                <InputMask
-                                    type="text"
-                                    mask="99/99/9999"
-                                />
-                            }
-                        />
-                    </div>
-                    <div className="col-md-4 mt-2">
-                        <label className="form-label mb-0">Tipo do Desafio:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desTipoDesafio"
-                            value={desafio.desTipoDesafio}
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-4 mt-2">
-                        <label className="form-label mb-0">Tipo da Medida:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desTipoMedida"
-                            value={desafio.desTipoMedida}
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-4 mt-2">
-                        <label className="form-label mb-0">Medida:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Nome Desafio"
-                            name="desMedidaDesafio"
-                            value={desafio.desMedidaDesafio}
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-6 mt-2">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text"
-                            className="form-control"
-                            placeholder="Obs."
-                            name="desObs"
-                            value={desafio.desObs}
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
-                        <DatePicker
-                            className="form-control"
-                            name="desDataInicioExibicao"
-                            selected={new Date(desafio.desDataInicioExibicao)}
-                            onChange={date => atualizaCampo(date)}
-                            dateFormat={"dd/MM/yyyy"}
-                            timeFormat="yyyy-MM-dd"
-                            customInput={
-                                <InputMask
-                                    type="text"
-                                    mask="99/99/9999"
-                                />
-                            }
-                        />
-                    </div>
-                    <div className="col-2 mt-5">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" id="gridCheck"
-                                name="desExclusivoAluno"
-                                onChange={e => atualizaCampoAtivo(e)}
-                                checked={desafio.desExclusivoAluno}
-                                value={true} />
-                            <label className="form-check-label">Exclusivo Aluno</label>
+                                }
+                            />
                         </div>
-                    </div>
-                    <div className="selecionarModalidade ml-2">
-                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
-                        {
-                            modalidadeData.map((modalidade) => {
-                                return (
-                                    <CheckBox
-                                        codigo={modalidade.modCodigo}
-                                        nome={modalidade.modNome}
-                                        codigoSelecionado={desafio.desCodigo}
-                                        url={`desafio/modalidades/${desafio.desCodigo}`}
+                        <div className="col-md-3">
+                            <label className="form-label mb-0">Data Fim:</label>
+                            <DatePicker
+                                className="form-control"
+                                name="desDataFim"
+                                selected={new Date(this.state.desafio.desDataFim)}
+                                onChange={date => ConverteData(date)}
+                                dateFormat={"dd/MM/yyyy"}
+                                timeFormat="yyyy-MM-dd"
+                                customInput={
+                                    <InputMask
+                                        type="text"
+                                        mask="99/99/9999"
                                     />
-                                )
-                            })
-                        }
-                    </div>
-                    <div className="col-md-5"></div>
-                    <div className="col-md-4 mt-5 logoDesafio">
-                        <label className="form-label mb-0">Imagem:</label>
-                        <img className="imagem" src={desafioUrl + desafio.desImagem} alt="" />
-                    </div>
-                </form>
-            </FormEditar>
+                                }
+                            />
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <label className="form-label mb-0">Tipo do Desafio:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desTipoDesafio"
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <label className="form-label mb-0">Tipo da Medida:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desTipoMedida"
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <label className="form-label mb-0">Medida:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desMedidaDesafio"
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-6 mt-2">
+                            <label className="form-label mb-0">Observação:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Obs."
+                                name="desObs"
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
+                            <DatePicker
+                                className="form-control"
+                                name="desDataInicioExibicao"
+                                selected={new Date(this.state.desafio.desDataInicioExibicao)}
+                                onChange={date => this.atualizaCampo(date)}
+                                dateFormat={"dd/MM/yyyy"}
+                                timeFormat="yyyy-MM-dd"
+                                customInput={
+                                    <InputMask
+                                        type="text"
+                                        mask="99/99/9999"
+                                    />
+                                }
+                            />
+                        </div>
+                        <div className="col-2 mt-5">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="gridCheck"
+                                    name="desExclusivoAluno"
+                                    onChange={e => this.atualizaCampoAtivo(e)}
+                                    checked={this.state.desafio.desExclusivoAluno}
+                                    value={true} />
+                                <label className="form-check-label">Exclusivo Aluno</label>
+                            </div>
+                        </div>
+                        <div className="selecionarModalidade ml-2">
+                            <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                            {
+                                this.state.modalidadeData.map((modalidade) => {
+                                    return (
+                                        <CheckBox
+                                            codigo={modalidade.modCodigo}
+                                            nome={modalidade.modNome}
+                                            codigoSelecionado={this.state.desafio.desCodigo}
+                                            url={`desafio/modalidades/${this.state.desafio.desCodigo}`}
+                                        />
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className="col-md-5"></div>
+                        <div className="col-md-4 mt-5 logoDesafio">
+                            <label className="form-label mb-0">Imagem:</label>
+                            {/* <img className="imagem" src={desafioUrl + this.state.desafio.desImagem} alt="" /> */}
+                        </div>
+                    </form>
+                </FormInserir>
 
-            <FormExcluir 
-                nome={"Desafio"}
-                dados={desafio.desNome}
-                abrir={abrirExcluirDesafios}
-                funcAbrir={abrirFecharExcluirDesafios}
-                funcDelete={deleteDesafio}
-            />
-        </React.Fragment>
-        // <Mestre icon="trophy" title="Cadastro Desafios" subtitle="Painel Sou+Fit">
-        //     <div className="desafio-container">
-        //         <header>
-        //             <h3>Desafios</h3>
-        //             <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroDesafios()}><strong>+</strong> Adicionar Desafios</button>
-        //         </header>
-        //         <hr />
-        //         <Busca buscar={getDesafioNome}/>
-        //         <br />
-        //         {carregando ? <div className="spinner-border loader" role="status">
-        //         </div>
-        //             : <table className="table table-striped">
-        //                 <thead>
-        //                     <tr>
-        //                         <th>Avatar</th>
-        //                         <th>Nome</th>
-        //                         <th>Data Inicio</th>
-        //                         <th>Data Fim</th>
-        //                         <th>Participantes</th>
-        //                         <th>Alunos</th>
-        //                         <th className="pl-4 acoes">Ações</th>
-        //                     </tr>
-        //                 </thead>
-        // <tbody>
-        //     {desafiosData.map((desafio) => (
-        //         <tr key={desafio.desCodigo}>
-        //             <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
-        //             <td className="pt-3">{desafio.desNome}</td>
-        //             <td className="pt-3">{dataInicioExibicao(desafio.desDataInicio)}</td>
-        //             <td className="pt-3">{dataInicioExibicao(desafio.desDataFim)}</td>
-        //             <td className="pt-3 pl-5">{desafio.total}</td>
-        //             <td className="pl-4 pt-3 listar" onClick={() => selecionarDesafio(desafio, "Participantes")}><BsJustify /></td>
-        //             <td>
-        //                 <button className="btn btn-warning" onClick={() => selecionarDesafio(desafio, "Editar")}>
-        //                     <i className="fa fa-pencil"></i>
-        //                 </button>{" "}
-        //                 <button className="btn btn-danger" onClick={() => selecionarDesafio(desafio, "Excluir")}>
-        //                     <i className="fa fa-trash"></i>
-        //                 </button>
-        //             </td>
-        //         </tr>
-        //     ))}
-        // </tbody>
-        //             </table>
-        //         }
-        //         <hr />
-        //         <br />
-        //         <div className="d-flex justify-content-center">
-        //             <nav aria-label="Page navigation example">
-        //                 <ul className="pagination">
-        //                     <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-        //                     <li className="page-item active"><p className="page-link">{pagina}</p></li>
-        //                     <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
-        //                 </ul>
-        //             </nav>
-        //         </div>
+                <FormEditar
+                    nome={"Desafio"}
+                    abrir={this.state.abrirEditarDesafios}
+                    funcAbrir={this.abrirFecharEditarDesafios}
+                    funcPut={this.updateDesafio}
+                >
+                    <form className="row g-3 form-group">
+                        <div className="col-md-12">
+                            <label className="mb-0">Id: </label>
+                            <input type="number" className="form-control mb-2" readOnly disabled
+                                value={this.state.desafio.desCodigo}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label className="form-label mb-0">Nome:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desNome"
+                                value={this.state.desafio.desNome}
+                                onChange={(e) => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0">Data Início:</label>
+                            <DatePicker
+                                className="form-control"
+                                name="desDataInicio"
+                                selected={new Date(this.state.desafio.desDataInicio)}
+                                onChange={date => this.atualizaCampo(date)}
+                                dateFormat={"dd/MM/yyyy"}
+                                timeFormat="yyyy-MM-dd"
+                                customInput={
+                                    <InputMask
+                                        type="text"
+                                        mask="99/99/9999"
+                                    />
+                                }
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0">Data Fim:</label>
+                            <DatePicker
+                                className="form-control"
+                                name="desDataFim"
+                                selected={new Date(this.state.desafio.desDataFim)}
+                                onChange={date => this.atualizaCampo(date)}
+                                dateFormat={"dd/MM/yyyy"}
+                                timeFormat="yyyy-MM-dd"
+                                customInput={
+                                    <InputMask
+                                        type="text"
+                                        mask="99/99/9999"
+                                    />
+                                }
+                            />
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <label className="form-label mb-0">Tipo do Desafio:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desTipoDesafio"
+                                value={this.state.desafio.desTipoDesafio}
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <label className="form-label mb-0">Tipo da Medida:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desTipoMedida"
+                                value={this.state.desafio.desTipoMedida}
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <label className="form-label mb-0">Medida:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Nome Desafio"
+                                name="desMedidaDesafio"
+                                value={this.state.desafio.desMedidaDesafio}
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-6 mt-2">
+                            <label className="form-label mb-0">Observação:</label>
+                            <input type="text"
+                                className="form-control"
+                                placeholder="Obs."
+                                name="desObs"
+                                value={this.state.desafio.desObs}
+                                onChange={e => this.atualizaCampo(e)}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0 mt-2">Disponível a Partir:</label>
+                            <DatePicker
+                                className="form-control"
+                                name="desDataInicioExibicao"
+                                selected={new Date(this.state.desafio.desDataInicioExibicao)}
+                                onChange={date => this.atualizaCampo(date)}
+                                dateFormat={"dd/MM/yyyy"}
+                                timeFormat="yyyy-MM-dd"
+                                customInput={
+                                    <InputMask
+                                        type="text"
+                                        mask="99/99/9999"
+                                    />
+                                }
+                            />
+                        </div>
+                        <div className="col-2 mt-5">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="gridCheck"
+                                    name="desExclusivoAluno"
+                                    onChange={e => this.atualizaCampoAtivo(e)}
+                                    checked={this.state.desafio.desExclusivoAluno}
+                                    value={true} />
+                                <label className="form-check-label">Exclusivo Aluno</label>
+                            </div>
+                        </div>
+                        <div className="selecionarModalidade ml-2">
+                            <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                            {
+                                this.state.modalidadeData.map((modalidade) => {
+                                    return (
+                                        <CheckBox
+                                            codigo={modalidade.modCodigo}
+                                            nome={modalidade.modNome}
+                                            codigoSelecionado={this.state.desafio.desCodigo}
+                                            url={`desafio/modalidades/${this.state.desafio.desCodigo}`}
+                                        />
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className="col-md-5"></div>
+                        <div className="col-md-4 mt-5 logoDesafio">
+                            <label className="form-label mb-0">Imagem:</label>
+                            <img className="imagem" src={desafioUrl + this.state.desafio.desImagem} alt="" />
+                        </div>
+                    </form>
+                </FormEditar>
 
-        //         <FormParticipantes
-        //             abrir={abrirParticipantes}
-        //             funcAbrir={abrirFecharParticipantes}
-        //             codigoDesafio={desafio.desCodigo}
-        //             funcAtualizaCampo={atualizaCampo}
-        //             // funcPut={putDesafio}
-        //         />
-
-        //         <FormInserir
-        //             abrir={abrirCadastroDesafios}
-        //             funcAbrir={abrirFecharCadastroDesafios}
-        //             abrirEditar={abrirFecharEditarDesafios}
-        //             funcPost={postDesafio}
-        //             modalidades={modalidadeData}
-        //             funcAtualizaCampo={atualizaCampo}
-        //             funcAtualizaCampoAtivo={atualizaCampoAtivo}
-        //             funcDataInicio={dataInicio}
-        //             funcDataFim={dataFim}
-        //             funcMascaraTelefone={mascaraTelefone}
-        //             treinadoresData={treinadoresData}
-        //             desafio={desafio}
-        //             desCodigo={desafio.desCodigo}
-        //             dataInicio={desafio.desDataInicio}
-        //             dataFim={desafio.desDataFim}
-        //         />
-
-        //         <FormEditar
-        //             abrir={abrirEditarDesafios}
-        //             funcAbrir={abrirFecharEditarDesafios}
-        //             funcAtualizaCampo={atualizaCampo}
-        //             funcAtualizaCampoAtivo={atualizaCampoAtivo}
-        //             funcDataInicio={dataInicio}
-        //             funcDataFim={dataFim}
-        //             funcMascaraTelefone={mascaraTelefone}
-        //             treinadoresData={treinadoresData}
-        //             desafio={desafio}
-        //             modalidades={modalidadeData}
-        //             desCodigo={desafio.desCodigo}
-        //             dataInicio={desafio.desDataInicio}
-        //             dataFim={desafio.desDataFim}
-        //         />
-
-        //         <FormExcluir
-        //             abrir={abrirExcluirDesafios}
-        //             funcAbrir={abrirFecharExcluirDesafios}
-        //             funcDelete={deleteDesafio}
-        //             desafio={desafio}
-        //         />
-        //     </div>
-        // </Mestre >
-    );
+                <FormExcluir
+                    nome={"Desafio"}
+                    dados={this.state.desafio.desNome}
+                    abrir={this.state.abrirExcluirDesafios}
+                    funcAbrir={this.abrirFecharExcluirDesafios}
+                    funcDelete={this.deleteDesafio}
+                />
+            </React.Fragment>
+        )
+    }
 }
+
+export default DesafioCrud;

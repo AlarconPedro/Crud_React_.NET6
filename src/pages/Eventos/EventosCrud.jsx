@@ -7,14 +7,18 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Crud/FormularioEventos/FormInserir";
-import FormEditar from "../../components/Crud/FormularioEventos/FormEditar";
-import FormExcluir from "../../components/Crud/FormularioEventos/FormExcluir";
-import FormParticipantes from "../../components/Crud/FormularioEventos/FormParticipantes";
+import FormInserir from "../../components/Forms/FormInserir";
+import FormEditar from "../../components/Forms/FormEditar";
+import FormExcluir from "../../components/Forms/FormExcluir";
+import FormParticipantes from "../../components/Forms/FormParticipantes";
 
-import Busca from "../../layout/Objetos/Busca";
+import DatePicker from "react-datepicker";
+import InputMask from 'react-input-mask';
+import ConverteData from "../../funcoes/ConverteData";
 
-import { eventoUrl } from "../../services/Imagens";
+import Modelo from "../../layout/Modelo";
+
+import { eventoUrl, alunoUrl } from "../../services/Imagens";
 import { BsJustify } from "react-icons/bs";
 
 import "./EventosCrud.css";
@@ -124,21 +128,6 @@ export default function EventosCrud() {
         });
     }
 
-    const dataAuxiliar = (date) => {
-        console.log(date);
-        var data = new Date(date),
-            month = '' + (data.getMonth() + 1),
-            day = '' + (data.getDate() + 1),
-            year = data.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('/');
-    }
-
     const getEventos = async (skip = 0) => {
         setCarregando(true);
         await Api.get(`evento?skip=${skip}`).then(response => {
@@ -150,7 +139,7 @@ export default function EventosCrud() {
     }
 
     const postEvento = async () => {
-        await dataAuxiliar(dataAtual);
+        ConverteData(dataAtual);
         await Api.post("aluno/", evento).then(response => {
             setEvento(response.data);
             setUpdateEventos(true);
@@ -161,7 +150,7 @@ export default function EventosCrud() {
     }
 
     const putEvento = async (codigo = evento.aluCodigo) => {
-        await dataAuxiliar(dataAtual);
+        ConverteData(dataAtual);
         await Api.put("aluno/" + codigo, evento).then(response => {
             var alunosAuxiliar = eventosData;
             alunosAuxiliar.map(alunoMap => {
@@ -213,19 +202,6 @@ export default function EventosCrud() {
         setCarregando(false);
     }
 
-    const converterDataToIdade = (data) => {
-        const today = new Date();
-
-        var idade = data !== "" ? today.getFullYear() - data.substring(0, 4) : "-";
-        const mes = data !== "" ? today.getMonth() - data.substring(5, 7) : "-";
-
-        if (mes < 0 || (mes === 0 && today.getDate() < data.substring(8, 10))) {
-            idade--;
-        }
-
-        return data !== "" ? idade : "-";
-    }
-
     useEffect(() => {
         if (updateEventos) {
             getEventos();
@@ -233,132 +209,251 @@ export default function EventosCrud() {
         }
     }, [updateEventos]);
 
-    function handleDefault(e) {
-        e.preventDefault();
-    }
-
-    const alterarPagina = (e) => {
-        e === "&gt;" ? pagina > eventosData.length ? avancarPagina()
-            : avancarPagina(pagina * 10)
-            : voltarPagina(pagina * 10);
-    }
-
-    const avancarPagina = async (skip) => {
-        getEventos(skip);
-        pagina > eventosData.length ? setPagina(1) :
-            setPagina(pagina + 1);
-    }
-
-    const voltarPagina = async (skip) => {
-        skip = skip - 20;
-        getEventos(skip);
-        pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
-    }
-
     return (
-        <Mestre icon="bullhorn" title="Cadastro Eventos" subtitle="Painel Sou+Fit">
-            <div className="alunos-container">
-                <header>
-                    <h3>Eventos</h3>
-                    <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroEventos()}><strong>+</strong> Adicionar Eventos</button>
-                </header>
-                <hr />
-                <Busca buscar={getEventosNome}/>
-                <br />
-                {carregando ? <div className="spinner-border loader" role="status">
-                </div>
-                    : <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Imagem</th>
-                                <th>Nome</th>
-                                <th className="pl-4">Inicio</th>
-                                <th className="pl-4">Fim</th>
-                                <th>Só Alunos</th>
-                                <th>Qtd. Participantes</th>
-                                <th>Participantes</th>
-                                <th className="pl-4 acoes">Ações</th>
+        <React.Fragment>
+            <Modelo
+                urlApi="evento?skip="
+                titulo="Cadastro Eventos"
+                subtitulo="Painel Sou+Fit"
+                icone="bullhorn"
+                tipoContainer="desafio-container"
+                Cabecalho="Eventos"
+                BotaoAdd="Adicionar Eventos"
+                dadosApi={eventosData}
+                getDados={getEventos}
+                getByNome={getEventosNome}
+                funcAbrirCadastro={abrirFecharCadastroEventos}
+                colunas={[
+                    { nome: "Imagem" },
+                    { nome: "Nome" },
+                    { nome: "Inicio" },
+                    { nome: "Fim" },
+                    { nome: "Só Alunos" },
+                    { nome: "Qtd. Participantes" },
+                    { nome: "Participantes" },
+                ]}
+            >
+                {carregando ? <div className="spinner-border loader" role="status"></div>
+                    :
+                    <tbody>
+                        {eventosData.map((evento) => (
+                            <tr key={evento.eveCodigo}>
+                                <td className="pt-3"><img src={eventoUrl + evento.eveImagem} alt="" /></td>
+                                <td className="pt-3">{evento.eveNome}</td>
+                                <td className="pt-3">{ConverteData(evento.eveDataInicio)}</td>
+                                <td className="pt-3">{ConverteData(evento.eveDataFim)}</td>
+                                <td className="pt-3">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" checked={evento.eveExclusivoAluno} value={true} />
+                                    </div>
+                                </td>
+                                <td className="pt-3 pl-5">{evento.total}</td>
+                                <td className="pl-5 pt-3 listar" onClick={() => selecionarEvento(evento, "Participantes")}><BsJustify /></td>
+                                <td>
+                                    <button className="btn btn-warning" onClick={() => selecionarEvento(evento, "Editar")}>
+                                        <i className="fa fa-pencil"></i>
+                                    </button>{" "}
+                                    <button className="btn btn-danger" onClick={() => selecionarEvento(evento, "Excluir")}>
+                                        <i className="fa fa-trash"></i>
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {eventosData.map((evento) => (
-                                <tr key={evento.eveCodigo}>
-                                    <td className="pt-3"><img src={eventoUrl + evento.eveImagem} alt="" /></td>
-                                    <td className="pt-3">{evento.eveNome}</td>
-                                    <td className="pt-3">{dataAuxiliar(evento.eveDataInicio)}</td>
-                                    <td className="pt-3">{dataAuxiliar(evento.eveDataFim)}</td>
-                                    <td className="pt-3">
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" checked={evento.eveExclusivoAluno} value={true} />
-                                        </div>
-                                    </td>
-                                    <td className="pt-3 pl-5">{evento.total}</td>
-                                    <td className="pl-5 pt-3 listar" onClick={() => selecionarEvento(evento, "Participantes")}><BsJustify /></td>
-                                    <td>
-                                        <button className="btn btn-warning" onClick={() => selecionarEvento(evento, "Editar")}>
-                                            <i className="fa fa-pencil"></i>
-                                        </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => selecionarEvento(evento, "Excluir")}>
-                                            <i className="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                        ))}
+                    </tbody>
                 }
-                <hr />
-                <br />
-                <div className="d-flex justify-content-center">
-                    <nav aria-label="Page navigation example">
-                        <ul className="pagination">
-                            <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-                            <li className="page-item active"><p className="page-link">{pagina}</p></li>
-                            <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
-                        </ul>
-                    </nav>
-                </div>
+            </Modelo>
 
-                <FormParticipantes
-                    abrir={abrirParticipantes}
-                    funcAbrir={abrirFecharParticipantes}
-                    codigoDesafio={evento.eveCodigo}
-                    funcAtualizaCampo={atualizaCampo}
-                    funcPut={putEvento}
-                />
+            <FormParticipantes
+                abrir={abrirParticipantes}
+                funcAbrir={abrirFecharParticipantes}
+                codigoDesafio={evento.eveCodigo}
+                alunoUrl={alunoUrl}
+            />
 
-                <FormInserir
-                    nome={"Eventos"}
-                    abrir={abrirCadastroEventos}
-                    aluDados={evento}
-                    funcPost={postEvento}
-                    funcAbrir={abrirFecharCadastroEventos}
-                    funcData={dataAuxiliar}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcAtualizaCampo={atualizaCampo}
-                />
+            <FormInserir
+                nome={"Eventos"}
+                abrir={abrirCadastroEventos}
+                funcPost={postEvento}
+                funcAbrir={abrirFecharCadastroEventos}
+            >
+                <form className="row g-3 form-group">
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="desNome"
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Início:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataInicio"
+                            onChange={date => ConverteData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Fim:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataFim"
+                            onChange={date => ConverteData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Início Exibição:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="desDataInicioExibicao"
+                            onChange={date => ConverteData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-6 mt-2">
+                        <label className="form-label mb-0">Descrição:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Obs."
+                            name="desDescricao"
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-2 mt-5">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" id="gridCheck"
+                                name="desExclusivoAluno"
+                                onChange={e => atualizaCampoAtivo(e)}
+                                value={true} />
+                            <label className="form-check-label">Exclusivo Aluno</label>
+                        </div>
+                    </div>
 
-                <FormEditar
-                    nome={"Eventos"}
-                    abrir={abrirEditarEventos}
-                    eveDados={evento}
-                    funcPut={putEvento}
-                    funcAbrir={abrirFecharEditarEventos}
-                    funcAtualizaCampoAtivo={atualizaCampoAtivo}
-                    funcAtualizaCampo={atualizaCampo}
-                    dataInicio={evento.eveDataInicio}
-                    dataFim={evento.eveDataFim}
-                />
+                </form>
+            </FormInserir>
 
-                <FormExcluir
-                    nome={"Eventos"}
-                    abrir={abrirExcluirEventos}
-                    aluNome={evento && evento.aluNome}
-                    aluDados={evento.aluCodigo}
-                    funcDelete={deleteEvento}
-                    funcAbrir={abrirFecharExcluirEventos}
-                />
-            </div>
-        </Mestre >
+            <FormEditar
+                nome={"Eventos"}
+                abrir={abrirEditarEventos}
+                funcPut={putEvento}
+                funcAbrir={abrirFecharEditarEventos}
+            >
+                <form className="row g-3 form-group">
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Nome Desafio"
+                            name="eveNome"
+                            value={evento.eveNome}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Início:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="eveDataInicio"
+                            selected={new Date(evento.eveDataInicio)}
+                            onChange={date => ConverteData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0">Data Fim:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="eveDataFim"
+                            selected={new Date(evento.eveDataFim)}
+                            onChange={date => ConverteData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label mb-0 mt-2">Início Exibição:</label>
+                        <DatePicker
+                            className="form-control"
+                            name="eveDataInicioExibicao"
+                            selected={new Date(evento.eveDataInicioExibicao)}
+                            onChange={date => ConverteData(date)}
+                            dateFormat={"dd/MM/yyyy"}
+                            timeFormat="yyyy-MM-dd"
+                            customInput={
+                                <InputMask
+                                    type="text"
+                                    mask="99/99/9999"
+                                />
+                            }
+                        />
+                    </div>
+                    <div className="col-md-6 mt-2">
+                        <label className="form-label mb-0">Descrição:</label>
+                        <input type="text"
+                            className="form-control"
+                            placeholder="Obs."
+                            name="eveDescricao"
+                            value={evento.eveDescricao}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-2 mt-5">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" id="gridCheck"
+                                name="eveExclusivoAluno"
+                                checked={evento.eveExclusivoAluno}
+                                onChange={e => atualizaCampoAtivo(e)}
+                                value={true} />
+                            <label className="form-check-label">Exclusivo Aluno</label>
+                        </div>
+                    </div>
+                </form>
+            </FormEditar>
+
+            <FormExcluir
+                nome={"Eventos"}
+                dados={evento.eveNome}
+                abrir={abrirExcluirEventos}
+                funcDelete={deleteEvento}
+                funcAbrir={abrirFecharExcluirEventos}
+            />
+        </React.Fragment>
     );
 }
