@@ -22,7 +22,7 @@ import InputMask from 'react-input-mask';
 
 import CheckBox from "../../layout/Objetos/CheckBox";
 
-class DesafioCrud extends React.Component {
+class Desafio extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -126,6 +126,16 @@ class DesafioCrud extends React.Component {
             desafio: {
                 ...this.state.desafio,
                 [name]: value
+            }
+        });
+    }
+
+    atualizaCampoData = e => {
+        const { name, value } = e.target;
+        this.setState({
+            desafio: {
+                ...this.state.desafio,
+                [name]: e
             }
         });
     }
@@ -368,7 +378,7 @@ class DesafioCrud extends React.Component {
                                 className="form-control"
                                 name="desDataInicio"
                                 selected={new Date(this.state.desafio.desDataInicio)}
-                                onChange={date => this.atualizaCampo(date)}
+                                onChange={date => this.atualizaCampoData(date)}
                                 dateFormat={"dd/MM/yyyy"}
                                 timeFormat="yyyy-MM-dd"
                                 customInput={
@@ -385,7 +395,7 @@ class DesafioCrud extends React.Component {
                                 className="form-control"
                                 name="desDataFim"
                                 selected={new Date(this.state.desafio.desDataFim)}
-                                onChange={date => ConverteData(date)}
+                                onChange={date => this.atualizaCampo(date)}
                                 dateFormat={"dd/MM/yyyy"}
                                 timeFormat="yyyy-MM-dd"
                                 customInput={
@@ -641,4 +651,4 @@ class DesafioCrud extends React.Component {
     }
 }
 
-export default DesafioCrud;
+export default Desafio;

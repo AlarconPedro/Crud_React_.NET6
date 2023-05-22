@@ -25,7 +25,7 @@ import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 import Modelo from "../../layout/Modelo";
 
 
-export default function AlunosCrud(props) {
+export default function Atividades(props) {
 
     const location = useLocation();
     const { codigo } = location.state;

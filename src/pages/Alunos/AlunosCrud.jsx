@@ -26,7 +26,7 @@ import Modelo from "../../layout/Modelo";
 import "./AlunosCrud.css";
 import { alunoUrl } from "../../services/Imagens";
 
-class AlunoCrud extends React.Component {
+class Aluno extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -549,4 +549,4 @@ class AlunoCrud extends React.Component {
     }
 }
 
-export default AlunoCrud;
+export default Aluno;
