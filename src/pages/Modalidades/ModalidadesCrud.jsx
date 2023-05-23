@@ -14,6 +14,7 @@ import Modelo from "../../layout/Modelo";
 import TipoModalidade from "../../funcoes/TipoDesafio"
 
 import "./ModalidadesCrud.css";
+import tipoDesafio from "../../funcoes/TipoDesafio";
 
 class Modalidade extends React.Component {
     constructor(props) {
@@ -51,8 +52,8 @@ class Modalidade extends React.Component {
                 tbAlunoEventos: [],
             },
             tipoDesafio: [
-                { id: 1, nome: "Distância" },   
-                { id: 2, nome: "Tempo" },   
+                { id: 1, nome: "Distância" },
+                { id: 2, nome: "Tempo" },
                 { id: 3, nome: "Frequência" },
             ],
             tipoMedida: [
@@ -80,7 +81,12 @@ class Modalidade extends React.Component {
 
     selecionarModalidade = (modalidade, opcao) => {
         this.setState({ modalidade: modalidade });
-        (opcao === "Editar") ? this.abrirFecharEditarModalidades() : this.abrirFecharExcluirModalidades();
+        if (opcao === "Editar") {
+            this.abrirFecharEditarModalidades();
+            this.getModalidadeById(modalidade.modCodigo);
+        } else if (opcao === "Excluir") {
+            this.abrirFecharExcluirModalidades();
+        }
     }
 
     atualizaCampo = e => {
@@ -96,7 +102,18 @@ class Modalidade extends React.Component {
     atualizaCampoTipoDesafio = e => {
         let listaAtualizada = TipoModalidade(e.target.value);
         this.setState({
-            tipoMedida: listaAtualizada
+            tipoMedida: listaAtualizada,
+        });
+        this.atualizaCampo(e);
+    }
+
+    atualizaCampoAtivo = e => {
+        const { name, checked } = e.target;
+        this.setState({
+            modalidade: {
+                ...this.state.modalidade,
+                [name]: checked
+            }
         });
     }
 
@@ -104,6 +121,16 @@ class Modalidade extends React.Component {
         this.setState({ carregando: true });
         await Api.get(`modalidade?skip=${skip}`).then(response => {
             this.setState({ modalidadesData: response.data });
+        }).catch(error => {
+            console.log(error);
+        });
+        this.setState({ carregando: false });
+    }
+
+    getModalidadeById = async (id) => {
+        this.setState({ carregando: true });
+        await Api.get(`modalidade/${id}`).then(response => {
+            this.setState({ modalidade: response.data });
         }).catch(error => {
             console.log(error);
         });
@@ -122,7 +149,7 @@ class Modalidade extends React.Component {
 
     postModalidades = async () => {
         await Api.post("modalidade/", this.state.modalidade).then(response => {
-            this.setState({ modalidade: response.data });
+            // this.setState({ modalidade: response.data });
             this.setState({ updateModalidades: true });
             this.abrirFecharCadastroModalidades(true);
         }).catch(error => {
@@ -131,7 +158,7 @@ class Modalidade extends React.Component {
         this.setState({ modalidade: this.state.modalidadeInitialState });
     }
 
-    putModalidade = async (codigo = this.state.modalidade.aluCodigo) => {
+    putModalidade = async (codigo = this.state.modalidade.modCodigo) => {
         await Api.put("modalidade/" + codigo, this.state.modalidade).then(response => {
             var modalidadesAuxiliar = this.state.modalidadesData;
             modalidadesAuxiliar.map(modalidadeMap => {
@@ -154,8 +181,8 @@ class Modalidade extends React.Component {
         });
     }
 
-    deleteModalidade = async (modalidade = this.state.modalidade.aluCodigo) => {
-        await Api.delete("modalidade/" + modalidade).then(response => {
+    deleteModalidade = async () => {
+        await Api.delete("modalidade/" + this.state.modalidade.modCodigo).then(response => {
             this.setState({ updateModalidades: true });
             this.abrirFecharExcluirModalidades(true);
         }).catch(error => {
@@ -248,7 +275,57 @@ class Modalidade extends React.Component {
                     funcAbrir={this.abrirFecharCadastroModalidades}
                     funcPost={this.postModalidades}
                 >
-
+                    <form className="row g-3 form-group">
+                        <div className="col-md-5">
+                            <label className="form-label mb-0">Nome:</label>
+                            <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                                name="modNome" onChange={e => this.atualizaCampo(e)} />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label mb-0">Tipo Desafio:</label>
+                            <select className="form-select w-100 h-50"
+                                name="modTipoDesafio"
+                                onChange={e => this.atualizaCampoTipoDesafio(e)}>
+                                <option value=""></option>
+                                {
+                                    this.state.tipoDesafio.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item.id}>{item.nome}</option>
+                                        )
+                                    })
+                                }
+                            </select>
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label mb-0">Tipo Medida:</label>
+                            <select className="form-select w-100 h-50"
+                                name="modTipoMedida"
+                                onChange={e => this.atualizaCampo(e)}>
+                                <option value=""></option>
+                                {
+                                    this.state.tipoMedida.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item.id}>{item.nome}</option>
+                                        )
+                                    })
+                                }
+                            </select>
+                        </div>
+                        <div className="col-8 mt-5">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="gridCheck"
+                                    name="modAtiva"
+                                    checked={this.state.modalidade.modAtiva}
+                                    onChange={e => this.atualizaCampoAtivo(e)}
+                                    value={true} />
+                                <label className="form-check-label">Modalidade Ativa</label>
+                            </div>
+                        </div>
+                        <div className="col-md-4 mt-5">
+                            <label className="form-label mb-0">Imagem:</label>
+                            <input type="image" alt="imagem" className="container border-dark" />
+                        </div>
+                    </form>
                 </FormInserir>
 
                 <FormEditar
@@ -269,6 +346,7 @@ class Modalidade extends React.Component {
                             <label className="form-label mb-0">Tipo Desafio:</label>
                             <select className="form-select w-100 h-50"
                                 name="modTipoDesafio"
+                                value={this.state.modalidade.modTipoDesafio}
                                 onChange={e => this.atualizaCampoTipoDesafio(e)}>
                                 <option value=""></option>
                                 {
@@ -283,7 +361,8 @@ class Modalidade extends React.Component {
                         <div className="col-md-3">
                             <label className="form-label mb-0">Tipo Medida:</label>
                             <select className="form-select w-100 h-50"
-                                name="treCodigo"
+                                name="modTipoMedida"
+                                value={this.state.modalidade.modTipoMedida}
                                 onChange={e => this.atualizaCampo(e)}>
                                 <option value=""></option>
                                 {
@@ -316,45 +395,6 @@ class Modalidade extends React.Component {
 }
 
 export default Modalidade;
-
-//     const getModalidades = async (skip = 0) => {
-//         setCarregando(true);
-//         await Api.get(`modalidade?skip=${skip}`).then(response => {
-//             setModalidadesData(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//         setCarregando(false);
-//     }
-
-//     const getTreinadores = async (skip = 0) => {
-//         setCarregando(true);
-//         await Api.get(`treinador?skip=${skip}`).then(response => {
-//             setTreinadoresData(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//         setCarregando(false);
-//     }
-
-//     const getTreinadorId = async (id) => {
-//         await Api.get(`treinador/${id}`).then(response => {
-//             setTreinadoresData(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//     }
-
-//     const postModalidades = async () => {
-//         await Api.post("modalidade/", modalidade).then(response => {
-//             setModalidade(response.data);
-//             setUpdateModalidades(true);
-//             // abrirFecharCadastroAlunos();
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//         setModalidade(modalidadeInitialState);
-//     }
 
 //     const putModalidade = async (codigo = modalidade.aluCodigo) => {
 //         await Api.put("modalidade/" + codigo, modalidade).then(response => {

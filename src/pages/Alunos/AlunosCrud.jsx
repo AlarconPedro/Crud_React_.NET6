@@ -233,16 +233,6 @@ class Aluno extends React.Component {
         this.setState({ aluno: { ...this.state.aluno, [e.target.name]: MascaraTelefone(e) } });
     }
 
-    verificaSexo = (sexo) => {
-        if (sexo === "M") {
-            return "Masculino";
-        } else if (sexo === "F") {
-            return "Feminino";
-        } else {
-            return "Outro";
-        }
-    }
-
     componentDidMount() {
         this.setState({ carregando: true });
         this.getAlunos();
@@ -477,12 +467,13 @@ class Aluno extends React.Component {
                             <label className="form-label mb-0 mt-2">Treinador:</label>
                             <select className="form-select w-100 h-50"
                                 name="treCodigo"
-                                selected={this.state.treinadoresData}
+                                value={this.state.aluno.treCodigo}
+                                // selected={this.state.aluno.treCodigo}
                                 onChange={e => this.atualizaCampo(e)}>
                                 {
                                     this.state.treinadoresData.map((item, index) => {
                                         return (
-                                            <option key={item.treCodigo} value={item.treCodigo}>{item.treNome}</option>
+                                            <option key={index} value={item.treCodigo}>{item.treNome}</option>
                                         )
                                     })
                                 }

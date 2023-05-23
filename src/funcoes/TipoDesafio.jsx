@@ -33,7 +33,15 @@ export default function tipoDesafio(id) {
             return distancia();
         case '2':
             return tempo();
-        default:
+        case '3':
             return frequencia();
+        default:
+            return [
+                { id: 1, nome: "Km" },
+                { id: 2, nome: "Metros" },
+                { id: 3, nome: "Horas" },
+                { id: 4, nome: "Minutos" },
+                { id: 5, nome: "Dias" },
+            ];
     }
 }
