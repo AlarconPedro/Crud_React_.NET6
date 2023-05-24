@@ -42,7 +42,7 @@ form .form-group input{
     font-size: 15px;
     height: 45px;
     border: 0;
-    color: #fff;
+    /* color: #fff; */
 }
 
 label {

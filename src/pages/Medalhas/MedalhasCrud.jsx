@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-
-import Mestre from "../../layout/Mestre/Mestre";
 
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
@@ -15,447 +13,311 @@ import Api from "../../services/Api";
 // import FormInserir from "../../components/Crud/FormularioMedalhas/FormInserir";
 // import FormEditar from "../../components/Crud/FormularioMedalhas/FormEditar";
 // import FormExcluir from "../../components/Crud/FormularioMedalhas/FormExcluir";
-// import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/Niveis/FormNivelMedalha";
+import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/Niveis/FormNivelMedalha";
 
 import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
 
 import Modelo from "../../layout/Modelo";
-
-import Busca from "../../layout/Objetos/Busca";
+import CheckBox from "../../layout/Objetos/CheckBox";
 
 import "./MedalhasCrud.css";
 
-class Medalha extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            carregando: false,
-            updateMedalhas: false,
-            abrirCadastroMedalhas: false,
-            abrirEditarMedalhas: false,
-            abrirExcluirMedalhas: false,
-            abrirNivelMedalhas: false,
-            medalhasData: [],
-            medalha: {
-                medCodigo: 0,
-                medNome: '',
-                medTipoDesafio: '',
-                tbMedalhaModalidades: [],
-                tbMedalhaNivels: [],
-            },
-            medalhaInitialState: {
-                medCodigo: 0,
-                medNome: '',
-                medTipoDesafio: '',
-                tbMedalhaModalidades: [],
-                tbMedalhaNivels: [],
-            }
-        }
+export default function MedalhasCrud() {
+
+    const [carregando, setCarregando] = useState(false);
+
+    const [medalhasData, setMedalhasData] = useState([]);
+    const [niveisData, setNiveisData] = useState([]);
+
+    const [modalidadeData, setModalidadeData] = useState([]);
+
+    const [medalhaInitialState] = useState({
+        medCodigo: 0,
+        medNome: '',
+        medTipoDesafio: '',
+        tbMedalhaModalidades: [],
+        tbMedalhaNivels: [],
+    });
+
+    const [medalha, setMedalha] = useState({
+        medCodigo: 0,
+        medNome: '',
+        medTipoDesafio: '',
+        tbMedalhaModalidades: [],
+        tbMedalhaNivels: [],
+    });
+
+    const tipoMedidas = [
+        { id: "1", nome: "Distância(KM)" },
+        { id: "2", nome: "Tempo(Horas)" },
+        { id: "3", nome: "Frequência(Dias)" },
+    ];
+
+    const [abrirCadastroMedalhas, setAbrirCadastroMedalhas] = useState(false);
+    const [abrirEditarMedalhas, setAbrirEditarMedalhas] = useState(false);
+    const [abrirExcluirMedalhas, setAbrirExcluirMedalhas] = useState(false);
+    const [abrirNivelMedalhas, setAbrirNivelMedalhas] = useState(false);
+    const [updateMedalhas, setUpdateMedalhas] = useState(true);
+
+    const abrirFecharCadastroMedalhas = (abrirCadastroMedalhas) => {
+        setAbrirCadastroMedalhas(!abrirCadastroMedalhas);
+        setMedalha(medalhaInitialState);
     }
 
-    componentDidUpdate(prevProps, prevStates) {
-        if (prevStates.medalhaData !== this.props.medalhaData) {
-            this.setState({ medalhaData: this.props.medalhaData });
-        }
-
-        if (prevStates.updateMedalhas !== this.props.updateMedalhas) {
-            this.setState({ updateMedalhas: this.props.updateMedalhas });
-        }
-
-        if (prevStates.medalha !== this.props.medalha) {
-            this.setState({ medalha: this.props.medalha });
-        }
+    const abrirFecharEditarMedalhas = (abrirEditarMedalhas) => {
+        setAbrirEditarMedalhas(!abrirEditarMedalhas);
     }
 
-    abrirFecharCadastroModalidades = (abrir) => {
-        this.setState({ abrirCadastroMedalhas: this.state.abrirCadastroMedalhas || !abrir });
-        this.setState({ medalha: this.state.medalhaInitialState });
+    const abrirFecharExcluirMedalhas = (abrirExcluirMedalhas) => {
+        setAbrirExcluirMedalhas(!abrirExcluirMedalhas);
     }
 
-    abrirFecharEditarModalidades = (abrir) => {
-        this.setState({ abrirEditarMedalhas: this.state.abrirEditarMedalhas || !abrir });
+    const abrirFecharNiveis = (abrirNivelMedalhas) => {
+        setAbrirNivelMedalhas(!abrirNivelMedalhas);
     }
 
-    abrirFecharExcluirModalidades = (abrir) => {
-        this.setState({ abrirExcluirMedalhas: this.state.abrirExcluirMedalhas || !abrir });
+    const selecionarMedalha = (medalha, opcao) => {
+        setMedalha(medalha);
+        (opcao === "Editar") ? abrirFecharEditarMedalhas() : abrirFecharExcluirMedalhas();
     }
 
-    abrirFecharNiveis = (abrir) => {
-        this.setState({ abrirNivelMedalhas: this.state.abrirNivelMedalhas || !abrir });
+    const selecionaMedalahaNivel = async (medalha, abrirNivelMedalhas) => {
+        await setMedalha(medalha);
+        await getMedalhaNivel(medalha.medCodigo);
+        abrirFecharNiveis(abrirNivelMedalhas);
     }
 
-    selecionarMedalha = (medalha, opcao) => {
-        this.setState({ medalha: medalha });
-        (opcao === "Editar") ? this.abrirFecharEditarModalidades() : this.abrirFecharExcluirModalidades();
-    }
-
-    selecionaMedalahaNivel = async (medalha, abrirNivelMedalhas) => {
-        await this.setState({ medalha: medalha });
-        await this.getMedalhaNivel(medalha.medCodigo);
-        this.abrirFecharNiveis(abrirNivelMedalhas);
-    }
-
-    atualizaCampo = e => {
+    const atualizaCampo = e => {
         const { name, value } = e.target;
-        this.setState({ medalha: {
-            ...this.state.medalha,
+        setMedalha({
+            ...medalha,
             [name]: value
-        }});
+        });
     }
 
-    getMedalhas = async (skip = 0) => {
-        this.setState({ carregando: true });
+    const getMedalhas = async (skip = 0) => {
+        setCarregando(true);
         await Api.get(`medalha?skip=${skip}`).then(response => {
-            this.setState({ medalhasData: response.data });
+            setMedalhasData(response.data);
         }).catch(error => {
             console.log(error);
         });
-        this.setState({ carregando: false });
+        setCarregando(false);
     }
 
-    getModalidades = async () => {
+    const getModalidades = async () => {
         await Api.get("modalidade").then(response => {
-            this.setState({ modalidadeData: response.data });
+            setModalidadeData(response.data);
         }).catch(error => {
             console.log(error);
         });
     }
 
-    postMedalha = async () => {
-        await Api.post("medalha/", this.state.medalha).then(response => {
-            this.setState({ medalha: response.data });
-            this.setState({ updateMedalhas: true });
+    const postMedalha = async () => {
+        await Api.post("medalha/", medalha).then(response => {
+            setMedalha(response.data);
+            setUpdateMedalhas(true);
             // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
-        this.setState({ medalha: this.state.medalhaInitialState });
+        setMedalha(medalhaInitialState);
     }
 
-    putMedalha = async (codigo = this.state.medalha.aluCodigo) => {
-         await Api.put("medalha/" + codigo, this.state.medalha).then(response => {
-            var medalhasAuxiliar = this.state.medalhasData;
-                medalhasAuxiliar.map(medalhaMap => {
-                    if (medalhaMap.medCodigo === this.state.medalha.medCodigo) {
-                        medalhaMap.medNome = this.state.medalha.medNome;
-                        medalhaMap.medTipoDesafio = this.state.medalha.medTipoDesafio;
-                        medalhaMap.tbMedalhaModalidades = this.state.medalha.tbMedalhaModalidades;
-                        medalhaMap.tbMedalhaNivels = this.state.medalha.tbMedalhaNivels;
-                    }
-                });
-         });
+    const deleteMedalha = async (aluno = aluno.aluCodigo) => {
+        await Api.delete("medalha/" + aluno).then(response => {
+            setUpdateMedalhas(true);
+            // abrirFecharExcluirAlunos();
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
-    render() {
-        return(
-            <React.Fragment>
-                <Modelo
-                    urlApi="medalha?skip="
-                    titulo="Cadastro Medalhas"
-                    subtitulo="Painel Sou+Fit"
-                    icone="certificate"
-                    tipoContainer="medalhas-container"
-                    Cabecalho="Medalhas"
-                    BotaoAdd="Adicionar Medalha"
-                    dadosApi={this.state.medalhasData}
-                    getDados={this.getModalidades}
-                    getByNome={this.getModalidadeNome}
-                    funcAbrirCadastro={this.abrirFecharCadastroModalidades}
-                    colunas={[
-                        { nome: "Nome" },
-                        { nome: "Níveis" },
-                        { nome: "Tipo" },
-                    ]}
-                >
-                    <tbody>
-                            {this.state.medalhasData.map((medalha) => (
-                                <tr key={medalha.medCodigo}>
-                                    <td>{medalha.medNome}</td>
-                                    <td className="pl-4 listar" onClick={() => this.selecionaMedalahaNivel(medalha, this.state.abrirNivelMedalhas)}><BsJustify/></td>
-                                    <td>{medalha.medTipoDesafio}</td>
-                                    <td>
-                                        <button className="btn btn-warning" onClick={() => this.selecionarMedalha(medalha, "Editar")}>
-                                            <i className="fa fa-pencil"></i>
-                                        </button>{" "}
-                                        <button className="btn btn-danger" onClick={() => this.selecionarMedalha(medalha, "Excluir")}>
-                                            <i className="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                </Modelo>
-            </React.Fragment>
-        );
+    const getMedalhaNome = async (buscar) => {
+        setCarregando(true);
+        await Api.get("medalha/" + buscar).then(response => {
+            setMedalhasData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+        setCarregando(false);
     }
+
+    const getMedalhaNivel = async (medCodigo) => {
+        await Api.get("nivel/" + medCodigo).then(response => {
+            setNiveisData(response.data);
+            console.log(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    useEffect(() => {
+        if (updateMedalhas) {
+            getMedalhas();
+            setUpdateMedalhas(false);
+        }
+    }, [updateMedalhas]);
+
+    useEffect(() => {
+        getModalidades();
+    }, [setAbrirCadastroMedalhas]);
+
+    function handleDefault(e) {
+        e.preventDefault();
+    }
+
+    return (
+        <React.Fragment>
+            <FormNivelMedalha
+                nome={"Nível Medalha"}
+                abrir={abrirNivelMedalhas}
+                nivel={niveisData}
+                funcAbrir={abrirFecharNiveis}
+                funcAtualizaCampo={atualizaCampo}
+            />
+
+            <Modelo
+                urlApi="medalha?skip="
+                titulo="Cadastro Medalhas"
+                subtitulo="Painel Sou+Fit"
+                icone="certificate"
+                tipoContainer="medalhas-container"
+                Cabecalho="Medalhas"
+                BotaoAdd="Adicionar Medalha"
+                dadosApi={medalhasData}
+                getDados={getMedalhas}
+                getByNome={getMedalhaNome}
+                funcAbrirCadastro={abrirFecharCadastroMedalhas}
+                colunas={[
+                    { nome: "Nome" },
+                    { nome: "Níveis" },
+                    { nome: "Tipo" },
+                ]}
+            >
+                <tbody>
+                    {medalhasData.map((medalha) => (
+                        <tr key={medalha.medCodigo}>
+                            <td>{medalha.medNome}</td>
+                            <td className="pl-4 listar" onClick={() => selecionaMedalahaNivel(medalha, abrirNivelMedalhas)}><BsJustify /></td>
+                            <td>{medalha.medTipoDesafio}</td>
+                            <td>
+                                <button className="btn btn-warning" onClick={() => selecionarMedalha(medalha, "Editar")}>
+                                    <i className="fa fa-pencil"></i>
+                                </button>{" "}
+                                <button className="btn btn-danger" onClick={() => selecionarMedalha(medalha, "Excluir")}>
+                                    <i className="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Modelo>
+
+            <FormInserir
+                nome={"Medalha"}
+                abrir={abrirCadastroMedalhas}
+                funcAbrir={abrirFecharCadastroMedalhas}
+                funcPost={postMedalha}
+            >
+                <form className="row g-3 form-group">
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="medNome" onChange={e => this.atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Tipo de Medida:</label>
+                        <select className="form-select w-100 h-50 mb-4"
+                            name="medTipoMedida"
+                            onChange={e => this.atualizaCampo(e)}>
+                            <option value=""></option>
+                            {
+                                tipoMedidas.map((item, index) => {
+                                    return (
+                                        <option key={index} value={item.id}>{item.nome}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div className="selecionarModalidade ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+
+                            modalidadeData.map((modalidade) => {
+                                return (
+                                    <CheckBox
+                                        nome={modalidade.modNome}
+                                        codigo={modalidade.modCodigo}
+                                        // codigoSelecionado={this.state.medalha.medCodigo}
+                                        url={`medalha/modalidade/${medalha.medCodigo}`}
+                                    />
+                                )
+                            })
+                        }
+                    </div>
+                </form>
+            </FormInserir>
+
+            <FormEditar
+                nome={"Medalha"}
+                abrir={abrirEditarMedalhas}
+                funcAbrir={abrirFecharEditarMedalhas}
+                funcPut={updateMedalhas}
+            >
+                <form className="row g-3 form-group">
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="medNome"
+                            value={medalha.medNome}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Tipo de Medida:</label>
+                        <select className="form-select w-100 h-50 mb-4"
+                            name="medTipoDesafio"
+                            value={medalha.medTipoDesafio}
+                            onChange={e => this.atualizaCampo(e)}>
+                            <option value=""></option>
+                            {
+                                tipoMedidas.map((item, index) => {
+                                    return (
+                                        <option key={index} value={item.id}>{item.nome}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div className="selecionarModalidade ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+                            modalidadeData.map((modalidade) => {
+                                return (
+                                    <CheckBox
+                                        nome={modalidade.modNome}
+                                        codigo={modalidade.modCodigo}
+                                        // codigoSelecionado={this.state.medalha.medCodigo}
+                                        url={`medalha/modalidade/${medalha.medCodigo}`}
+                                    />
+                                )
+                            })
+                        }
+                    </div>
+                </form>
+            </FormEditar>
+
+            <FormExcluir
+                nome={"Medalha"}
+                dados={medalha.medNome}
+                abrir={abrirExcluirMedalhas}
+                funcAbrir={abrirFecharExcluirMedalhas}
+                funcDelete={deleteMedalha}
+            />
+        </React.Fragment>
+    );
 }
-
-export default Medalha;
-
-// export default function MedalhasCrud() {
-
-//     const [carregando, setCarregando] = useState(false);
-
-//     const [medalhasData, setMedalhasData] = useState([]);
-//     const [niveisData, setNiveisData] = useState([]);
-
-//     const [modalidadeData, setModalidadeData] = useState([]);
-
-//     const [medalhaInitialState] = useState({
-//         medCodigo: 0,
-//         medNome: '',
-//         medTipoDesafio: '',
-//         tbMedalhaModalidades: [],
-//         tbMedalhaNivels: [],
-//     });
-
-//     const [medalha, setMedalha] = useState({
-//         medCodigo: 0,
-//         medNome: '',
-//         medTipoDesafio: '',
-//         tbMedalhaModalidades: [],
-//         tbMedalhaNivels: [],
-//     });
-
-//     const [nomeBusca, setNomeBusca] = useState({
-//         medNome: ''
-//     });
-
-//     const [pagina, setPagina] = useState(1);
-
-//     const [abrirCadastroMedalhas, setAbrirCadastroMedalhas] = useState(false);
-//     const [abrirEditarMedalhas, setAbrirEditarMedalhas] = useState(false);
-//     const [abrirExcluirMedalhas, setAbrirExcluirMedalhas] = useState(false);
-//     const [abrirNivelMedalhas, setAbrirNivelMedalhas] = useState(false);
-//     const [updateMedalhas, setUpdateMedalhas] = useState(true);
-
-//     const abrirFecharCadastroMedalhas = (abrirCadastroMedalhas) => {
-//         setAbrirCadastroMedalhas(!abrirCadastroMedalhas);
-//         setMedalha(medalhaInitialState);
-//     }
-
-//     const abrirFecharEditarMedalhas = (abrirEditarMedalhas) => {
-//         setAbrirEditarMedalhas(!abrirEditarMedalhas);
-//     }
-
-//     const abrirFecharExcluirMedalhas = (abrirExcluirMedalhas) => {
-//         setAbrirExcluirMedalhas(!abrirExcluirMedalhas);
-//     }
-
-//     const abrirFecharNiveis = (abrirNivelMedalhas) => {
-//         setAbrirNivelMedalhas(!abrirNivelMedalhas);
-//     }
-
-//     const selecionarMedalha = (medalha, opcao) => {
-//         setMedalha(medalha);
-//         (opcao === "Editar") ? abrirFecharEditarMedalhas() : abrirFecharExcluirMedalhas();
-//     }
-
-//     const selecionaMedalahaNivel = async (medalha, abrirNivelMedalhas) => {
-//         await setMedalha(medalha);
-//         await getMedalhaNivel(medalha.medCodigo);
-//         abrirFecharNiveis(abrirNivelMedalhas);
-//     }
-
-//     const atualizaCampo = e => {
-//         const { name, value } = e.target;
-//         setMedalha({
-//             ...medalha,
-//             [name]: value
-//         });
-//     }
-
-//     const atualizaCampoBusca = e => {
-//         const { name, value } = e.target;
-//         setNomeBusca({
-//             ...nomeBusca,
-//             [name]: value
-//         });
-//     }
-
-//     const getMedalhas = async (skip = 0) => {
-//         setCarregando(true);
-//         await Api.get(`medalha?skip=${skip}`).then(response => {
-//             setMedalhasData(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//         setCarregando(false);
-//     }
-
-//     const getModalidades = async () => {
-//         await Api.get("modalidade").then(response => {
-//             setModalidadeData(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//     }
-
-//     const postMedalha = async () => {
-//         await Api.post("medalha/", medalha).then(response => {
-//             setMedalha(response.data);
-//             setUpdateMedalhas(true);
-//             // abrirFecharCadastroAlunos();
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//         setMedalha(medalhaInitialState);
-//     }
-
-//     const deleteMedalha = async (aluno = aluno.aluCodigo) => {
-//         await Api.delete("medalha/" + aluno).then(response => {
-//             setUpdateMedalhas(true);
-//             // abrirFecharExcluirAlunos();
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//     }
-
-//     const getMedalhaNome = async (buscar) => {
-//         setCarregando(true);
-//         await Api.get("medalha/" + buscar).then(response => {
-//             setMedalhasData(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//         setCarregando(false);
-//     }
-
-//     const getMedalhaNivel = async (medCodigo) => {
-//         await Api.get("nivel/" + medCodigo).then(response => {
-//             setNiveisData(response.data);
-//             console.log(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//     }
-
-//     useEffect(() => {
-//         if (updateMedalhas) {
-//             getMedalhas();
-//             setUpdateMedalhas(false);
-//         }
-//     }, [updateMedalhas]);
-
-//     useEffect(() => {
-//         getModalidades();
-//     }, [setAbrirCadastroMedalhas]);    
-
-//     function handleDefault(e) {
-//         e.preventDefault();
-//     }
-
-//     const alterarPagina = (e) => {
-//         e === "&gt;" ? pagina > medalhasData.length ? avancarPagina()
-//             : avancarPagina(pagina * 10)
-//             : voltarPagina(pagina * 10);
-//     }
-
-//     const avancarPagina = async (skip) => {
-//         getMedalhas(skip);
-//         pagina > medalhasData.length ? setPagina(1) :
-//             setPagina(pagina + 1);
-//     }
-
-//     const voltarPagina = async (skip) => {
-//         skip = skip - 20;
-//         getMedalhas(skip);
-//         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
-//     }
-
-//     return (
-//         <Mestre icon="certificate" title="Cadastro Medalhas" subtitle="Painel Sou+Fit">
-//             <div className="medalhas-container">
-//                 <header>
-//                     <h3>Medalhas</h3>
-//                     <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroMedalhas()}><strong>+</strong> Adicionar Medalhas</button>
-//                 </header>
-//                 <hr />
-//                 <Busca buscar={getMedalhaNome}/>
-//                 <br />
-//                 {carregando ? <div className="spinner-border loader" role="status">
-//                 </div>
-//                     : <table className="table table-striped">
-//                         <thead>
-//                             <tr>
-//                                 <th>Nome</th>
-//                                 <th>Níveis</th>
-//                                 <th>Tipo</th>
-//                                 <th className="acoes">Ações</th>
-//                             </tr>
-//                         </thead>
-                        // <tbody>
-                        //     {medalhasData.map((medalha) => (
-                        //         <tr key={medalha.medCodigo}>
-                        //             <td>{medalha.medNome}</td>
-                        //             <td className="pl-4 listar" onClick={() => selecionaMedalahaNivel(medalha, abrirNivelMedalhas)}><BsJustify/></td>
-                        //             <td>{medalha.medTipoDesafio}</td>
-                        //             <td>
-                        //                 <button className="btn btn-warning" onClick={() => selecionarMedalha(medalha, "Editar")}>
-                        //                     <i className="fa fa-pencil"></i>
-                        //                 </button>{" "}
-                        //                 <button className="btn btn-danger" onClick={() => selecionarMedalha(medalha, "Excluir")}>
-                        //                     <i className="fa fa-trash"></i>
-                        //                 </button>
-                        //             </td>
-                        //         </tr>
-                        //     ))}
-                        // </tbody>
-//                     </table>
-//                 }
-//                 <hr />
-//                 <br />
-//                 <div className="d-flex justify-content-center">
-//                     <nav aria-label="Page navigation example">
-//                         <ul className="pagination">
-//                             <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-//                             <li className="page-item active"><p className="page-link">{pagina}</p></li>
-//                             <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
-//                         </ul>
-//                     </nav>
-//                 </div>
-                
-//                 <FormNivelMedalha
-//                     nome={"Nível Medalha"}
-//                     abrir={abrirNivelMedalhas}
-//                     nivel={niveisData} 
-//                     funcAbrir={abrirFecharNiveis}   
-//                     funcAtualizaCampo={atualizaCampo}
-//                 />
-
-//                 <FormInserir
-//                     nome={"Medalha"}
-//                     abrir={abrirCadastroMedalhas}
-//                     modalidades={modalidadeData}
-//                     aluDados={medalha}
-//                     funcPost={postMedalha}
-//                     funcAbrir={abrirFecharCadastroMedalhas}
-//                     funcAtualizaCampo={atualizaCampo}
-//                 />
-
-//                 <FormEditar
-//                     nome={"Medalha"}
-//                     abrir={abrirEditarMedalhas}
-//                     modalidades={modalidadeData}
-//                     aluNome={medalha && medalha.medNome}
-//                     aluDados={medalha}
-//                     funcPut={putMedalha}
-//                     funcAbrir={abrirFecharEditarMedalhas}
-//                     funcAtualizaCampo={atualizaCampo}
-//                     medCodigo={medalha.medCodigo}
-//                 />
-
-//                 <FormExcluir
-//                     nome={"Medalha"}
-//                     abrir={abrirExcluirMedalhas}
-//                     aluNome={medalha && medalha.medNome}
-//                     aluDados={medalha}
-//                     funcDelete={deleteMedalha}
-//                     funcAbrir={abrirFecharExcluirMedalhas}
-//                 />
-//             </div>
-//         </Mestre >
-//     );
-// }
