@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import { atividadeUrl } from "../../../services/Imagens";
+import { atividadeUrl } from "../../services/Imagens";
 
-import Api from "../../../services/Api";
+import Api from "../../services/Api";
 
 export default function FormImagens(props) {
 

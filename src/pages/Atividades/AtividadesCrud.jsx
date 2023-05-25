@@ -10,7 +10,7 @@ import Api from "../../services/Api";
 import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
-import FormImagens from "../../components/Crud/FormularioAtividade/FormImagens";
+import FormImagens from "../../components/Forms/FormImagens";
 
 import { BsJustify } from "react-icons/bs";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import "./css/Logo.css";
 
-import logo from "../../assets/imgs/logo_branca.png";
+import logo from "../../../assets/imgs/logo_branca.png";
 import { Link } from "react-router-dom";
 
 export default props => 
