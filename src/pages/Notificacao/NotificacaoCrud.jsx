@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import Mestre from "../../layout/Mestre/Mestre";
+import Mestre from "../../components/Layout/Mestre/Mestre";
 
 import "react-datepicker/dist/react-datepicker.css";
 

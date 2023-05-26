@@ -8,7 +8,7 @@ import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
 
-import Modelo from "../../layout/Modelo";
+import Modelo from "../../components/Layout/Modelo";
 
 import "./TreinadoresCrud.css";
 import { treinadorUrl } from "../../services/Imagens";

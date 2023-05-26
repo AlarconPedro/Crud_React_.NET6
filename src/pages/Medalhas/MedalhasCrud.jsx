@@ -19,8 +19,8 @@ import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
 
-import Modelo from "../../layout/Modelo";
-import CheckBox from "../../layout/Objetos/CheckBox";
+import Modelo from "../../components/Layout/Modelo";
+import CheckBox from "../../components/Layout/Componentes/CheckBox";
 
 import "./MedalhasCrud.css";
 

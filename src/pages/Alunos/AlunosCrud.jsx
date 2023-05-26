@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import Mestre from "../../layout/Mestre/Mestre";
+import Mestre from "../../components/Layout/Mestre/Mestre";
 
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
@@ -13,6 +13,7 @@ import { aluno, treinador } from "../../services/RotasApi";
 import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
+import Modelo from "../../components/Layout/Modelo";
 
 import { BsJustify } from "react-icons/bs";
 
@@ -21,7 +22,11 @@ import { Link } from "react-router-dom";
 import ConverteData from "../../funcoes/ConverteData";
 import MascaraTelefone from "../../funcoes/MascaraTelefone";
 
-import Modelo from "../../layout/Modelo";
+import ComponenteData from "../../components/Layout/Componentes/ComponenteData";
+import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
+import ComponenteAtivo from "../../components/Layout/Componentes/ComponenteAtivo";
+import ComponenteImagem from "../../components/Layout/Componentes/ComponenteImagem";
+import ComponenteComboBox from "../../components/Layout/Componentes/ComponenteComboBox";
 
 import "./AlunosCrud.css";
 import { alunoUrl } from "../../services/Imagens";
@@ -313,43 +318,40 @@ class Aluno extends React.Component {
                     funcPost={this.postAluno}
                 >
                     <form className="row g-3 form-group">
-                        <div className="col-md-6">
-                            <label className="form-label mb-0">Nome:</label>
-                            <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                                name="aluNome" onChange={e => this.atualizaCampo(e)} />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0">Data Nascimento:</label>
-                            <DatePicker
-                                className="form-control"
-                                name="aluDataNasc"
-                                selected={new Date(this.state.aluno.aluDataNasc)}
-                                onChange={date => this.atualizaCampoData(date)}
-                                dateFormat={"dd/MM/yyyy"}
-                                timeFormat="yyyy-MM-dd"
-                                customInput={
-                                    <InputMask
-                                        type="text"
-                                        mask="99/99/9999"
-                                    />
-                                }
-                            />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0">Sexo:</label>
-                            <select className="form-select w-100 h-50"
-                                name="aluSexo" onChange={e => this.atualizaCampo(e)}>
-                                <option value=""></option>
-                                {
-                                    this.state.sexo.map((item, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.nome}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
-                        <div className="col-md-6">
+                        <ComponenteText 
+                            tamanho="col-md-6"
+                            label="Nome:"
+                            name="aluNome"
+                            type="text"
+                            placeholder="Nome Sobrenome"
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteData
+                            tamanho="col-md-3"
+                            label="Data Nascimento:"
+                            name="aluDataNasc"
+                            value={this.state.aluno.aluDataNasc}
+                            selected={new Date(this.state.aluno.aluDataNasc)}
+                            selecionaData={this.atualizaCampoData}
+                        />
+                        <ComponenteComboBox 
+                            tamanho="col-md-3"
+                            label="Sexo:"
+                            name="aluSexo"
+                            onChange={this.atualizaCampo}
+                            value={this.state.aluno.aluSexo}
+                            options={this.state.sexo}
+                        />
+                        <ComponenteComboBox 
+                            tamanho="col-md-6"
+                            label="Treinador:"
+                            name="treCodigo"
+                            onChange={this.atualizaCampo}
+                            value={this.state.aluno.treCodigo}
+                            options={[{treCodigo: "", treNome: "Selecione um treinador"}, ...this.state.treinadoresData]}
+                            optionNome="treNome"
+                        />
+                        {/* <div className="col-md-6">
                             <label className="form-label mb-0 mt-2">Treinador:</label>
                             <select className="form-select w-100 h-50"
                                 name="treCodigo"
@@ -363,49 +365,63 @@ class Aluno extends React.Component {
                                     })
                                 }
                             </select>
-                        </div>
-                        <div className="col-6">
-                            <label className="form-label mb-0 mt-2">Telefone:</label>
-                            <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
-                                name="aluFone"
-                                onKeyUp={e => this.adicionarMascara(e)}
-                                onChange={e => this.atualizaCampo(e)}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <label className="form-label mb-0 mt-2">Email:</label>
-                            <input type="email" className="form-control" placeholder="exemplo@gmail.com"
-                                name="aluEmail" onChange={e => this.atualizaCampo(e)} />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0 mt-2">Senha:</label>
-                            <input type="password" className="form-control" placeholder="****"
-                                name="aluSenha" onChange={e => this.atualizaCampo(e)} />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                            <input type="password" className="form-control" placeholder="****"
-                                name="aluSenha" onChange={e => this.atualizaCampo(e)} />
-                        </div>
-                        <div className="col-md-6">
-                            <label className="form-label mb-0">Observação:</label>
-                            <input type="text" className="form-control" placeholder="Obs."
-                                name="aluObs" onChange={e => this.atualizaCampo(e)} />
-                        </div>
-                        <div className="col-2 mt-5">
-                            <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="gridCheck"
-                                    name="aluAtivo"
-                                    onChange={e => this.atualizaCampoAtivo(e)}
-                                    value={true} />
-                                <label className="form-check-label">Ativo</label>
-                            </div>
-                        </div>
-                        <div className="col-md-4 mt-5">
-                            <label className="form-label mb-0">Imagem:</label>
-                            <input type="file" className="form-control"
-                                name="treImagem" />
-                        </div>
+                        </div> */}
+                        <ComponenteText
+                            tamanho="col-6"
+                            label="Telefone:"
+                            name="aluFone"
+                            placeholder="(00) 00000-0000"
+                            maxLength="15"
+                            type="tel"
+                            selected={this.state.aluno.aluPeso}
+                            atualizaCampo={this.atualizaCampo}
+                            adicionarMascara={this.adicionarMascara}
+                        />
+                        <ComponenteText 
+                            tamanho="col-md-6"
+                            label="Email:"
+                            name="aluEmail"
+                            type="email"
+                            placeholder="exemplo@gmail.com"
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteText 
+                            tamanho="col-md-3"
+                            label="Senha:"
+                            name="aluSenha"
+                            type="password"
+                            placeholder="****"
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteText 
+                            tamanho="col-md-3"
+                            label="Confirmar Senha:"
+                            name="aluSenha"
+                            type="password"
+                            placeholder="****"
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteText 
+                            tamanho="col-md-6"
+                            label="Observação:"
+                            name="aluObs"
+                            type="text"
+                            placeholder="Obs."
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteAtivo 
+                            tamanho="col-2 mt-5"
+                            label="Ativo:"
+                            name="aluAtivo"
+                            onChange={this.atualizaCampoAtivo}
+                            value={true}
+                        />
+                        <ComponenteImagem 
+                            tamanho="col-md-4 mt-5"
+                            label="Imagem:"
+                            name="aluImagem"
+                            type="file"
+                        />
                     </form>
                 </FormInserir>
 
@@ -416,53 +432,37 @@ class Aluno extends React.Component {
                     funcPut={this.putAluno}
                 >
                     <form className="row g-3 form-group">
-                        <div className="col-md-12">
+                        {/* <div className="col-md-12">
                             <label className="mb-0">Id: </label>
                             <input type="number" className="form-control mb-2" readOnly disabled
                                 value={this.state.aluno.aluCodigo}
                             />
-                        </div>
-                        <div className="col-md-6">
-                            <label className="form-label mb-0">Nome:</label>
-                            <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                                name="aluNome"
-                                onChange={e => this.atualizaCampo(e)}
-                                value={this.state.aluno.aluNome}
-                            />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0">Data Nascimento:</label>
-                            <DatePicker
-                                className="form-control"
-                                name="aluDataNasc"
-                                selected={new Date(this.state.aluno.aluDataNasc)}
-                                onChange={date => this.atualizaCampoData(date)}
-                                dateFormat={"dd/MM/yyyy"}
-                                timeFormat="yyyy-MM-dd"
-                                customInput={
-                                    <InputMask
-                                        type="text"
-                                        mask="99/99/9999"
-                                    />
-                                }
-                            />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0">Sexo:</label>
-                            <select className="form-select w-100 h-50"
-                                name="aluSexo"
-                                value={this.state.aluno.aluSexo}
-                                onChange={e => this.atualizaCampo(e)}>
-                                <option value=""></option>
-                                {
-                                    this.state.sexo.map((item, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.nome}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
+                        </div> */}
+                        <ComponenteText 
+                            tamanho="col-md-6"
+                            label="Nome:"
+                            name="aluNome"
+                            type="text"
+                            placeholder="Nome Sobrenome"
+                            value={this.state.aluno.aluNome}
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteData
+                            tamanho="col-md-3"
+                            label="Data Nascimento:"
+                            name="aluDataNasc"
+                            value={this.state.aluno.aluDataNasc}
+                            selected={new Date(this.state.aluno.aluDataNasc)}
+                            selecionaData={this.atualizaCampoData}
+                        />
+                        <ComponenteComboBox 
+                            tamanho="col-md-3"
+                            label="Sexo:"
+                            name="aluSexo"
+                            onChange={this.atualizaCampo}
+                            value={this.state.aluno.aluSexo}
+                            options={this.state.sexo}
+                        />
                         <div className="col-md-6">
                             <label className="form-label mb-0 mt-2">Treinador:</label>
                             <select className="form-select w-100 h-50"
@@ -479,52 +479,68 @@ class Aluno extends React.Component {
                                 }
                             </select>
                         </div>
-                        <div className="col-6">
-                            <label className="form-label mb-0 mt-2">Telefone:</label>
-                            <input type="tel" class="form-control" maxLength={15}
-                                name="aluFone"
-                                onKeyUp={e => this.adicionarMascara(e)}
-                                onChange={e => this.atualizaCampo(e)}
-                                value={this.state.aluno.aluFone}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <label className="form-label mb-0 mt-2">Email:</label>
-                            <input type="email" className="form-control" name="aluEmail"
-                                onChange={e => this.atualizaCampo(e)} value={this.state.aluno.aluEmail} />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0 mt-2">Senha:</label>
-                            <input type="password" className="form-control" name="aluSenha"
-                                onChange={e => this.atualizaCampo(e)} value={this.state.aluno.aluSenha} />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                            <input type="password" className="form-control" name="aluSenha"
-                                onChange={e => this.atualizaCampo(e)} value={this.state.aluno.aluSenha} />
-                        </div>
-                        <div className="col-md-6">
-                            <label className="form-label mb-0">Observação:</label>
-                            <input type="text" className="form-control" name="aluObs"
-                                onChange={e => this.atualizaCampo(e)} value={this.state.aluno.aluObs} />
-                        </div>
-                        <div className="col-2 mt-5">
-                            <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="gridCheck"
-                                    name="aluAtivo"
-                                    checked={this.state.aluno.aluAtivo}
-                                    onChange={e => this.atualizaCampoAtivo(e)}
-                                    value={true}
-                                />
-                                <label className="form-check-label">Ativo</label>
-                            </div>
-                        </div>
-                        <div className="col-md-4 mt-5">
-                            <label className="form-label mb-0">Imagem:</label>
-                            <input type="file" className="form-control"
-                                name="treImagem" />
-                            <img src={alunoUrl + this.state.aluno.aluImagem} alt="" />
-                        </div>
+                        <ComponenteText
+                            tamanho="col-6"
+                            label="Telefone:"
+                            name="aluFone"
+                            placeholder="(00) 00000-0000"
+                            maxLength="15"
+                            type="tel"
+                            value={this.state.aluno.aluFone}
+                            selected={this.state.aluno.aluPeso}
+                            atualizaCampo={this.atualizaCampo}
+                            adicionarMascara={this.adicionarMascara}
+                        />
+                        <ComponenteText 
+                            tamanho="col-md-6"
+                            label="Email:"
+                            name="aluEmail"
+                            type="email"
+                            value={this.state.aluno.aluEmail}
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteText 
+                            tamanho="col-md-3"
+                            label="Senha:"
+                            name="aluSenha"
+                            type="password"
+                            value={this.state.aluno.aluSenha}
+                            placeholder="****"
+                            onChange={this.atualizaCampo}
+                        />
+                       <ComponenteText 
+                            tamanho="col-md-3"
+                            label="Confirmar Senha:"
+                            name="aluSenha"
+                            type="password"
+                            value={this.state.aluno.aluSenha}
+                            placeholder="****"
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteText 
+                            tamanho="col-md-6"
+                            label="Observação:"
+                            name="aluObs"
+                            type="text"
+                            value={this.state.aluno.aluObs}
+                            placeholder="Obs."
+                            onChange={this.atualizaCampo}
+                        />
+                        <ComponenteAtivo 
+                            tamanho="col-2 mt-5"
+                            label="Ativo:"
+                            name="aluAtivo"
+                            checked={this.state.aluno.aluAtivo}
+                            onChange={this.atualizaCampoAtivo}
+                            value={true}
+                        />
+                        <ComponenteImagem 
+                            tamanho="col-md-4 mt-5"
+                            label="Imagem:"
+                            name="aluImagem"
+                            type="file"
+                            urlImagem={alunoUrl + this.state.aluno.aluImagem}
+                        />
                     </form>
                 </FormEditar>
 

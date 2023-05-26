@@ -14,13 +14,13 @@ import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
 import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
-import Modelo from "../../layout/Modelo";
+import Modelo from "../../components/Layout/Modelo";
 
 import ConverteData from "../../funcoes/ConverteData";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
-import CheckBox from "../../layout/Objetos/CheckBox";
+import CheckBox from "../../components/Layout/Componentes/CheckBox";
 
 class Desafio extends React.Component {
     constructor(props) {

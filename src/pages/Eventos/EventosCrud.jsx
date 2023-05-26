@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import Mestre from "../../layout/Mestre/Mestre";
+import Mestre from "../../components/Layout/Mestre/Mestre";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -16,7 +16,7 @@ import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 import ConverteData from "../../funcoes/ConverteData";
 
-import Modelo from "../../layout/Modelo";
+import Modelo from "../../components/Layout/Modelo";
 
 import { eventoUrl, alunoUrl } from "../../services/Imagens";
 import { BsJustify } from "react-icons/bs";

@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from './pages/Login/login';
-import Principal from './layout/Estrutura/EstruturaPages';
+import Principal from './components/Layout/Estrutura/EstruturaPages';
 
 export default Rotas => {
     return (

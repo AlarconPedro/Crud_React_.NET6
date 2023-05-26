@@ -3,7 +3,7 @@ import Calendar from 'rc-calendar';
 import Local from 'rc-calendar/lib/locale/pt_BR'
 import 'rc-calendar/assets/index.css';
 
-import Mestre from "../layout/Mestre/Mestre";
+import Mestre from "../components/Layout/Mestre/Mestre";
 
 export default function Calendario() {
 

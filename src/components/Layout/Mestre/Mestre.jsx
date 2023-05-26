@@ -2,7 +2,7 @@ import React from 'react';
 
 import "./Mestre.css";
 
-import Header from '../../components/Layout/Estrutura/Header';
+import Header from '../Estrutura/Header';
 
 export default props => {
     return (

@@ -1,6 +1,6 @@
 import React from "react";
 
-import Mestre from "../../layout/Mestre/Mestre";
+import Mestre from "../../components/Layout/Mestre/Mestre";
 
 import { Link } from "react-router-dom";
 

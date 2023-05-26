@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom'
 
-import Mestre from "../../layout/Mestre/Mestre";
+import Mestre from "../../components/Layout/Mestre/Mestre";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -22,7 +22,7 @@ import InputMask from 'react-input-mask';
 
 import "./AtividadesCrud.css";
 import { alunoUrl, treinadorUrl } from "../../services/Imagens";
-import Modelo from "../../layout/Modelo";
+import Modelo from "../../components/Layout/Modelo";
 
 
 export default function Atividades(props) {
