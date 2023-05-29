@@ -165,9 +165,9 @@ class Aluno extends React.Component {
         this.setState({ carregando: false });
     }
 
-    getTreinadores = async (skip = 0) => {
+    getTreinadores = async () => {
         this.setState({ carregando: true });
-        await Api.get(`${treinador}?skip=${skip}`).then(response => {
+        await Api.get(`${treinador}treinadores`).then(response => {
             this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
@@ -221,7 +221,7 @@ class Aluno extends React.Component {
         this.setState({ aluno: this.state.alunoInitialState });
     }
 
-    atualizaCampo = e => {
+    atualizaCampo = (e) => {
         const { name, value } = e.target;
         this.setState({ aluno: { ...this.state.aluno, [name]: value } });
     }
@@ -348,24 +348,9 @@ class Aluno extends React.Component {
                             name="treCodigo"
                             onChange={this.atualizaCampo}
                             value={this.state.aluno.treCodigo}
-                            options={[{treCodigo: "", treNome: "Selecione um treinador"}, ...this.state.treinadoresData]}
+                            options={this.state.treinadoresData}
                             optionNome="treNome"
                         />
-                        {/* <div className="col-md-6">
-                            <label className="form-label mb-0 mt-2">Treinador:</label>
-                            <select className="form-select w-100 h-50"
-                                name="treCodigo"
-                                onChange={e => this.atualizaCampo(e)}>
-                                <option value=""></option>
-                                {
-                                    this.state.treinadoresData.map((item, index) => {
-                                        return (
-                                            <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div> */}
                         <ComponenteText
                             tamanho="col-6"
                             label="Telefone:"
@@ -463,22 +448,15 @@ class Aluno extends React.Component {
                             value={this.state.aluno.aluSexo}
                             options={this.state.sexo}
                         />
-                        <div className="col-md-6">
-                            <label className="form-label mb-0 mt-2">Treinador:</label>
-                            <select className="form-select w-100 h-50"
-                                name="treCodigo"
-                                value={this.state.aluno.treCodigo}
-                                // selected={this.state.aluno.treCodigo}
-                                onChange={e => this.atualizaCampo(e)}>
-                                {
-                                    this.state.treinadoresData.map((item, index) => {
-                                        return (
-                                            <option key={index} value={item.treCodigo}>{item.treNome}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
+                        <ComponenteComboBox 
+                            tamanho="col-md-6"
+                            label="Treinador:"
+                            name="treCodigo"
+                            onChange={this.atualizaCampo}
+                            value={this.state.aluno.treCodigo}
+                            options={this.state.treinadoresData}
+                            optionNome="treNome"
+                        />
                         <ComponenteText
                             tamanho="col-6"
                             label="Telefone:"

@@ -19,6 +19,9 @@ import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
 
+import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
+import ComponenteComboBox from "../../components/Layout/Componentes/ComponenteComboBox";
+
 import Modelo from "../../components/Layout/Modelo";
 import CheckBox from "../../components/Layout/Componentes/CheckBox";
 
@@ -223,26 +226,22 @@ export default function MedalhasCrud() {
                 funcPost={postMedalha}
             >
                 <form className="row g-3 form-group">
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Nome:</label>
-                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                            name="medNome" onChange={e => this.atualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Tipo de Medida:</label>
-                        <select className="form-select w-100 h-50 mb-4"
-                            name="medTipoMedida"
-                            onChange={e => this.atualizaCampo(e)}>
-                            <option value=""></option>
-                            {
-                                tipoMedidas.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.id}>{item.nome}</option>
-                                    )
-                                })
-                            }
-                        </select>
-                    </div>
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Nome:"
+                        name="aluNome"
+                        type="text"
+                        placeholder="Nome Sobrenome"
+                        onChange={atualizaCampo}
+                    />
+                    <ComponenteComboBox
+                        tamanho="col-md-6"
+                        label="Tipo de Medida:"
+                        name="medTipoMedida"
+                        onChange={atualizaCampo}
+                        value={medalha.medCodigo}
+                        options={tipoMedidas}
+                    />
                     <div className="selecionarModalidade ml-2">
                         <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
                         {
@@ -269,30 +268,23 @@ export default function MedalhasCrud() {
                 funcPut={updateMedalhas}
             >
                 <form className="row g-3 form-group">
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Nome:</label>
-                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                            name="medNome"
-                            value={medalha.medNome}
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Tipo de Medida:</label>
-                        <select className="form-select w-100 h-50 mb-4"
-                            name="medTipoDesafio"
-                            value={medalha.medTipoDesafio}
-                            onChange={e => this.atualizaCampo(e)}>
-                            <option value=""></option>
-                            {
-                                tipoMedidas.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.id}>{item.nome}</option>
-                                    )
-                                })
-                            }
-                        </select>
-                    </div>
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Nome:"
+                        name="medNome"
+                        type="text"
+                        value={medalha.medNome}
+                        placeholder="Nome Sobrenome"
+                        onChange={atualizaCampo}
+                    />
+                    <ComponenteComboBox
+                        tamanho="col-md-6"
+                        label="Tipo de Medida:"
+                        name="medTipoMedida"
+                        onChange={atualizaCampo}
+                        value={medalha.medCodigo}
+                        options={tipoMedidas}
+                    />
                     <div className="selecionarModalidade ml-2">
                         <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
                         {

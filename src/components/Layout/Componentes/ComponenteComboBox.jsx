@@ -8,19 +8,8 @@ class ComponenteComboBox extends React.Component {
             label: "",
             name: "",
             value: "", 
-            optionNome: "",
             options: [],
-            funcAtualizaCampo: this.props.atualizaCampo,
         }
-    }
-
-    //padronizar lista de options
-    padronizarListaOptions = (lista) => {
-        let listaOptions = [];
-        lista.map((item, index) => {
-            return listaOptions.push({ id: lista[index].key, nome: lista[index].value })
-        })
-        return listaOptions;
     }
 
     componentDidUpdate(prevProps, prevState) { 
@@ -46,13 +35,6 @@ class ComponenteComboBox extends React.Component {
             this.setState({
                 options: this.props.options
             })
-            this.padronizarListaOptions(this.props.options);
-        }
-
-        if (prevState.optionNome !== this.props.optionNome) {
-            this.setState({
-                optionNome: this.props.optionNome
-            })
         }
 
         if (prevState.value !== this.props.value) {
@@ -68,7 +50,7 @@ class ComponenteComboBox extends React.Component {
                 <label className="form-label">{this.state.label}</label>
                 <select className="form-select w-100 h-50"
                     value={this.state.value}
-                    name={this.state.name} onChange={e => this.state.funcAtualizaCampo(e)}>
+                    name={this.state.name} onChange={e => this.props.onChange(e)}>
                     <option value=""></option>
                     {
                         this.state.options.map((item, index) => {

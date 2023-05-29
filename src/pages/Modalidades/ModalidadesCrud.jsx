@@ -13,6 +13,10 @@ import Modelo from "../../components/Layout/Modelo";
 
 import TipoModalidade from "../../funcoes/TipoDesafio"
 
+import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
+import ComponenteAtivo from "../../components/Layout/Componentes/ComponenteAtivo";
+import ComponenteComboBox from "../../components/Layout/Componentes/ComponenteComboBox";
+
 import "./ModalidadesCrud.css";
 import tipoDesafio from "../../funcoes/TipoDesafio";
 
@@ -276,11 +280,19 @@ class Modalidade extends React.Component {
                     funcPost={this.postModalidades}
                 >
                     <form className="row g-3 form-group">
-                        <div className="col-md-5">
+                        <ComponenteText 
+                            tamanho="col-md-5"
+                            label="Nome:"
+                            name="modNome"
+                            type="text"
+                            placeholder="Nome Sobrenome"
+                            onChange={this.atualizaCampo}
+                        />
+                        {/* <div className="col-md-5">
                             <label className="form-label mb-0">Nome:</label>
                             <input type="text" className="form-control" placeholder="Nome Sobrenome"
                                 name="modNome" onChange={e => this.atualizaCampo(e)} />
-                        </div>
+                        </div> */}
                         <div className="col-md-4">
                             <label className="form-label mb-0">Tipo Desafio:</label>
                             <select className="form-select w-100 h-50"
