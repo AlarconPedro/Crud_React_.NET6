@@ -16,6 +16,12 @@ class ComponenteData extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            dados: this.props.dados
+        })
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.dados !== this.props.dados) {
             this.setState({

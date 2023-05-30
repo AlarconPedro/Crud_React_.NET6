@@ -12,6 +12,15 @@ class ComponenteAtivo extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            tamanho: this.props.tamanho,
+            name: this.props.name,
+            label: this.props.label,
+            checked: this.props.checked,
+        })
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.tamanho !== this.props.tamanho) {
             this.setState({

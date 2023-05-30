@@ -7,19 +7,17 @@ import { desafioUrl, alunoUrl } from "../../services/Imagens";
 
 import { BsJustify } from "react-icons/bs";
 
-import "./DesafiosCrud.css";
+import "./Desafios.css";
 
 import FormInserir from "../../components/Forms/FormInserir";
 import FormEditar from "../../components/Forms/FormEditar";
 import FormExcluir from "../../components/Forms/FormExcluir";
-import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
+import FormParticipantes from "../../components/Forms/FormParticipantes";
+// import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
 import Modelo from "../../components/Layout/Modelo";
 
 import ConverteData from "../../funcoes/ConverteData";
-import DatePicker from "react-datepicker";
-import InputMask from 'react-input-mask';
-
 import ComponenteData from "../../components/Layout/Componentes/ComponenteData";
 import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
 import ComponenteAtivo from "../../components/Layout/Componentes/ComponenteAtivo";
@@ -313,7 +311,7 @@ class Desafio extends React.Component {
                     titulo="Cadastro Desafios"
                     subtitulo="Painel Sou+Fit"
                     icone="trophy"
-                    tipoContainer="desafio-container"
+                    tipoContainer="form-container"
                     Cabecalho="Desafios"
                     BotaoAdd="Adicionar Desafios"
                     dadosApi={this.state.desafiosData}

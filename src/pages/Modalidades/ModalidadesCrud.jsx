@@ -240,7 +240,7 @@ class Modalidade extends React.Component {
                     titulo="Cadastro Modalidades"
                     subtitulo="Painel Sou+Fit"
                     icone="bookmark"
-                    tipoContainer="modalidade-container"
+                    tipoContainer="form-container"
                     Cabecalho="Modalidades"
                     BotaoAdd="Adicionar Modalidade"
                     dadosApi={this.state.modalidadesData}
@@ -288,13 +288,8 @@ class Modalidade extends React.Component {
                             placeholder="Nome Sobrenome"
                             onChange={this.atualizaCampo}
                         />
-                        {/* <div className="col-md-5">
-                            <label className="form-label mb-0">Nome:</label>
-                            <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                                name="modNome" onChange={e => this.atualizaCampo(e)} />
-                        </div> */}
                         <div className="col-md-4">
-                            <label className="form-label mb-0">Tipo Desafio:</label>
+                            <label className="form-label">Tipo Desafio:</label>
                             <select className="form-select w-100 h-50"
                                 name="modTipoDesafio"
                                 onChange={e => this.atualizaCampoTipoDesafio(e)}>
@@ -309,7 +304,7 @@ class Modalidade extends React.Component {
                             </select>
                         </div>
                         <div className="col-md-3">
-                            <label className="form-label mb-0">Tipo Medida:</label>
+                            <label className="form-label">Tipo Medida:</label>
                             <select className="form-select w-100 h-50"
                                 name="modTipoMedida"
                                 onChange={e => this.atualizaCampo(e)}>
@@ -407,168 +402,3 @@ class Modalidade extends React.Component {
 }
 
 export default Modalidade;
-
-//     const putModalidade = async (codigo = modalidade.aluCodigo) => {
-//         await Api.put("modalidade/" + codigo, modalidade).then(response => {
-//             var modalidadesAuxiliar = modalidadesData;
-//             modalidadesAuxiliar.map(modalidadeMap => {
-//                 if (modalidadeMap.modCodigo === modalidade.modCodigo) {
-//                     modalidadeMap.modNome = modalidade.modNome;
-//                     modalidadeMap.modImagem = modalidade.modImagem;
-//                     modalidadeMap.modId = modalidade.modId;
-//                     modalidadeMap.modTipoDesafio = modalidade.modTipoDesafio;
-//                     modalidadeMap.modTipoMedida = modalidade.modTipoMedida;
-//                     modalidadeMap.modAtiva = modalidade.modAtiva;
-//                 }
-//                 return modalidadeMap;
-//             });
-//             setModalidadesData(modalidadesAuxiliar);
-//             // setAluno(response.data);
-//             setUpdateModalidades(true);
-//             // abrirFecharEditarAlunos();
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//     }
-
-//     const deleteModalidade = async (modalidade = modalidade.aluCodigo) => {
-//         await Api.delete("modalidade/" + modalidade).then(response => {
-//             setUpdateModalidades(true);
-//             // abrirFecharExcluirAlunos();
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//     }
-
-//     const getModalidadeNome = async (busca) => {
-//         setCarregando(true);
-//         await Api.get("modalidade/" + busca).then(response => {
-//             setModalidadesData(response.data);
-//         }).catch(error => {
-//             console.log(error);
-//         });
-//         setCarregando(false);
-//     }
-
-//     useEffect(() => {
-//         if (updateModalidades) {
-//             getModalidades();
-//             setUpdateModalidades(false);
-//         }
-//     }, [updateModalidades]);
-
-//     useEffect(() => {
-//         getTreinadores();
-//     }, [setAbrirCadastroModalidades]);
-
-//     useEffect(() => {
-//         getTreinadorId(modalidade.treCodigo);
-//     }, [setAbrirEditarModalidades]);
-
-//     function handleDefault(e) {
-//         e.preventDefault();
-//     }
-
-//     const alterarPagina = (e) => {
-//         e === "&gt;" ? pagina > modalidadesData.length ? avancarPagina()
-//             : avancarPagina(pagina * 10)
-//             : voltarPagina(pagina * 10);
-//     }
-
-//     const avancarPagina = async (skip) => {
-//         getModalidades(skip);
-//         pagina > modalidadesData.length ? setPagina(1) :
-//             setPagina(pagina + 1);
-//     }
-
-//     const voltarPagina = async (skip) => {
-//         skip = skip - 20;
-//         getModalidades(skip);
-//         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
-//     }
-
-//     return (
-//         <Mestre icon="bookmark" title="Cadastro Modalidades" subtitle="Painel Sou+Fit">
-//             <div className="modalidade-container">
-//                 <header>
-//                     <h3>Modalidades</h3>
-//                     <button className="btn btn-success btn-adicionar" onClick={() => abrirFecharCadastroModalidades()}><strong>+</strong> Adicionar Modalidades</button>
-//                 </header>
-//                 <hr />
-//                 <Busca buscar={getModalidadeNome}/>
-//                 <br />
-//                 {carregando ? <div className="spinner-border loader" role="status">
-//                 </div>
-//                     : <table className="table table-striped">
-//                         <thead>
-//                             <tr>
-//                                 <th>Avatar</th>
-//                                 <th>Nome</th>
-//                                 <th className="acoes">Ações</th>
-//                             </tr>
-//                         </thead>
-                        // <tbody>
-                        //     {modalidadesData.map((modalidade) => (
-                        //         <tr key={modalidade.modCodigo}>
-                        //             <td><img src={modalidadeUrl + modalidade.modImagem} alt="" /></td>
-                        //             <td>{modalidade.modNome}</td>
-                        //             <td className="justify-content-end">
-                        //                 <button className="btn btn-warning" onClick={() => selecionarAluno(modalidade, "Editar")}>
-                        //                     <i className="fa fa-pencil"></i>
-                        //                 </button>{" "}
-                        //                 <button className="btn btn-danger" onClick={() => selecionarAluno(modalidade, "Excluir")}>
-                        //                     <i className="fa fa-trash"></i>
-                        //                 </button>
-                        //             </td>
-                        //         </tr>
-                        //     ))}
-                        // </tbody>
-//                     </table>
-//                 }
-//                 <hr />
-//                 <br />
-//                 <div className="d-flex justify-content-center">
-//                     <nav aria-label="Page navigation example">
-//                         <ul className="pagination">
-//                             <li className="page-item" onClick={() => alterarPagina("&lt;")}><a className="page-link">&lt;</a></li>
-//                             <li className="page-item active"><p className="page-link">{pagina}</p></li>
-//                             <li className="page-item"><a className="page-link" onClick={() => alterarPagina("&gt;")}>&gt;</a></li>
-//                         </ul>
-//                     </nav>
-//                 </div>
-
-                // <FormInserir
-                //     nome={"Modalidade"}
-                //     abrir={abrirCadastroModalidades}
-                //     aluDados={modalidade}
-                //     funcPost={postModalidades}
-                //     funcAbrir={abrirFecharCadastroModalidades}
-                //     funcAtualizaCampo={atualizaCampo}
-                //     treinaData={treinadoresData}
-                //     funcBuscaTreinador={getTreinadorId}
-                // />
-
-//                 <FormEditar
-//                     nome={"Modalidade"}
-//                     abrir={abrirEditarModalidades}
-//                     modNome={modalidade && modalidade.modNome}
-//                     modDados={modalidade}
-//                     funcPut={putModalidade}
-//                     funcAbrir={abrirFecharEditarModalidades}
-//                     funcAtualizaCampo={atualizaCampo}
-//                     treinaData={treinadoresData}
-//                     funcBuscaTreinador={getTreinadorId}
-//                 />
-
-//                 <FormExcluir
-//                     nome={"Modalidade"}
-//                     abrir={abrirExcluirModalidades}
-//                     modNome={modalidade && modalidade.aluNome}
-//                     modDados={modalidade.aluCodigo}
-//                     funcDelete={deleteModalidade}
-//                     funcAbrir={abrirFecharExcluirModalidades}
-//                 />
-//             </div>
-//         </Mestre >
-//     );
-// }

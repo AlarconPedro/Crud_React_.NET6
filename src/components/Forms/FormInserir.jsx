@@ -5,6 +5,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
 
+import "../../estilos/FormularioInserir.css";
+
 class FormInserir extends React.Component {
     constructor(props) {
         super(props);

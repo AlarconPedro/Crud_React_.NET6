@@ -1,9 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import Mestre from "../../components/Layout/Mestre/Mestre";
-
-import DatePicker from "react-datepicker";
-import InputMask from 'react-input-mask';
+import React from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -28,7 +23,7 @@ import ComponenteAtivo from "../../components/Layout/Componentes/ComponenteAtivo
 import ComponenteImagem from "../../components/Layout/Componentes/ComponenteImagem";
 import ComponenteComboBox from "../../components/Layout/Componentes/ComponenteComboBox";
 
-import "./AlunosCrud.css";
+import "./Alunos.css";
 import { alunoUrl } from "../../services/Imagens";
 
 class Aluno extends React.Component {
@@ -264,7 +259,7 @@ class Aluno extends React.Component {
                     titulo="Cadastro Alunos"
                     subtitulo="Painel Sou+Fit"
                     icone="user"
-                    tipoContainer="alunos-container"
+                    tipoContainer="form-container"
                     Cabecalho="Alunos"
                     BotaoAdd="Adicionar Alunos"
                     dadosApi={this.state.alunosData}

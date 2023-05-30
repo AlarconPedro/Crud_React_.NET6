@@ -10,9 +10,6 @@ import { BsJustify } from "react-icons/bs";
 
 import Api from "../../services/Api";
 
-// import FormInserir from "../../components/Crud/FormularioMedalhas/FormInserir";
-// import FormEditar from "../../components/Crud/FormularioMedalhas/FormEditar";
-// import FormExcluir from "../../components/Crud/FormularioMedalhas/FormExcluir";
 import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/Niveis/FormNivelMedalha";
 
 import FormInserir from "../../components/Forms/FormInserir";
@@ -65,8 +62,8 @@ export default function MedalhasCrud() {
     const [updateMedalhas, setUpdateMedalhas] = useState(true);
 
     const abrirFecharCadastroMedalhas = (abrirCadastroMedalhas) => {
-        setAbrirCadastroMedalhas(!abrirCadastroMedalhas);
         setMedalha(medalhaInitialState);
+        setAbrirCadastroMedalhas(!abrirCadastroMedalhas);
     }
 
     const abrirFecharEditarMedalhas = (abrirEditarMedalhas) => {
@@ -168,10 +165,6 @@ export default function MedalhasCrud() {
         getModalidades();
     }, [setAbrirCadastroMedalhas]);
 
-    function handleDefault(e) {
-        e.preventDefault();
-    }
-
     return (
         <React.Fragment>
             <FormNivelMedalha
@@ -187,7 +180,7 @@ export default function MedalhasCrud() {
                 titulo="Cadastro Medalhas"
                 subtitulo="Painel Sou+Fit"
                 icone="certificate"
-                tipoContainer="medalhas-container"
+                tipoContainer="form-container"
                 Cabecalho="Medalhas"
                 BotaoAdd="Adicionar Medalha"
                 dadosApi={medalhasData}
@@ -226,22 +219,26 @@ export default function MedalhasCrud() {
                 funcPost={postMedalha}
             >
                 <form className="row g-3 form-group">
-                    <ComponenteText
-                        tamanho="col-md-6"
-                        label="Nome:"
-                        name="aluNome"
-                        type="text"
-                        placeholder="Nome Sobrenome"
-                        onChange={atualizaCampo}
-                    />
-                    <ComponenteComboBox
-                        tamanho="col-md-6"
-                        label="Tipo de Medida:"
-                        name="medTipoMedida"
-                        onChange={atualizaCampo}
-                        value={medalha.medCodigo}
-                        options={tipoMedidas}
-                    />
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="medNome" onChange={e => this.atualizaCampo(e)} />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Tipo de Medida:</label>
+                        <select className="form-select w-100 h-50 mb-4"
+                            name="medTipoMedida"
+                            onChange={e => this.atualizaCampo(e)}>
+                            <option value=""></option>
+                            {
+                                tipoMedidas.map((item, index) => {
+                                    return (
+                                        <option key={index} value={item.id}>{item.nome}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
                     <div className="selecionarModalidade ml-2">
                         <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
                         {
@@ -258,6 +255,38 @@ export default function MedalhasCrud() {
                             })
                         }
                     </div>
+                    {/* <ComponenteText
+                        tamanho="col-md-6"
+                        label="Nome:"
+                        name="aluNome"
+                        type="text"
+                        placeholder="Nome Sobrenome"
+                        onChange={atualizaCampo}
+                    />
+                    <ComponenteComboBox
+                        tamanho="col-md-6"
+                        label="Tipo de Medida:"
+                        name="medTipoMedida"
+                        onChange={atualizaCampo}
+                        value={medalha.medCodigo}
+                        options={tipoMedidas}
+                    />
+                    <div className="selecionarModalidade col-12 ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+
+                            modalidadeData.map((modalidade) => {
+                                return (
+                                    <CheckBox
+                                        nome={modalidade.modNome}
+                                        codigo={modalidade.modCodigo}
+                                        // codigoSelecionado={this.state.medalha.medCodigo}
+                                        url={`medalha/modalidade/${medalha.medCodigo}`}
+                                    />
+                                )
+                            })
+                        }
+                    </div> */}
                 </form>
             </FormInserir>
 
@@ -268,7 +297,46 @@ export default function MedalhasCrud() {
                 funcPut={updateMedalhas}
             >
                 <form className="row g-3 form-group">
-                    <ComponenteText
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Nome:</label>
+                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
+                            name="medNome"
+                            value={medalha.medNome}
+                            onChange={e => atualizaCampo(e)}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label mb-0">Tipo de Medida:</label>
+                        <select className="form-select w-100 h-50 mb-4"
+                            name="medTipoDesafio"
+                            value={medalha.medTipoDesafio}
+                            onChange={e => this.atualizaCampo(e)}>
+                            <option value=""></option>
+                            {
+                                tipoMedidas.map((item, index) => {
+                                    return (
+                                        <option key={index} value={item.id}>{item.nome}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div className="selecionarModalidade ml-2">
+                        <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        {
+                            modalidadeData.map((modalidade) => {
+                                return (
+                                    <CheckBox
+                                        nome={modalidade.modNome}
+                                        codigo={modalidade.modCodigo}
+                                        // codigoSelecionado={this.state.medalha.medCodigo}
+                                        url={`medalha/modalidade/${medalha.medCodigo}`}
+                                    />
+                                )
+                            })
+                        }
+                    </div>
+                    {/* <ComponenteText
                         tamanho="col-md-6"
                         label="Nome:"
                         name="medNome"
@@ -285,7 +353,7 @@ export default function MedalhasCrud() {
                         value={medalha.medCodigo}
                         options={tipoMedidas}
                     />
-                    <div className="selecionarModalidade ml-2">
+                    <div className="selecionarModalidade col-12 ml-2">
                         <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
                         {
                             modalidadeData.map((modalidade) => {
@@ -299,7 +367,7 @@ export default function MedalhasCrud() {
                                 )
                             })
                         }
-                    </div>
+                    </div> */}
                 </form>
             </FormEditar>
 

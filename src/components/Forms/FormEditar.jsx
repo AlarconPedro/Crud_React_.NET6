@@ -2,6 +2,8 @@ import React from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
+import "../../estilos/FormularioEditar.css"
+
 class FormEditar extends React.Component {
     constructor(props) {
         super(props);
@@ -36,7 +38,7 @@ class FormEditar extends React.Component {
 
     render() {
         return (
-            <Modal isOpen={this.state.abrir} className="formCadastro">
+            <Modal isOpen={this.state.abrir} className="modal-editar">
                 <ModalHeader>Editar {this.state.nome}</ModalHeader>
                 <ModalBody>
                     {this.props.children}

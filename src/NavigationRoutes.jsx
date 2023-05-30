@@ -2,16 +2,16 @@ import React from 'react';
 import { Routes, Route } from "react-router-dom";
 
 import Home from './pages/Home/Home';
-import Alunos from './pages/Alunos/AlunosCrud';
-import Atividades from './pages/Atividades/AtividadesCrud';
+import Alunos from './pages/Alunos/Alunos';
+import Atividades from './pages/Atividades/Atividades';
 import Treinadores from './pages/Treinadores/TreinadoresCrud';
-import Desafios from './pages/Desafios/DesafiosCrud';
+import Desafios from './pages/Desafios/Desafios';
 import ParticipantesDesafio from './pages/ParticipantesDesafio/ParticipantesDesafio';
 import Eventos from './pages/Eventos/EventosCrud';
 import Notificacao from './pages/Notificacao/NotificacaoCrud';
 import Modalidades from './pages/Modalidades/ModalidadesCrud';
 import Medalhas from './pages/Medalhas/MedalhasCrud';
-import Calendario from './pages/Calendario';
+import Calendario from './pages/Calendario/Calendario';
 
 export default nav => 
         <Routes>

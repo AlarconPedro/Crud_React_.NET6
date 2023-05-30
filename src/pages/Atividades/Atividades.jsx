@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom'
 
-import Mestre from "../../components/Layout/Mestre/Mestre";
-
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
@@ -17,14 +15,11 @@ import { BsJustify } from "react-icons/bs";
 import ConverteData from "../../funcoes/ConverteData";
 import ConverteTempo from "../../funcoes/ConverteTempo";
 import ConverteDistancia from "../../funcoes/ConverteDistancia";
-import DatePicker from "react-datepicker";
-import InputMask from 'react-input-mask';
 
 import ComponenteData from "../../components/Layout/Componentes/ComponenteData";
 import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
 
-import "./AtividadesCrud.css";
-import { alunoUrl, treinadorUrl } from "../../services/Imagens";
+import "./Atividades.css";
 import Modelo from "../../components/Layout/Modelo";
 
 
@@ -87,8 +82,6 @@ export default function Atividades(props) {
         aluAtiEstado: '',
         total: 0,
     });
-
-    const [aluCodigo, setAluCodigo] = useState(codigo);
 
     const [abrirCadastroAtividades, setAbrirCadastroAtividades] = useState(false);
     const [abrirEditarAtividades, setAbrirEditarAtividades] = useState(false);
@@ -243,10 +236,6 @@ export default function Atividades(props) {
         getAtividadeId();
     }, [atividade.aluAtiCodigo]);
 
-    function handleDefault(e) {
-        e.preventDefault();
-    }
-
     return (
         <React.Fragment>
             <Modelo
@@ -254,7 +243,7 @@ export default function Atividades(props) {
                 titulo="Cadastro Atividades"
                 subtitulo="Painel Sou+Fit"
                 icone="user"
-                tipoContainer="atividades-container"
+                tipoContainer="form-container"
                 Cabecalho="Atividades"
                 BotaoAdd="Adicionar Atividade"
                 dadosApi={atividadesData}
@@ -384,9 +373,9 @@ export default function Atividades(props) {
                     <ComponenteText 
                         tamanho="col-md-6"
                         label="Modalidade:"
-                        name="aluNome"
+                        name="modNome"
                         type="text"
-                        placeholder="Nome Sobrenome"
+                        placeholder="Modalidade"
                         value={atividade.modNome}
                         onChange={e => atualizaCampo(e)}
                     />
@@ -395,7 +384,7 @@ export default function Atividades(props) {
                         label="Descrição:"
                         name="aluNome"
                         type="text"
-                        placeholder="Nome Sobrenome"
+                        placeholder="Descrição"
                         value={atividade.aluAtiDescricao}
                         onChange={e => atualizaCampo(e)}
                     />
@@ -420,7 +409,7 @@ export default function Atividades(props) {
                     <ComponenteText 
                         tamanho="col-md-3"
                         label="Duração:"
-                        name="aluNome"
+                        name="aluAtiDuracaoSeg"
                         type="text"
                         placeholder="Nome Sobrenome"
                         value={atividade.aluAtiDuracaoSeg}
@@ -429,7 +418,7 @@ export default function Atividades(props) {
                     <ComponenteText 
                         tamanho="col-md-3"
                         label="Intensidade:"
-                        name="aluNome"
+                        name="aluAtiIntensidade"
                         type="text"
                         placeholder="Nome Sobrenome"
                         value={atividade.aluAtiIntensidade}
@@ -440,7 +429,7 @@ export default function Atividades(props) {
                         label="Cidade:"
                         name="aluAtiCidade"
                         type="text"
-                        placeholder="Nome Sobrenome"
+                        placeholder="Umuarama - PR"
                         value={atividade.aluAtiCidade}
                         onChange={e => atualizaCampo(e)}
                     />
@@ -449,14 +438,13 @@ export default function Atividades(props) {
                         label="UF:"
                         name="aluAtiEstado"
                         type="text"
-                        placeholder="Nome Sobrenome"
                         value={atividade.aluAtiEstado}
                         onChange={e => atualizaCampo(e)}
                     />
                     <ComponenteText 
                         tamanho="col-md-12"
                         label="Observação:"
-                        name="aluObs"
+                        name="aluAtiObs"
                         type="text"
                         // placeholder="Nome Sobrenome"
                         value={atividade.aluAtiObs}

@@ -107,24 +107,3 @@ select {
     text-align: center;
     margin-top: 5px;
 }
-
-.modal-incluir {
-    width: 100%;
-    max-width: 900px;
-    padding: 5 10px;
-    margin: 30px auto;
-}
-
-.modal-excluir {
-    width: 100%;
-    max-width: 900px;
-    padding: 5 10px;
-    margin: 30px auto;
-}
-
-.modal-editar {
-    width: 100%;
-    max-width: 900px;
-    padding: 5 10px;
-    margin: 30px auto;
-}

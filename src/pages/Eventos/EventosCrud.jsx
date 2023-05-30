@@ -257,7 +257,7 @@ class Eventos extends React.Component {
                     titulo="Cadastro Eventos"
                     subtitulo="Painel Sou+Fit"
                     icone="bullhorn"
-                    tipoContainer="alunos-container"
+                    tipoContainer="form-container"
                     Cabecalho="Eventos"
                     BotaoAdd="Adicionar Eventos"
                     dadosApi={this.state.eventosData}

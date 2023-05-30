@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
+import "../../estilos/FormularioExcluir.css";
+
 class FormExcluir extends React.Component {
     constructor(props) {
         super(props);

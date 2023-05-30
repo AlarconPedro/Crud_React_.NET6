@@ -16,6 +16,18 @@ class ComponenteText extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            tamanho: this.props.tamanho,
+            label: this.props.label,
+            name: this.props.name,
+            maxLength: this.props.maxLength,
+            value: this.props.value,
+            placeholder: this.props.placeholder,
+            type: this.props.type,
+        })
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.tamanho !== this.props.tamanho) {
             this.setState({

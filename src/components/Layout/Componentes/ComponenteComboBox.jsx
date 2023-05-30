@@ -12,6 +12,16 @@ class ComponenteComboBox extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            tamanho: this.props.tamanho,
+            label: this.props.label,
+            name: this.props.name,
+            options: this.props.options,
+            value: this.props.value,
+        })
+    }
+
     componentDidUpdate(prevProps, prevState) { 
         if (prevState.tamanho !== this.props.tamanho) {
             this.setState({

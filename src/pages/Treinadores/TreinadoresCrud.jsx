@@ -214,7 +214,7 @@ export default function TreinadoresCrud() {
                 titulo="Cadastro Treinadores"
                 subtitulo="Painel Sou+Fit"
                 icone="graduation-cap"
-                tipoContainer="treinadores-container"
+                tipoContainer="form-container"
                 Cabecalho="Treinadores"
                 BotaoAdd="Adicionar Treinador"
                 dadosApi={treinadoresData}

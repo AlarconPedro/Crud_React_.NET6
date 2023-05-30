@@ -12,6 +12,16 @@ class ComponenteImagem extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            tamanho: this.props.tamanho,
+            label: this.props.label,
+            name: this.props.name,
+            type: this.props.type,
+            urlImagem: this.props.urlImagem,
+        });
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.tamanho !== this.props.tamanho) {
             this.setState({

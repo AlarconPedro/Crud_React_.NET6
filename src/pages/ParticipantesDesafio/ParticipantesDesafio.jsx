@@ -95,7 +95,7 @@ class ParticipantesDesafio extends React.Component {
     render() {
         return (
             <Mestre icon="user" title="Atividades do Alunos" subtitle="Painel Sou+Fit">
-                <div className="atividades-container">
+                <div className="form-container">
                     <header>
                         <h3>Adicionar Participantes</h3>
                         <button className="btn btn-success btn-adicionar" onClick={() => this.abrirFecharCadastro()}><strong>+</strong> Adicionar Atividade</button>

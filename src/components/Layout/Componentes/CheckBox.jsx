@@ -3,7 +3,6 @@ import React from "react";
 import Api from "../../../services/Api";
 
 class CheckBox extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {

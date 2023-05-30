@@ -1,0 +1,33 @@
+
+.rc-calendar-header {
+    width: 100%;
+    font-size: 18px;
+}
+
+.rc-calendar-body {
+    width: 100%;
+    max-width: 500px;
+    max-height: 900px;
+    min-height: 400px;
+    padding: 0px;
+    margin: 15px auto;
+    font-size: 18px;
+}
+
+.rc-calendar-table {
+    width: 100%;
+    max-width: 500px;
+    max-height: 900px;
+    min-height: 400px;
+    padding: 0px;
+    margin: 15px auto;
+    font-size: 18px;
+}
+
+.calendario {
+    width: 100%;
+    min-width: 400px;
+    max-width: 600px;
+    padding: 5 10px;
+    margin: 30px auto;
+}

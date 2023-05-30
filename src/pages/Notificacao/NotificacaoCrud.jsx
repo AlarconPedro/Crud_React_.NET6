@@ -84,7 +84,7 @@ export default function AlunosCrud() {
         //     </Modelo>
         // </React.Fragment>
             <Mestre icon="bell" title="Enviar Notificações" subtitle="Painel Sou+Fit">
-                <div className="alunos-container">
+                <div className="form-container">
                     <form onSubmit={handleDefault}>
                         <h6><strong>Alunos:</strong></h6>
                         <div className="col-md-6 pl-0">
