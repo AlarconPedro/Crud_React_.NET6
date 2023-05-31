@@ -58,7 +58,7 @@ class CheckBox extends React.Component {
     render() {
         return (
             <div className="form-check" key={this.props.codigo}>
-                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                <input className="form-check-input" type="checkbox" value="" id="checkBoxId"
                     checked={this.state.checked}
                     onChange={this.handleCheck}
                 />

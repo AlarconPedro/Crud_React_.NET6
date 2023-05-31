@@ -443,8 +443,8 @@ class Desafio extends React.Component {
                             checked={this.state.desafio.desExclusivoAluno}
                             onChange={(e) => this.atualizaCampoAtivo(e)}
                         />
-                        <div className="selecionarModalidade ml-2">
-                            <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        <div className="selecionarModalidade">
+                            <label className="form-label mb-0 mt-3">Modalidade:</label>
                             {
                                 this.state.modalidadeData.map((modalidade) => {
                                     return (
@@ -558,8 +558,8 @@ class Desafio extends React.Component {
                             checked={this.state.desafio.desExclusivoAluno}
                             onChange={(e) => this.atualizaCampoAtivo(e)}
                         />
-                        <div className="selecionarModalidade ml-2">
-                            <label className="form-label mb-0 ml-2 mt-3">Modalidade:</label>
+                        <div className="selecionarModalidade">
+                            <label className="form-label mt-3">Modalidade:</label>
                             {
                                 this.state.modalidadeData.map((modalidade) => {
                                     return (

@@ -357,28 +357,6 @@ export default ParticipantesDesafio;
 //         }
 //     }, [updateAlunos]);
 
-//     function handleDefault(e) {
-//         e.preventDefault();
-//     }
-
-//     const alterarPagina = (e) => {
-//         e === "&gt;" ? pagina > atividadesData.length ? avancarPagina()
-//             : avancarPagina(pagina * 10)
-//             : voltarPagina(pagina * 10);
-//     }
-
-//     const avancarPagina = async (skip) => {
-//         getAtividades(skip);
-//         pagina > atividadesData.length ? setPagina(1) :
-//             setPagina(pagina + 1);
-//     }
-
-//     const voltarPagina = async (skip) => {
-//         skip = skip - 20;
-//         getAtividades(skip);
-//         pagina > 1 ? setPagina(pagina - 1) : setPagina(1);
-//     }
-
 //     return (
         // <Mestre icon="user" title="Atividades do Alunos" subtitle="Painel Sou+Fit">
         //     <div className="atividades-container">

@@ -56,7 +56,7 @@ class ComponenteAtivo extends React.Component {
                         checked={this.props.checked}
                         onChange={e => this.state.funcAtualizaCampo(e)}
                         value={true} />
-                    <label className="form-check-label">{this.state.label}</label>
+                    <label className="form-check-label" id="label-ativo">{this.state.label}</label>
                 </div>
             </div>
             // <div className="form-check">

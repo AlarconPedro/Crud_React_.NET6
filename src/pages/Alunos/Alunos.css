@@ -7,3 +7,8 @@
     margin-left: 16px;
     transition: border-color 0.5s;
 }
+
+input.form-check-input {
+    width: 20px;
+    margin-left: 10px;
+}

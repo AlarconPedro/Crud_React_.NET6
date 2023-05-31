@@ -10,6 +10,39 @@
     margin: 30px auto;
 }
 
+div.selecionarModalidade {
+    margin-left: 20px;
+}
+
+div.form-check {
+    margin-top: 5px;
+    margin-left: 0px;
+    padding: 0px;
+}
+
+div.form-check label{
+    margin-left: 25px;
+}
+
+div.col-2.mt-5 {
+    margin: 0px;
+    padding: 0px;
+}
+
+input#checkBoxId.form-check-input {
+    width: 20px;
+    margin: 0px;
+    margin-top: 5px;
+    padding: 0px;
+}
+
+input#gridCheck.form-check-input {
+    width: 20px;
+    margin: 0px;
+    margin-top: 5px;
+    padding: 0px;
+}
+
 .form-container header button {
     height: 50px;
     width: 220px;
