@@ -8,7 +8,7 @@ class ComponenteAtivo extends React.Component {
             name: "",
             label: "",
             checked: false,
-            funcAtualizaCampo: this.props.atualizaCampo,
+            funcAtualizaCampo: this.props.onChange,
         }
     }
 

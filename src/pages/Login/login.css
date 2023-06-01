@@ -14,6 +14,11 @@ h4 {
     margin-bottom: 30px;
 }
 
+h6.falha {
+    text-align: center;
+    color: #ff0000;
+}
+
 
 label {
     display: block;

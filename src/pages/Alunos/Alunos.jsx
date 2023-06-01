@@ -319,7 +319,7 @@ class Aluno extends React.Component {
                             name="aluNome"
                             type="text"
                             placeholder="Nome Sobrenome"
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteData
                             tamanho="col-md-3"
@@ -354,7 +354,7 @@ class Aluno extends React.Component {
                             maxLength="15"
                             type="tel"
                             selected={this.state.aluno.aluPeso}
-                            atualizaCampo={this.atualizaCampo}
+                            atualizaCampo={(e) => this.atualizaCampo(e)}
                             adicionarMascara={this.adicionarMascara}
                         />
                         <ComponenteText 
@@ -363,7 +363,7 @@ class Aluno extends React.Component {
                             name="aluEmail"
                             type="email"
                             placeholder="exemplo@gmail.com"
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteText 
                             tamanho="col-md-3"
@@ -371,7 +371,7 @@ class Aluno extends React.Component {
                             name="aluSenha"
                             type="password"
                             placeholder="****"
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteText 
                             tamanho="col-md-3"
@@ -379,7 +379,7 @@ class Aluno extends React.Component {
                             name="aluSenha"
                             type="password"
                             placeholder="****"
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteText 
                             tamanho="col-md-6"
@@ -387,7 +387,7 @@ class Aluno extends React.Component {
                             name="aluObs"
                             type="text"
                             placeholder="Obs."
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteAtivo 
                             tamanho="col-2 mt-5"
@@ -425,7 +425,7 @@ class Aluno extends React.Component {
                             type="text"
                             placeholder="Nome Sobrenome"
                             value={this.state.aluno.aluNome}
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteData
                             tamanho="col-md-3"
@@ -461,7 +461,7 @@ class Aluno extends React.Component {
                             type="tel"
                             value={this.state.aluno.aluFone}
                             selected={this.state.aluno.aluPeso}
-                            atualizaCampo={this.atualizaCampo}
+                            atualizaCampo={(e) => this.atualizaCampo(e)}
                             adicionarMascara={this.adicionarMascara}
                         />
                         <ComponenteText 
@@ -470,7 +470,7 @@ class Aluno extends React.Component {
                             name="aluEmail"
                             type="email"
                             value={this.state.aluno.aluEmail}
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteText 
                             tamanho="col-md-3"
@@ -479,7 +479,7 @@ class Aluno extends React.Component {
                             type="password"
                             value={this.state.aluno.aluSenha}
                             placeholder="****"
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                        <ComponenteText 
                             tamanho="col-md-3"
@@ -488,7 +488,7 @@ class Aluno extends React.Component {
                             type="password"
                             value={this.state.aluno.aluSenha}
                             placeholder="****"
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteText 
                             tamanho="col-md-6"
@@ -497,7 +497,7 @@ class Aluno extends React.Component {
                             type="text"
                             value={this.state.aluno.aluObs}
                             placeholder="Obs."
-                            onChange={this.atualizaCampo}
+                            onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteAtivo 
                             tamanho="col-2 mt-5"
@@ -505,7 +505,7 @@ class Aluno extends React.Component {
                             name="aluAtivo"
                             checked={this.state.aluno.aluAtivo}
                             onChange={this.atualizaCampoAtivo}
-                            value={true}
+                            value={this.state.aluno.aluAtivo}
                         />
                         <ComponenteImagem 
                             tamanho="col-md-4 mt-5"

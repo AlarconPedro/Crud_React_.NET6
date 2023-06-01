@@ -122,6 +122,8 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
+    const [logado, setLogado] = useState(true);
+
     const data = {
         email: email,
         senha: senha
@@ -137,6 +139,9 @@ export default function Login() {
 
     const Logar = async (data) => {
         var dados = [];
+        if (data.email === "" || data.senha === "") {
+            setLogado(false);
+        }
         await Api.get(`login/${data.email}/${data.senha}`).then(response => {
             // var response = response.data;
             dados = response.data;
@@ -146,8 +151,10 @@ export default function Login() {
             localStorage.setItem("Imagem", dados.treImagem);
             if (responseDados === 200) {
                 navigate("/home");
+                setLogado(true);
             } else {
-                alert("Email ou senha inválidos!");
+                setLogado(false);
+                // alert("Email ou senha inválidos!");
             }
         }).catch(error => {
             console.log(error);
@@ -159,6 +166,7 @@ export default function Login() {
             <div className="imagemLogin">
                 <img src={Imagem} alt="" />
             </div>
+            {logado ? <h4></h4> : <h6 className="falha">Usuário ou Senha inválido</h6>}
             <div className="col-12">
                 <form onSubmit={logarSistema}>
                     <div className="form-group">
@@ -180,5 +188,6 @@ export default function Login() {
                 </form>
             </div>
         </div>
+
     );
 }

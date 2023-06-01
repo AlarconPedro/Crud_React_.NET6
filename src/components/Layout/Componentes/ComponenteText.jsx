@@ -12,7 +12,7 @@ class ComponenteText extends React.Component {
             placeholder: "",
             type: "",
             funcMascara: this.props.adicionarMascara,
-            funcAtualizaCampo: this.props.atualizaCampo,
+            funcAtualizaCampo: this.props.onChange,
         }
     }
 
