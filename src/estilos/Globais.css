@@ -176,6 +176,13 @@ select {
     height: 140px;
 }
 
+.imagem {
+    width: 100%;
+    max-width: 350px;
+    /* padding: 5 10px; */
+    margin: 10px auto;
+}
+
 * {
     box-sizing: border-box;
     font-family: "Montserrat", sans-serif;

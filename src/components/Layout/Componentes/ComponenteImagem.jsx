@@ -9,6 +9,7 @@ class ComponenteImagem extends React.Component {
             name: "",
             type: "",
             urlImagem: "",
+            imagens: null,
         }
     }
 
@@ -19,6 +20,7 @@ class ComponenteImagem extends React.Component {
             name: this.props.name,
             type: this.props.type,
             urlImagem: this.props.urlImagem,
+            imagens: '',
         });
     }
 
@@ -52,15 +54,60 @@ class ComponenteImagem extends React.Component {
                 urlImagem: this.props.urlImagem
             })
         }
+
+        if (prevState.imagens !== this.state.imagens) {
+            this.setState({
+                imagens: this.state.imagens
+            })
+        }
+    }
+
+    selecionarImagem(event) {
+        this.state.imagens = event.target.files[0];
+        console.log(this.state.imagens);
+    }
+
+    postarImagem() {
+        const formData = new FormData();
+        let response = "";
+        formData.append("file", this.state.imagens);
+        formData.append("upload_preset", "upload");
+        formData.append("cloud_name", "dwsxjwv8p");
+        fetch("https://api.cloudinary.com/v1_1/dwsxjwv8p/image/upload", {
+            method: "post",
+            body: formData
+        }).then(res => res.json()).then(data => {
+            this.setState({
+                urlImagem: data.url
+            })
+            response = data.url;
+            console.log(response);
+        }).catch(err => {
+            console.log(err);
+        })
     }
 
     render() {
         return (
             <div className={this.state.tamanho}>
                 <label className="form-label mb-0">{this.state.label}</label>
-                <input type={this.state.type} className="form-control"
-                    name={this.state.name} />
-                <img src={this.state.urlImagem} alt="" />
+                <input type={this.state.type} className="form-control "
+                    name={this.state.name} onChange={(e) => this.selecionarImagem(e)}/>
+                {
+                    this.state.urlImagem !== '' ?
+                        <img src={this.state.urlImagem} alt="" className="imagem" />
+                        : this.state.imagens !== null ?
+                            <img src={this.state.imagens} alt="" className="imagem" />
+                            : <div></div>
+                }
+                {/* <ReactImageUploading
+                    multiple
+                    value={this.state.images}
+                    onChange={this.onChange}
+                    maxNumber={this.state.maxNumber}
+                    dataURLKey="data_url"
+                /> */}
+                <button onClick={this.postarImagem}>Postar</button>
             </div>
         )
     }
