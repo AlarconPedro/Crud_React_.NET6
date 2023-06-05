@@ -8,6 +8,11 @@ export default Rotas => {
     return (
         <BrowserRouter>
             <Routes>
+                {sessionStorage.getItem("session") === null
+                    ? <Route exact path="/" element={<Login />} />
+                    || <Route exact path="/login" element={<Login />} />
+                    : <Route exact path="/*" element={<Principal />} />
+                }
                 <Route exact path="/" element={<Login />} />
                 <Route exact path="/login" element={<Login />} />
                 <Route path="/*" element={<Principal />} />
