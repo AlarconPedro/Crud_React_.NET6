@@ -1,81 +1,47 @@
 import React, { Component, useEffect, useState } from "react";
 import moment from "moment";
 
-export default function Session() {
+// export default function Session() {
 
-    const [session, setSession] = useState({
-        tempoOcioso: 0,
-        tempoSessao: 60000,
-    });
+//     const [sessionOcioso, setSessionOcioso] = useState(0);
+//     const [sessionTime, setSessionTime] = useState(60);
 
-    useEffect(() => {
-        const sessionReturn = JSON.parse(sessionStorage.getItem("session"));
-        if (session !== null) {
-            setSession({
-                tempoOcioso: sessionReturn.tempoOcioso,
-                tempoSessao: sessionReturn.tempoSessao,
-            });
-        } else {
-            sessionStorage.setItem("session", JSON.stringify({
-                tempoOcioso: 0,
-                tempoSessao: session.tempoSessao,
-            }));
-        }
+//     useEffect(() => {
+//         let sessionOcioso = parseInt(localStorage.getItem("tempoOcioso"));
+//         let sessionTime = parseInt(localStorage.getItem("sessionTime"));
+//         if (sessionOcioso !== null && sessionTime !== null) {
+//             setSessionOcioso(sessionOcioso);
+//             setSessionTime(sessionTime);
+//         } else {
+//             localStorage.setItem("tempoOcioso", 0);
+//             localStorage.setItem("sessionTime", 60);
+//             setSessionOcioso(0);
+//             setSessionTime(60);
+//             timeInterval();
+//         }
+//     }, []);
 
-        // const interval = setInterval(() => {
-        //     if (session) {
-        //         console.log("tempoOcioso: " + session.tempoOcioso);
-        //         if (session.tempoOcioso === 0) {
-        //             setSession({
-        //                 tempoOcioso: session.tempoOcioso + 1,
-        //                 tempoSessao: session.tempoSessao + 1,
-        //             });
-        //         } else {
-        //             console.log("tempoSessao: " + session.tempoSessao);
-        //             setSession({
-        //                 tempoOcioso: session.tempoOcioso + 1,
-        //                 tempoSessao: session.tempoSessao,
-        //             });
-        //         }
-        //     }
-        // }, 1000);
+//     setInterval(timeInterval, 1000);
 
-        if (session.tempoOcioso >= session.tempoSessao) {
-            sessionStorage.removeItem("session");
-            window.location.href = "/";
-        } else {
-            atualizarSession();
-        }
+//     function timeInterval() {
+//         if (sessionOcioso >= sessionTime) {
+//             logout();
+//         } else {
+//             let retorno = atualizaSession();
+//             localStorage.setItem("tempoOcioso", retorno);
+//         }
+//     }
 
-        // return () => clearInterval(interval);
-    }, []);
+//     const atualizaSession = () => {
+//         localStorage.setItem("tempoOcioso", sessionOcioso + 1);
+//         let tempo = sessionOcioso + 1;
+//         setSessionOcioso(tempo);
+//         return tempo;
+//     }
 
-    useEffect(() => {
-        if (session) {
-            sessionStorage.setItem("session", JSON.stringify(session));
-        }
-    }, [session]);
-
-    const atualizarSession = () => {
-        session.tempoOcioso < session.tempoSessao 
-        ? session.tempoOcioso = setInterval(() => {
-            setSession({
-                tempoOcioso: session.tempoOcioso + 1,
-                tempoSessao: session.tempoSessao,
-            });
-        }, 1000) 
-        : logout();
-    }
-
-    // const atualizarTempoSessao = () => {
-    //     setSession({
-    //         tempoOcioso: session.tempoOcioso,
-    //         tempoSessao: session.tempoSessao,
-    //     });
-    // }
-
-    const logout = () => {
-        sessionStorage.removeItem("session");
-        window.location.href = "/";
-    }
-}
+//     const logout = () => {
+//         clearInterval(timeInterval);
+//         sessionStorage.removeItem("session");
+//         window.location.href = "/";
+//     }
+// }
