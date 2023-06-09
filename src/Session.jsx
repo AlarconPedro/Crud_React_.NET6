@@ -1,20 +1,28 @@
 import React, { Component, useEffect, useState } from "react";
 import moment from "moment";
 
-import useIdle from './components/Layout/Hooks/useIdle';
-
-import Mestre from "./components/Layout/Mestre/Mestre";
-
-export default function Session() {
+export default function Session({
+    isLogged,
+    isIdle,
+}) {
     const logout = () => {
         localStorage.clear();
-        window.location.href = "/";
-    };
+        window.location.replace("/login");
+    }
 
-    const { isIdle } = useIdle({
-        onIdle: logout,
-        idleTime: 0.1,
-    });
+    const login = () => {
+        localStorage.setItem("logado", true);
+        window.location.replace("/home");
+    }
 
-    return isIdle;
+    const logado = isLogged;
+    const ocioso = isIdle;
+
+    if (logado && !ocioso) {
+        login();
+    } else if (!logado && !ocioso){
+        logout();
+    } else if (logado && ocioso) {
+        logout();
+    }
 }
