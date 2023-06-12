@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import "./Estilos/ComponenteImagem.css"
+
 const initialState = {
     tamanho: "",
     label: "",
@@ -7,6 +9,8 @@ const initialState = {
     type: "",
     urlImagem: "",
     imagens: null,
+    file: null,
+    imagePreviewUrl: null
 }
 
 export default class ComponenteImagem extends Component {
@@ -100,19 +104,66 @@ export default class ComponenteImagem extends Component {
         });
     }
 
+
+    _handleSubmit(e) {
+        e.preventDefault();
+    }
+
+    _handleImageChange(e) {
+        e.preventDefault();
+
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        console.log(file);
+        reader.onloadend = () => {
+            this.setState({
+                file: file,
+                imagePreviewUrl: reader.result
+            });
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
     render() {
+        let { imagePreviewUrl } = this.state;
+        let $imagePreview = null;
+        if (imagePreviewUrl) {
+            $imagePreview = <img src={imagePreviewUrl} alt="preview" />;
+        } else {
+            $imagePreview = <div className="previewText">Selecionar Imagem</div>;
+        }
+
         return (
-            <div className="form-group">
-                <label htmlFor={this.state.name}>{this.state.label}</label>
-                <input
-                    type={this.state.type}
-                    name={this.state.name}
-                    className={this.state.tamanho}
-                    onChange={this.selecionarImagem.bind(this)}
-                />
-                <button type="button" className="btn btn-primary" onClick={this.postarImagem.bind(this)}>Postar</button>
-                <img src={this.state.urlImagem} alt="" />
+            <div className="previewComponent col-4">
+                <form onSubmit={e => this._handleSubmit(e)}>
+                    {
+                        imagePreviewUrl == null ?
+                            <input className="fileInput" type="file" onChange={e => this._handleImageChange(e)} />
+                            : null
+                    }
+                </form>
+                <div className="imgPreview">{$imagePreview}</div>
+                {
+                    imagePreviewUrl !== null ?
+                        <button className="submitButton" type="submit" onClick={e => this._handleSubmit(e)}>
+                            Editar
+                        </button>
+                        : null
+                }
             </div>
+            // <div className="form-group">
+            //     <label htmlFor={this.state.name}>{this.state.label}</label>
+            //     <input
+            //         type={this.state.type}
+            //         name={this.state.name}
+            //         className={this.state.tamanho}
+            //         onChange={this.selecionarImagem.bind(this)}
+            //     />
+            //     <button type="button" className="btn btn-primary" onClick={this.postarImagem.bind(this)}>Postar</button>
+            //     <img src={this.state.urlImagem} alt="" />
+            // </div>
         )
     }
 }

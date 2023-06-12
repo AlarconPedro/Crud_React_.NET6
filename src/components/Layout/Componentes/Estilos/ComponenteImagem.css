@@ -1,0 +1,63 @@
+.previewText {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.previewComponent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* margin: 1rem; */
+    /* margin-right: 0px; */
+    margin-left: 60px;
+    margin-top: 1rem;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.fileInput {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    /* border: 1px solid #000; */
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    /* display: none; */
+}
+
+.submitButton {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.imgPreview {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.imgPreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

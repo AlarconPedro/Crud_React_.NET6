@@ -20,7 +20,7 @@ export default function Session({
 
     if (logado && !ocioso) {
         login();
-    } else if (!logado && !ocioso){
+    } else if (!logado && !ocioso) {
         logout();
     } else if (logado && ocioso) {
         logout();

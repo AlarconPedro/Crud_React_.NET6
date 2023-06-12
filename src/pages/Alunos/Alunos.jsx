@@ -390,7 +390,7 @@ class Aluno extends React.Component {
                             onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteAtivo 
-                            tamanho="col-2 mt-5"
+                            tamanho="col-1 mt-5"
                             label="Ativo:"
                             name="aluAtivo"
                             onChange={this.atualizaCampoAtivo}
@@ -500,7 +500,7 @@ class Aluno extends React.Component {
                             onChange={(e) => this.atualizaCampo(e)}
                         />
                         <ComponenteAtivo 
-                            tamanho="col-2 mt-5"
+                            tamanho="col-1 mt-5"
                             label="Ativo:"
                             name="aluAtivo"
                             checked={this.state.aluno.aluAtivo}

@@ -17,18 +17,17 @@ export default props => {
 
     const { isIdle } = useIdle({
         onIdle: logout,
-        idleTime: 1,
+        idleTime: 5,
     });
 
     useEffect(() => {
         verificaLogin();
     }, []);
 
-    // useEffect(() => {
-    //     moment.locale("pt-br");
-    //     let expira = moment().add(1, "minutes").format("HH:mm:ss");
-    //     localStorage.setItem("expira ", expira);
-    // }, []);
+    window.addEventListener('popstate', function () {
+        // Impedir que a página volte
+        this.window.history.pushState(null, '', window.location.href);
+      });
 
     const verificaLogin = () => {
         if (localStorage.length === 0 && localStorage.getItem("logado") === "false") {
@@ -38,6 +37,7 @@ export default props => {
 
     if (!isIdle && localStorage.length > 0) {
         localStorage.setItem("logado", true);
+        // window.clear.history(0);
         return (
             <React.Fragment>
                 <Header {...props} />

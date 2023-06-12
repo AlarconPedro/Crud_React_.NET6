@@ -24,6 +24,8 @@ class Home extends Component {
     verificaLogin() {
         if (localStorage.length === 0 && localStorage.getItem("logado") === "false") {
             return Session({ isLogged: false, isIdle: true });
+        } else {
+            window.history.pushState(null, '', window.location.href);
         }
     }
 
