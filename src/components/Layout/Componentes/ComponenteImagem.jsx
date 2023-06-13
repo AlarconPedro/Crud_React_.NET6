@@ -132,26 +132,29 @@ export default class ComponenteImagem extends Component {
         if (imagePreviewUrl) {
             $imagePreview = <img src={imagePreviewUrl} alt="preview" />;
         } else {
-            $imagePreview = <div className="previewText">Selecionar Imagem</div>;
+            $imagePreview = <div className="custom-file-upload"><label for="file-upload" className="col-12"><h4>Selecionar Imagem</h4></label></div>;
+            // $imagePreview = <label for="file-upload" class="custom-file-upload">Selecionar Imagem</label>;
         }
 
         return (
-            <div className="previewComponent col-4">
+            <div className="previewComponent col-md-4">
                 <form onSubmit={e => this._handleSubmit(e)}>
-                    {
-                        imagePreviewUrl == null ?
-                            <input className="fileInput" type="file" onChange={e => this._handleImageChange(e)} />
-                            : null
-                    }
+                    {imagePreviewUrl == null ?
+                        <input className="fileInput"
+                            id="file-upload"
+                            type="file"
+                            onChange={e => this._handleImageChange(e)}
+                        />
+                        : null}
                 </form>
                 <div className="imgPreview">{$imagePreview}</div>
-                {
-                    imagePreviewUrl !== null ?
-                        <button className="submitButton" type="submit" onClick={e => this._handleSubmit(e)}>
-                            Editar
-                        </button>
-                        : null
-                }
+                {imagePreviewUrl !== null ?
+                    <button className="submitButton"
+                        type="submit"
+                        onClick={e => this._handleSubmit(e)}>
+                        Editar
+                    </button>
+                    : null}
             </div>
             // <div className="form-group">
             //     <label htmlFor={this.state.name}>{this.state.label}</label>

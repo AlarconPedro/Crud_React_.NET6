@@ -6,43 +6,126 @@
     text-align: center;
 }
 
-.previewComponent {
+div.previewComponent {
+    margin-left: 60px;
+    margin-top: 1rem;
+    padding: 5px;
+    width: 100%;
+    height: 250px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #fff;
+    flex-direction: column;
+    display: flex;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+div.custom-file-upload {
+    margin: 0px;
+    border-radius:  5px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.custom-file-upload label{
+    cursor: pointer;
+    padding: 0px;
+}
+
+div.imgPreview {
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.submitButton {
+    margin-top: 0.3rem;
+    padding: 0.3rem;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.imgPreview {
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.imgPreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* .previewText {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+div.previewComponent {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* margin: 1rem; */
-    /* margin-right: 0px; */
     margin-left: 60px;
     margin-top: 1rem;
     padding: 5px;
+    width: 100%;
+    height: 250px;
     border: 1px solid #000;
     border-radius: 5px;
     background-color: #fff;
 }
 
-.fileInput {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    /* border: 1px solid #000; */
-    border: none;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #000;
-    font-size: 1.2rem;
-    font-weight: bold;
+input[type="file"] {
+    display: none;
+}
+
+label.custom-file-upload {
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin: 0px;
+    border-radius:  5px;
     cursor: pointer;
-    /* display: none; */
+    width: 100%;
+    height: 100%;
+}
+
+div.imgPreview {
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .submitButton {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
+    margin-top: 0.3rem;
+    padding: 0.3rem;
     border: 1px solid #000;
     border-radius: 5px;
     background-color: #fff;
     color: #000;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
 }
@@ -59,5 +142,5 @@
 .imgPreview img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-}
+    object-fit: cover;
+} */
