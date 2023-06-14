@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import "./Estilos/ComponenteImagem.css"
 
+import Api from "../../../services/Api";
+
 const initialState = {
     tamanho: "",
     label: "",
@@ -10,6 +12,7 @@ const initialState = {
     urlImagem: "",
     imagens: null,
     file: null,
+    reader: new FileReader(),
     imagePreviewUrl: null
 }
 
@@ -68,19 +71,67 @@ export default class ComponenteImagem extends Component {
         }
     }
 
-    selecionarImagem(e) {
-        // e.preventDefault();
+    redimensionarImagem(img) {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext("2d");
+        var MAX_WIDTH = 300;
+        var MAX_HEIGHT = 300;
+        var width = img.width;
+        var height = img.height;
 
-        // const reader = new FileReader();
-        // reader.readAsDataURL(e.target.files[0]);
-        // reader.onload = () => {
-        //     if (reader.readyState === 1) {
-        //         this.setState({
-        //             imagens: reader.result
-        //         })
-        //     }
+        if (width > height) {
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                return canvas.toDataURL("image/jpeg");
+            }
+        }
+
+        // var resize = new window.resizeBy();
+        // resize.init();
+        // if (this.state.imagePreviewUrl == '' || this.state.imagePreviewUrl == null) {
+        //     resize.photo(this.state.imagens, 600, 'dataURL', async function (dataUri) {
+        //         var retorno = await Api.post('/imagem', dataUri).then(response => {
+        //             console.log(response.data);
+        //             return response.data;
+        //         });
+        //         // this.setState({
+        //         //     imagens: dataUri
+        //         // })
+        //         console.log(dataUri);
+        //     });
+        // } else {
+        //     resize.photo(this.state.imagePreviewUrl, 600, 'dataURL', function (dataUri) {
+        //         // this.setState({
+        //         //     imagens: dataUri
+        //         // })
+        //         console.log(dataUri);
+        //     });
         // }
     }
+
+    // selecionarImagem(e) {
+    //     // e.preventDefault();
+
+    //     // const reader = new FileReader();
+    //     // reader.readAsDataURL(e.target.files[0]);
+    //     // reader.onload = () => {
+    //     //     if (reader.readyState === 1) {
+    //     //         this.setState({
+    //     //             imagens: reader.result
+    //     //         })
+    //     //     }
+    //     // }
+    // }
 
     postarImagem(e) {
         // e.preventDefault();
@@ -104,7 +155,6 @@ export default class ComponenteImagem extends Component {
         });
     }
 
-
     _handleSubmit(e) {
         e.preventDefault();
     }
@@ -112,28 +162,40 @@ export default class ComponenteImagem extends Component {
     _handleImageChange(e) {
         e.preventDefault();
 
-        let reader = new FileReader();
-        let file = e.target.files[0];
-        console.log(file);
-        reader.onloadend = () => {
+        var response = null;
+
+        // let reader = new FileReader();
+        this.state.file = e.target.files[0];
+        console.log(this.state.file);
+        this.state.reader.onloadend = async () => {
+            response = await this.redimensionarImagem(this.state.file);
             this.setState({
-                file: file,
-                imagePreviewUrl: reader.result
+                file: this.state.file,
+                imagePreviewUrl: this.state.reader.result
             });
         };
-        if (file) {
-            reader.readAsDataURL(file);
+        if (this.state.file) {
+            if (response == null) {
+                this.state.reader.readAsDataURL(this.state.file);
+            } else {
+                this.state.reader.readAsDataURL(response);
+            }
         }
     }
 
     render() {
         let { imagePreviewUrl } = this.state;
         let $imagePreview = null;
-        if (imagePreviewUrl) {
+        // imagePreviewUrl = this.state == null ? this.state.urlImagem : this.state;
+        if (imagePreviewUrl = this.state.urlImagem != '' && imagePreviewUrl == null ? this.state.urlImagem : imagePreviewUrl) {
             $imagePreview = <img src={imagePreviewUrl} alt="preview" />;
         } else {
-            $imagePreview = <div className="custom-file-upload"><label for="file-upload" className="col-12"><h4>Selecionar Imagem</h4></label></div>;
-            // $imagePreview = <label for="file-upload" class="custom-file-upload">Selecionar Imagem</label>;
+            $imagePreview =
+                <div className="custom-file-upload">
+                    <label for="file-upload" className="col-12">
+                        <h4>Selecionar Imagem</h4>
+                    </label>
+                </div>;
         }
 
         return (
@@ -148,12 +210,19 @@ export default class ComponenteImagem extends Component {
                         : null}
                 </form>
                 <div className="imgPreview">{$imagePreview}</div>
-                {imagePreviewUrl !== null ?
-                    <button className="submitButton"
-                        type="submit"
-                        onClick={e => this._handleSubmit(e)}>
-                        Editar
-                    </button>
+                {imagePreviewUrl !== '' ?
+                    <React.Fragment>
+                        <input className="fileInput"
+                            id="file-upload"
+                            type="file"
+                            onChange={e => this._handleImageChange(e)}
+                        />
+                        <div className="custom-file-edit">
+                            <label for="file-upload" className="col-12">
+                                Editar
+                            </label>
+                        </div>
+                    </React.Fragment>
                     : null}
             </div>
             // <div className="form-group">
@@ -170,127 +239,3 @@ export default class ComponenteImagem extends Component {
         )
     }
 }
-
-// class ComponenteImagem extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             tamanho: "",
-//             label: "",
-//             name: "",
-//             type: "",
-//             urlImagem: "",
-//             imagens: null,
-//         }
-//     }
-
-//     componentDidMount() {
-//         this.setState({
-//             tamanho: this.props.tamanho,
-//             label: this.props.label,
-//             name: this.props.name,
-//             type: this.props.type,
-//             urlImagem: this.props.urlImagem,
-//             imagens: '',
-//         });
-//     }
-
-//     componentDidUpdate(prevProps, prevState) {
-//         if (prevState.tamanho !== this.props.tamanho) {
-//             this.setState({
-//                 tamanho: this.props.tamanho
-//             })
-//         }
-
-//         if (prevState.label !== this.props.label) {
-//             this.setState({
-//                 label: this.props.label
-//             })
-//         }
-
-//         if (prevState.name !== this.props.name) {
-//             this.setState({
-//                 name: this.props.name
-//             })
-//         }
-
-//         if (prevState.type !== this.props.type) {
-//             this.setState({
-//                 type: this.props.type
-//             })
-//         }
-
-//         if (prevState.urlImagem !== this.props.urlImagem) {
-//             this.setState({
-//                 urlImagem: this.props.urlImagem
-//             })
-//         }
-
-//         if (prevState.imagens !== this.state.imagens) {
-//             this.setState({
-//                 imagens: this.state.imagens
-//             })
-//         }
-//     }
-
-//     selecionarImagem(event) {
-//         // this.state.imagens = event.target.files[0];
-//         // console.log(this.state.imagens);
-//         const reader = new FileReader();
-//         reader.readAsDataURL(event.target.files[0]);
-//         reader.onload = () => {
-//             if (reader.readyState === 1) {
-//                 this.setState({
-//                     imagens: reader.result
-//                 })
-//             }
-//         }
-//     }
-
-//     postarImagem() {
-//         const formData = new FormData();
-//         let response = "";
-//         formData.append("file", this.state.imagens);
-//         formData.append("upload_preset", "upload");
-//         formData.append("cloud_name", "dwsxjwv8p");
-//         fetch("https://api.cloudinary.com/v1_1/dwsxjwv8p/image/upload", {
-//             method: "post",
-//             body: formData
-//         }).then(res => res.json()).then(data => {
-//             this.setState({
-//                 urlImagem: data.url
-//             })
-//             response = data.url;
-//             console.log(response);
-//         }).catch(err => {
-//             console.log(err);
-//         })
-//     }
-
-//     render() {
-//         return (
-//             <div className={this.state.tamanho}>
-//                 <label className="form-label mb-0">{this.state.label}</label>
-//                 <input type={this.state.type} className="form-control "
-//                     name={this.state.name} onChange={(e) => this.selecionarImagem(e)}/>
-//                 {
-//                     this.state.urlImagem !== '' ?
-//                         <img src={this.state.urlImagem} alt="" className="imagem" />
-//                         : this.state.imagens !== null ?
-//                             <img src={this.state.imagens} alt="" className="imagem" />
-//                             : <div></div>
-//                 }
-//                 {/* <ReactImageUploading
-//                     multiple
-//                     value={this.state.images}
-//                     onChange={this.onChange}
-//                     maxNumber={this.state.maxNumber}
-//                     dataURLKey="data_url"
-//                 /> */}
-//                 <button onClick={this.postarImagem}>Postar</button>
-//             </div>
-//         )
-//     }
-// }
-
-// export default ComponenteImagem;
