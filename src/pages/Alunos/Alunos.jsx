@@ -130,6 +130,10 @@ class Aluno extends React.Component {
         }
     }
 
+    selecionarImagem(imagem) {
+        this.setState({ aluno: { ...this.state.aluno, aluImagem: imagem } });
+    }
+
     getAlunos = async (skip = 0) => {
         this.setState({ carregando: true });
         await Api.get(`${aluno}?skip=${skip}`).then(response => {
@@ -183,6 +187,7 @@ class Aluno extends React.Component {
     postAluno = async () => {
         // console.log(this.state.aluno);
         // await this.dataAuxiliar(this.state.dataAtual);
+        await this.postImagemAluno(this.state.aluno.aluImagem);
         await Api.post(aluno, this.state.aluno).then(response => {
             this.setState({ aluno: response.data });
             this.setState({ updateAlunos: true });
@@ -191,6 +196,16 @@ class Aluno extends React.Component {
             console.log(error);
         });
         this.setState({ aluno: this.state.alunoInitialState });
+    }
+
+    postImagemAluno = async (imagem) => {
+        await Api.post("/imagemAluno", imagem).then(response => {
+            if (response.status == 200) {
+                this.setState({ aluno: { ...this.state.aluno, aluImagem: response.data }});
+            } else {
+                console.log("Erro ao salvar imagem");
+            }
+        });
     }
 
     putAluno = async () => {
@@ -280,7 +295,8 @@ class Aluno extends React.Component {
                         <tbody>
                             {this.state.alunosData.map((aluno) => (
                                 <tr key={aluno.aluCodigo}>
-                                    <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td>
+                                    {/* <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td> */}
+                                    <td className=""><img src={"https://localhost:7079/" + aluno.aluImagem} alt="" /></td>
                                     <td className="pt-3">{aluno.aluNome}</td>
                                     <td className="pt-3">{aluno.aluFone}</td>
                                     <td className="pt-3"><div className="idade">{this.converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
@@ -401,6 +417,7 @@ class Aluno extends React.Component {
                             label="Imagem:"
                             name="aluImagem"
                             type="file"
+                            selecionaImagem={this.selecionaImagem}
                         />
                     </form>
                 </FormInserir>

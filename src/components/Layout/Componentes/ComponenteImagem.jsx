@@ -71,31 +71,6 @@ export default class ComponenteImagem extends Component {
         }
     }
 
-    redimensionarImagem(img) {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext("2d");
-        var MAX_WIDTH = 300;
-        var MAX_HEIGHT = 300;
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-            if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-            } else {
-                if (height > MAX_HEIGHT) {
-                    width *= MAX_HEIGHT / height;
-                    height = MAX_HEIGHT;
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-                return canvas.toDataURL("image/jpeg");
-            }
-        }
-
         // var resize = new window.resizeBy();
         // resize.init();
         // if (this.state.imagePreviewUrl == '' || this.state.imagePreviewUrl == null) {
@@ -117,7 +92,6 @@ export default class ComponenteImagem extends Component {
         //         console.log(dataUri);
         //     });
         // }
-    }
 
     // selecionarImagem(e) {
     //     // e.preventDefault();
@@ -168,7 +142,6 @@ export default class ComponenteImagem extends Component {
         this.state.file = e.target.files[0];
         console.log(this.state.file);
         this.state.reader.onloadend = async () => {
-            response = await this.redimensionarImagem(this.state.file);
             this.setState({
                 file: this.state.file,
                 imagePreviewUrl: this.state.reader.result
@@ -220,7 +193,7 @@ export default class ComponenteImagem extends Component {
                         <div className="custom-file-edit">
                             <label for="file-upload" className="col-12">
                                 Editar
-                            </label>
+                            </label> 
                         </div>
                     </React.Fragment>
                     : null}
