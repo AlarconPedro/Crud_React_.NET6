@@ -39,6 +39,7 @@ class Aluno extends React.Component {
             updateAlunos: false,
             alunosData: [],
             treinadoresData: [],
+            imagemUpload: null,
             sexo: [
                 { id: "M", nome: 'Masculino' },
                 { id: "F", nome: 'Feminino' },
@@ -130,8 +131,9 @@ class Aluno extends React.Component {
         }
     }
 
-    selecionarImagem(imagem) {
-        this.setState({ aluno: { ...this.state.aluno, aluImagem: imagem } });
+    selecionarImagem = (imagem) => {
+        const imgUpload = imagem;
+        this.setState({ imagemUpload: imgUpload });
     }
 
     getAlunos = async (skip = 0) => {
@@ -184,10 +186,16 @@ class Aluno extends React.Component {
         this.setState({ carregando: false });
     }
 
+    postDados = async () => {
+        await this.postImagemAluno();
+        await this.postAluno();
+    }
+
     postAluno = async () => {
         // console.log(this.state.aluno);
         // await this.dataAuxiliar(this.state.dataAtual);
-        await this.postImagemAluno(this.state.aluno.aluImagem);
+        // await this.postImagemAluno();
+        // this.setState({ aluno: { ...this.state.aluno } });
         await Api.post(aluno, this.state.aluno).then(response => {
             this.setState({ aluno: response.data });
             this.setState({ updateAlunos: true });
@@ -198,10 +206,11 @@ class Aluno extends React.Component {
         this.setState({ aluno: this.state.alunoInitialState });
     }
 
-    postImagemAluno = async (imagem) => {
-        await Api.post("/imagemAluno", imagem).then(response => {
+    postImagemAluno = async () => {
+        await Api.post("aluno/imagemAluno", this.state.imagemUpload).then(response => {
             if (response.status == 200) {
-                this.setState({ aluno: { ...this.state.aluno, aluImagem: response.data }});
+                const imgUpload = response.data;
+                this.setState({ aluno: { ...this.state.aluno, aluImagem: imgUpload } });
             } else {
                 console.log("Erro ao salvar imagem");
             }
@@ -264,6 +273,7 @@ class Aluno extends React.Component {
             this.getAlunos();
             this.setState({ updateAlunos: false });
         }
+
     }
 
     render() {
@@ -295,8 +305,8 @@ class Aluno extends React.Component {
                         <tbody>
                             {this.state.alunosData.map((aluno) => (
                                 <tr key={aluno.aluCodigo}>
-                                    {/* <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td> */}
-                                    <td className=""><img src={"https://localhost:7079/" + aluno.aluImagem} alt="" /></td>
+                                    <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td>
+                                    {/* <td className=""><img src={"https://localhost:7079/" + aluno.aluImagem} alt="" /></td> */}
                                     <td className="pt-3">{aluno.aluNome}</td>
                                     <td className="pt-3">{aluno.aluFone}</td>
                                     <td className="pt-3"><div className="idade">{this.converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
@@ -326,10 +336,11 @@ class Aluno extends React.Component {
                     nome={"Aluno"}
                     abrir={this.state.abrirCadastro}
                     funcAbrir={this.abrirFecharCadastro}
-                    funcPost={this.postAluno}
+                    // funcPost={this.postAluno}
+                    funcPost={this.postDados}
                 >
                     <form className="row g-3 form-group">
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-6"
                             label="Nome:"
                             name="aluNome"
@@ -345,7 +356,7 @@ class Aluno extends React.Component {
                             selected={new Date(this.state.aluno.aluDataNasc)}
                             selecionaData={this.atualizaCampoData}
                         />
-                        <ComponenteComboBox 
+                        <ComponenteComboBox
                             tamanho="col-md-3"
                             label="Sexo:"
                             name="aluSexo"
@@ -353,7 +364,7 @@ class Aluno extends React.Component {
                             value={this.state.aluno.aluSexo}
                             options={this.state.sexo}
                         />
-                        <ComponenteComboBox 
+                        <ComponenteComboBox
                             tamanho="col-md-6"
                             label="Treinador:"
                             name="treCodigo"
@@ -373,7 +384,7 @@ class Aluno extends React.Component {
                             atualizaCampo={(e) => this.atualizaCampo(e)}
                             adicionarMascara={this.adicionarMascara}
                         />
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-6"
                             label="Email:"
                             name="aluEmail"
@@ -381,7 +392,7 @@ class Aluno extends React.Component {
                             placeholder="exemplo@gmail.com"
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-3"
                             label="Senha:"
                             name="aluSenha"
@@ -389,7 +400,7 @@ class Aluno extends React.Component {
                             placeholder="****"
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-3"
                             label="Confirmar Senha:"
                             name="aluSenha"
@@ -397,7 +408,7 @@ class Aluno extends React.Component {
                             placeholder="****"
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-6"
                             label="Observação:"
                             name="aluObs"
@@ -405,19 +416,19 @@ class Aluno extends React.Component {
                             placeholder="Obs."
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                        <ComponenteAtivo 
+                        <ComponenteAtivo
                             tamanho="col-1 mt-5"
                             label="Ativo:"
                             name="aluAtivo"
                             onChange={this.atualizaCampoAtivo}
                             value={true}
                         />
-                        <ComponenteImagem 
+                        <ComponenteImagem
                             tamanho="col-md-4 mt-5"
                             label="Imagem:"
                             name="aluImagem"
                             type="file"
-                            selecionaImagem={this.selecionaImagem}
+                            selecionaImagem={this.selecionarImagem}
                         />
                     </form>
                 </FormInserir>
@@ -435,7 +446,7 @@ class Aluno extends React.Component {
                                 value={this.state.aluno.aluCodigo}
                             />
                         </div> */}
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-6"
                             label="Nome:"
                             name="aluNome"
@@ -452,7 +463,7 @@ class Aluno extends React.Component {
                             selected={new Date(this.state.aluno.aluDataNasc)}
                             selecionaData={this.atualizaCampoData}
                         />
-                        <ComponenteComboBox 
+                        <ComponenteComboBox
                             tamanho="col-md-3"
                             label="Sexo:"
                             name="aluSexo"
@@ -460,7 +471,7 @@ class Aluno extends React.Component {
                             value={this.state.aluno.aluSexo}
                             options={this.state.sexo}
                         />
-                        <ComponenteComboBox 
+                        <ComponenteComboBox
                             tamanho="col-md-6"
                             label="Treinador:"
                             name="treCodigo"
@@ -481,7 +492,7 @@ class Aluno extends React.Component {
                             atualizaCampo={(e) => this.atualizaCampo(e)}
                             adicionarMascara={this.adicionarMascara}
                         />
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-6"
                             label="Email:"
                             name="aluEmail"
@@ -489,7 +500,7 @@ class Aluno extends React.Component {
                             value={this.state.aluno.aluEmail}
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-3"
                             label="Senha:"
                             name="aluSenha"
@@ -498,7 +509,7 @@ class Aluno extends React.Component {
                             placeholder="****"
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                       <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-3"
                             label="Confirmar Senha:"
                             name="aluSenha"
@@ -507,7 +518,7 @@ class Aluno extends React.Component {
                             placeholder="****"
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                        <ComponenteText 
+                        <ComponenteText
                             tamanho="col-md-6"
                             label="Observação:"
                             name="aluObs"
@@ -516,7 +527,7 @@ class Aluno extends React.Component {
                             placeholder="Obs."
                             onChange={(e) => this.atualizaCampo(e)}
                         />
-                        <ComponenteAtivo 
+                        <ComponenteAtivo
                             tamanho="col-1 mt-5"
                             label="Ativo:"
                             name="aluAtivo"
@@ -524,7 +535,7 @@ class Aluno extends React.Component {
                             onChange={this.atualizaCampoAtivo}
                             value={this.state.aluno.aluAtivo}
                         />
-                        <ComponenteImagem 
+                        <ComponenteImagem
                             tamanho="col-md-4 mt-5"
                             label="Imagem:"
                             name="aluImagem"

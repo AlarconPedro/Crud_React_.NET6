@@ -4,6 +4,8 @@ import "./Estilos/ComponenteImagem.css"
 
 import Api from "../../../services/Api";
 
+import FormData from 'form-data';
+
 const initialState = {
     tamanho: "",
     label: "",
@@ -71,27 +73,27 @@ export default class ComponenteImagem extends Component {
         }
     }
 
-        // var resize = new window.resizeBy();
-        // resize.init();
-        // if (this.state.imagePreviewUrl == '' || this.state.imagePreviewUrl == null) {
-        //     resize.photo(this.state.imagens, 600, 'dataURL', async function (dataUri) {
-        //         var retorno = await Api.post('/imagem', dataUri).then(response => {
-        //             console.log(response.data);
-        //             return response.data;
-        //         });
-        //         // this.setState({
-        //         //     imagens: dataUri
-        //         // })
-        //         console.log(dataUri);
-        //     });
-        // } else {
-        //     resize.photo(this.state.imagePreviewUrl, 600, 'dataURL', function (dataUri) {
-        //         // this.setState({
-        //         //     imagens: dataUri
-        //         // })
-        //         console.log(dataUri);
-        //     });
-        // }
+    // var resize = new window.resizeBy();
+    // resize.init();
+    // if (this.state.imagePreviewUrl == '' || this.state.imagePreviewUrl == null) {
+    //     resize.photo(this.state.imagens, 600, 'dataURL', async function (dataUri) {
+    //         var retorno = await Api.post('/imagem', dataUri).then(response => {
+    //             console.log(response.data);
+    //             return response.data;
+    //         });
+    //         // this.setState({
+    //         //     imagens: dataUri
+    //         // })
+    //         console.log(dataUri);
+    //     });
+    // } else {
+    //     resize.photo(this.state.imagePreviewUrl, 600, 'dataURL', function (dataUri) {
+    //         // this.setState({
+    //         //     imagens: dataUri
+    //         // })
+    //         console.log(dataUri);
+    //     });
+    // }
 
     // selecionarImagem(e) {
     //     // e.preventDefault();
@@ -107,28 +109,6 @@ export default class ComponenteImagem extends Component {
     //     // }
     // }
 
-    postarImagem(e) {
-        // e.preventDefault();
-
-        const formData = new FormData();
-        let response = "";
-        formData.append("file", this.state.imagens);
-        formData.append("upload_preset", "upload");
-        formData.append("cloud_name", "dwsxjwv8p");
-        fetch("https://api.cloudinary.com/v1_1/dwsxjwv8p/image/upload", {
-            method: "post",
-            body: formData
-        }).then(res => res.json()).then(data => {
-            this.setState({
-                urlImagem: data.url
-            })
-            response = data.url;
-            console.log(response);
-        }).catch(err => {
-            console.log(err);
-        });
-    }
-
     _handleSubmit(e) {
         e.preventDefault();
     }
@@ -140,12 +120,22 @@ export default class ComponenteImagem extends Component {
 
         // let reader = new FileReader();
         this.state.file = e.target.files[0];
-        console.log(this.state.file);
+        // console.log(this.state.file);
+        const form = new FormData();
+        form.append('AluImagem', this.state.file);
+        // Api.post('Aluno/imagemAluno', form).then(response => {
+        //     console.log(response.data);
+        //     this.setState({
+        //         imagens: response.data
+        //     });
+        //     this.props.selecionaImagem(response.data);
+        // });
         this.state.reader.onloadend = async () => {
             this.setState({
                 file: this.state.file,
                 imagePreviewUrl: this.state.reader.result
             });
+            this.props.selecionaImagem(form);
         };
         if (this.state.file) {
             if (response == null) {
@@ -193,7 +183,7 @@ export default class ComponenteImagem extends Component {
                         <div className="custom-file-edit">
                             <label for="file-upload" className="col-12">
                                 Editar
-                            </label> 
+                            </label>
                         </div>
                     </React.Fragment>
                     : null}
