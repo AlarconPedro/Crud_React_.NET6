@@ -187,15 +187,12 @@ class Aluno extends React.Component {
     }
 
     postDados = async () => {
-        await this.postImagemAluno();
-        await this.postAluno();
+        var retornoCaminho = await this.postImagemAluno();
+        await this.postAluno(retornoCaminho);
     }
 
-    postAluno = async () => {
-        // console.log(this.state.aluno);
-        // await this.dataAuxiliar(this.state.dataAtual);
-        // await this.postImagemAluno();
-        // this.setState({ aluno: { ...this.state.aluno } });
+    postAluno = async (caminho) => {
+        this.state.aluno.aluImagem = caminho;
         await Api.post(aluno, this.state.aluno).then(response => {
             this.setState({ aluno: response.data });
             this.setState({ updateAlunos: true });
@@ -207,14 +204,15 @@ class Aluno extends React.Component {
     }
 
     postImagemAluno = async () => {
+        var imgUpload = null;
         await Api.post("aluno/imagemAluno", this.state.imagemUpload).then(response => {
             if (response.status == 200) {
-                const imgUpload = response.data;
-                this.setState({ aluno: { ...this.state.aluno, aluImagem: imgUpload } });
+                imgUpload = response.data;
             } else {
                 console.log("Erro ao salvar imagem");
             }
         });
+        return imgUpload;
     }
 
     putAluno = async () => {
@@ -273,7 +271,6 @@ class Aluno extends React.Component {
             this.getAlunos();
             this.setState({ updateAlunos: false });
         }
-
     }
 
     render() {
@@ -305,8 +302,8 @@ class Aluno extends React.Component {
                         <tbody>
                             {this.state.alunosData.map((aluno) => (
                                 <tr key={aluno.aluCodigo}>
-                                    <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td>
-                                    {/* <td className=""><img src={"https://localhost:7079/" + aluno.aluImagem} alt="" /></td> */}
+                                    {/* <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td> */}
+                                    <td className=""><img src={"file:///D:/Desenvolvimento/C%23/API%20Alunos/API%20Alunos/" + aluno.aluImagem.replace("\\", "/")} alt="" /></td>
                                     <td className="pt-3">{aluno.aluNome}</td>
                                     <td className="pt-3">{aluno.aluFone}</td>
                                     <td className="pt-3"><div className="idade">{this.converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
