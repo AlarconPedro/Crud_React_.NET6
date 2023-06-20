@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from './pages/Login/login';
 import Home from './pages/Home/Home';
-import Principal from './components/Layout/Estrutura/EstruturaPages';
+import Principal from './Layout/Estrutura/EstruturaPages';
 
 export default Rotas => {
     if (localStorage.length > 0 && localStorage.getItem("logado") === "true") {

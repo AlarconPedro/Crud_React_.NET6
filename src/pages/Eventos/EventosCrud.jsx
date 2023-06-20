@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-
-import Mestre from "../../components/Layout/Mestre/Mestre";
+import React from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
+import { eventoUrl } from "../../services/RotasApi";
 
-import FormInserir from "../../components/Forms/FormInserir";
-import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Forms/FormExcluir";
-import FormParticipantes from "../../components/Forms/FormParticipantes";
+import FormInserir from "../../Forms/FormInserir";
+import FormEditar from "../../Forms/FormEditar";
+import FormExcluir from "../../Forms/FormExcluir";
+import FormParticipantes from "../../Forms/FormParticipantes";
 
 import DatePicker from "react-datepicker";
 import InputMask from 'react-input-mask';
-import ConverteData from "../../funcoes/ConverteData";
+import ConverteData from "../../Funcoes/ConverteData";
 
-import Modelo from "../../components/Layout/Modelo";
+import Modelo from "../../Forms/Modelo";
 
-import { eventoUrl, alunoUrl } from "../../services/Imagens";
+import { eventoUrlImagem, alunoUrlImagem } from "../../services/Imagens";
 import { BsJustify } from "react-icons/bs";
 
 import "./EventosCrud.css";
@@ -142,7 +140,7 @@ class Eventos extends React.Component {
 
     getEventos = async (skip = 0) => {
         this.setState({ carregando: true });
-        await Api.get(`evento?skip=${skip}`).then(response => {
+        await Api.get(`${eventoUrl}?skip=${skip}`).then(response => {
             this.setState({ eventosData: response.data });
         }).catch(error => {
             console.log(error);
@@ -152,7 +150,7 @@ class Eventos extends React.Component {
 
     getEventoById = async (codigo) => {
         this.setState({ carregando: true });
-        await Api.get("evento/" + codigo).then(response => {
+        await Api.get(eventoUrl + codigo).then(response => {
             this.setState({ evento: response.data });
         }).catch(error => {
             console.log(error);
@@ -162,7 +160,7 @@ class Eventos extends React.Component {
 
     postEvento = async () => {
         // ConverteData(this.state.dataAtual);
-        await Api.post("evento/", this.state.evento).then(response => {
+        await Api.post(eventoUrl, this.state.evento).then(response => {
             this.setState({ evento: response.data });
             this.setState({ updateEventos: true });
             this.abrirFecharCadastroEventos(true);
@@ -174,7 +172,7 @@ class Eventos extends React.Component {
 
     putEvento = async (codigo = this.state.evento.aluCodigo) => {
         ConverteData(this.state.dataAtual);
-        await Api.put("evento/" + codigo, this.state.evento).then(response => {
+        await Api.put(eventoUrl + codigo, this.state.evento).then(response => {
             var alunosAuxiliar = this.state.eventosData;
             alunosAuxiliar.map(alunoMap => {
                 if (alunoMap.aluCodigo === this.state.evento.aluCodigo) {
@@ -208,7 +206,7 @@ class Eventos extends React.Component {
     }
 
     deleteEvento = async () => {
-        await Api.delete("evento/" + this.state.evento.eveCodigo).then(response => {
+        await Api.delete(eventoUrl + this.state.evento.eveCodigo).then(response => {
             this.setState({ updateEventos: true });
             this.abrirFecharExcluirEventos(true);
         }).catch(error => {
@@ -218,7 +216,7 @@ class Eventos extends React.Component {
 
     getEventosNome = async (busca) => {
         this.setState({ carregando: true });
-        await Api.get("evento/" + busca).then(response => {
+        await Api.get(eventoUrl + busca).then(response => {
             this.setState({ eventosData: response.data });
         }).catch(error => {
             console.log(error);
@@ -253,7 +251,7 @@ class Eventos extends React.Component {
         return (
             <React.Fragment>
                 <Modelo
-                    urlApi="evento?skip="
+                    urlApi={`${eventoUrl}?skip=`}
                     titulo="Cadastro Eventos"
                     subtitulo="Painel Sou+Fit"
                     icone="bullhorn"
@@ -279,7 +277,7 @@ class Eventos extends React.Component {
                         <tbody>
                             {this.state.eventosData.map((evento) => (
                                 <tr key={evento.eveCodigo}>
-                                    <td className="pt-3"><img src={eventoUrl + evento.eveImagem} alt="" /></td>
+                                    <td className="pt-3"><img src={eventoUrlImagem + evento.eveImagem} alt="" /></td>
                                     <td className="pt-3">{evento.eveNome}</td>
                                     <td className="pt-3">{ConverteData(evento.eveDataInicio)}</td>
                                     <td className="pt-3">{ConverteData(evento.eveDataFim)}</td>
@@ -308,7 +306,7 @@ class Eventos extends React.Component {
                     abrir={this.state.abrirParticipantes}
                     funcAbrir={this.abrirFecharParticipantes}
                     codigoDesafio={this.state.evento.eveCodigo}
-                    alunoUrl={alunoUrl}
+                    alunoUrl={alunoUrlImagem}
                 />
 
                 <FormInserir

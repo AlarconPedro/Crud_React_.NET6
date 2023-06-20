@@ -1,8 +1,8 @@
 import React from "react"
 import "./css/Header.css"
 
-import icone from "../../../assets/imgs/icone.png"
-import { treinadorUrl } from "../../../services/Imagens";
+import icone from "../../assets/imgs/icone.png"
+import { treinadorUrlImagem } from "../../services/Imagens";
 
 import { BsDoorClosedFill } from 'react-icons/bs';
 
@@ -32,7 +32,7 @@ export default function Header(props) {
         </div>
         <div className="usuario">
             <div className="areaUsuario" role="button" data-toggle="dropdown" aria-expanded="false">
-                <img src={treinadorUrl + localStorage.getItem("Imagem")} alt="icone" />
+                <img src={treinadorUrlImagem + localStorage.getItem("Imagem")} alt="icone" />
                 <div className="usuarioLogado">
                     {/* <h6>Usuário Teste</h6> */}
                     <h6>{localStorage.getItem("Nome")}</h6>

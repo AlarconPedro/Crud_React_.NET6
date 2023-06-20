@@ -3,17 +3,22 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
+import { treinadorUrl } from "../../services/RotasApi";
 
-import FormInserir from "../../components/Forms/FormInserir";
-import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Forms/FormExcluir";
+import FormInserir from "../../Forms/FormInserir";
+import FormEditar from "../../Forms/FormEditar";
+import FormExcluir from "../../Forms/FormExcluir";
 
-import Modelo from "../../components/Layout/Modelo";
+import Modelo from "../../Forms/Modelo";
 
 import "./TreinadoresCrud.css";
-import { treinadorUrl } from "../../services/Imagens";
+import { treinadorUrlImagem } from "../../services/Imagens";
 
-import MascaraTelefone from "../../funcoes/MascaraTelefone";
+import MascaraTelefone from "../../Funcoes/MascaraTelefone";
+
+import ComponenteText from "../../Layout/Componentes/ComponenteText";
+import ComponenteAtivo from "../../Layout/Componentes/ComponenteAtivo";
+import ComponenteImagem from "../../Layout/Componentes/ComponenteImagem";
 
 export default function TreinadoresCrud() {
 
@@ -127,7 +132,7 @@ export default function TreinadoresCrud() {
 
     const getTreinadores = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`treinador?skip=${skip}`).then(response => {
+        await Api.get(`${treinadorUrl}?skip=${skip}`).then(response => {
             setTreinadoresData(response.data);
         }).catch(error => {
             console.log(error);
@@ -136,7 +141,7 @@ export default function TreinadoresCrud() {
     }
 
     const getTreinadorId = async (id) => {
-        await Api.get(`treinador/${id}`).then(response => {
+        await Api.get(`${treinadorUrl}${id}`).then(response => {
             setTreinadoresData(response.data);
         }).catch(error => {
             console.log(error);
@@ -144,7 +149,7 @@ export default function TreinadoresCrud() {
     }
 
     const postTreinador = async () => {
-        await Api.post("treinador/", treinador).then(response => {
+        await Api.post(treinadorUrl, treinador).then(response => {
             setTreinador(response.data);
         }).catch(error => {
             console.log(error);
@@ -155,7 +160,7 @@ export default function TreinadoresCrud() {
     }
 
     const putTreinador = async (codigo = treinador.treCodigo) => {
-        await Api.put("treinador/" + codigo, treinador).then(response => {
+        await Api.put(treinadorUrl + codigo, treinador).then(response => {
             var treinadoresAuxiliar = treinadoresData;
             treinadoresAuxiliar.map(treinadorMap => {
                 if (treinadorMap.treCodigo === treinador.treCodigo) {
@@ -178,7 +183,7 @@ export default function TreinadoresCrud() {
     }
 
     const deleteTreinador = async () => {
-        await Api.delete("treinador/" + treinador.treCodigo).then(response => {
+        await Api.delete(treinadorUrl + treinador.treCodigo).then(response => {
             abrirFecharExcluirTreinadores(true);
             setUpdateTreinadores(true);
         }).catch(error => {
@@ -188,7 +193,7 @@ export default function TreinadoresCrud() {
 
     const getTreinadorNome = async (busca) => {
         setCarregando(true);
-        await Api.get("treinador/" + busca).then(response => {
+        await Api.get(treinadorUrl + busca).then(response => {
             setTreinadoresData(response.data);
         }).catch(error => {
             console.log(error);
@@ -210,7 +215,7 @@ export default function TreinadoresCrud() {
     return (
         <React.Fragment>
             <Modelo
-                urlApi="treinador?skip="
+                urlApi={`${treinadorUrl}?skip=`}
                 titulo="Cadastro Treinadores"
                 subtitulo="Painel Sou+Fit"
                 icone="graduation-cap"
@@ -234,7 +239,7 @@ export default function TreinadoresCrud() {
                         {treinadoresData.map((treinador) => (
                             <tr key={treinador.treCodigo}>
                                 {/* <td>{aluno.aluCodigo}</td> */}
-                                <td className=""><img src={treinadorUrl + treinador.treImagem} alt="" /></td>
+                                <td className=""><img src={treinadorUrlImagem + treinador.treImagem} alt="" /></td>
                                 <td className="pt-3">{treinador.treNome}</td>
                                 <td className="pt-3">{treinador.treFone}</td>
                                 <td className="pt-3">
@@ -263,57 +268,69 @@ export default function TreinadoresCrud() {
                 funcPost={postTreinador}
             >
                 <form className="row g-3 form-group">
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Nome:</label>
-                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                            name="treNome" onChange={e => atualizaCampo(e)} />
-                    </div>
-                    <div className="col-6">
-                        <label className="form-label mb-0">Telefone:</label>
-                        <input type="tel" className="form-control" placeholder="(00) 00000-0000" maxLength={15}
-                            name="treFone"
-                            onKeyUp={e => mascaraTelefone(e)}
-                            onChange={e => atualizaCampo(e)}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Email:</label>
-                        <input type="email" className="form-control" placeholder="exemplo@gmail.com"
-                            name="treEmail" onChange={e => atualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Senha:</label>
-                        <input type="password" className="form-control" placeholder="****"
-                            name="treSenha" onChange={e => atualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                        <input type="password" className="form-control" placeholder="****"
-                            name="treSenha" onChange={e => atualizaCampo(e)} />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text" className="form-control" placeholder="Obs."
-                            name="treBio" onChange={e => atualizaCampo(e)} />
-                    </div>
-                    <div className="col-2 mt-5">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" id="gridCheck"
-                                name="treAtivo"
-                                onChange={e => atualizaCampoAtivo(e)}
-                                value={true} />
-                            <label className="form-check-label">Ativo</label>
-                        </div>
-                    </div>
-                    <div className="col-md-4 mt-5">
-                        <label className="form-label mb-0">Imagem:</label>
-                        <input type="file" alt="imagem"
-                            className="container border-dark"
-                            name="aluImagem"
-                            accept="image/png, image/gif, image/jpeg"
-                        // onChange={e => props.funcSelectImagem(e)}
-                        />
-                    </div>
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Nome:"
+                        name="treNome"
+                        type="text"
+                        placeholder="Nome Sobrenome"
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-6"
+                        label="Telefone:"
+                        name="treFone"
+                        placeholder="(00) 00000-0000"
+                        maxLength="15"
+                        type="tel"
+                        atualizaCampo={(e) => atualizaCampo(e)}
+                        adicionarMascara={mascaraTelefone}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Email:"
+                        name="treEmail"
+                        type="email"
+                        placeholder="exemplo@gmail.com"
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Senha:"
+                        name="treSenha"
+                        type="password"
+                        placeholder="****"
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Confirmar Senha:"
+                        name="treSenha"
+                        type="password"
+                        placeholder="****"
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Observação:"
+                        name="treBio"
+                        type="text"
+                        placeholder="Obs."
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteAtivo
+                        tamanho="col-1 mt-5"
+                        label="Ativo:"
+                        name="treAtivo"
+                        onChange={atualizaCampoAtivo}
+                        value={true}
+                    />
+                    <ComponenteImagem
+                        tamanho="col-md-4 mt-5"
+                        label="Imagem:"
+                        name="treImagem"
+                        type="file"
+                    />
                 </form>
             </FormInserir>
 
@@ -324,69 +341,82 @@ export default function TreinadoresCrud() {
                 funcPut={putTreinador}
             >
                 <form className="row g-3 form-group">
-                    <div className="col-md-12">
+                    {/* <div className="col-md-12">
                         <label className="mb-0">Id: </label>
                         <input type="number" className="form-control mb-2" readOnly disabled
                             value={treinador.treCodigo}
                         />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Nome:</label>
-                        <input type="text" className="form-control" placeholder="Nome Sobrenome"
-                            name="treNome"
-                            onChange={e => atualizaCampo(e)}
-                            value={treinador.treNome}
-                        />
-                    </div>
-                    <div className="col-6">
-                        <label className="form-label mb-0">Telefone:</label>
-                        <input type="tel" class="form-control" maxLength={15}
-                            name="treFone"
-                            onKeyUp={e => mascaraTelefone(e)}
-                            onChange={e => atualizaCampo(e)}
-                            value={treinador.treFone}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0 mt-2">Email:</label>
-                        <input type="email" className="form-control" name="treEmail"
-                            onChange={e => atualizaCampo(e)} value={treinador.treEmail} />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Senha:</label>
-                        <input type="password" className="form-control" name="treSenha"
-                            onChange={e => atualizaCampo(e)} value={treinador.treSenha} />
-                    </div>
-                    <div className="col-md-3">
-                        <label className="form-label mb-0 mt-2">Confirmar Senha:</label>
-                        <input type="password" className="form-control" name="treSenha"
-                            onChange={e => atualizaCampo(e)} value={treinador.treSenha} />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label mb-0">Observação:</label>
-                        <input type="text" className="form-control" name="treBio"
-                            onChange={e => atualizaCampo(e)} value={treinador.treBio} />
-                    </div>
-                    <div className="col-2 mt-5">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" id="gridCheck"
-                                name="treAtivo"
-                                onChange={e => atualizaCampoAtivo(e)}
-                                checked={treinador.treAtivo}
-                                value={true} />
-                            <label className="form-check-label">Ativo</label>
-                        </div>
-                    </div>
-                    <div className="col-md-4 mt-5">
-                        <label className="form-label mb-0">Imagem:</label>
-                        <input type="file" className="form-control"
-                            name="treImagem"
-                        // onChange={e => props.funcSelectImagem(e)} 
-                        />
-                        {treinador.treImagem === null
-                            ? <div></div>
-                            : <img src={treinadorUrl + treinador.treImagem} alt="imagem" />}
-                    </div>
+                    </div> */}
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Nome:"
+                        name="treNome"
+                        type="text"
+                        placeholder="Nome Sobrenome"
+                        value={treinador.treNome}
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-6"
+                        label="Telefone:"
+                        name="treFone"
+                        placeholder="(00) 00000-0000"
+                        maxLength="15"
+                        type="tel"
+                        value={treinador.treFone}
+                        atualizaCampo={(e) => atualizaCampo(e)}
+                        adicionarMascara={mascaraTelefone}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Email:"
+                        name="treEmail"
+                        type="email"
+                        value={treinador.treEmail}
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Senha:"
+                        name="treSenha"
+                        type="password"
+                        value={treinador.treSenha}
+                        placeholder="****"
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Confirmar Senha:"
+                        name="treSenha"
+                        type="password"
+                        value={treinador.treSenha}
+                        placeholder="****"
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Observação:"
+                        name="treBio"
+                        type="text"
+                        value={treinador.treBio}
+                        placeholder="Obs."
+                        onChange={(e) => atualizaCampo(e)}
+                    />
+                    <ComponenteAtivo
+                        tamanho="col-1 mt-5"
+                        label="Ativo:"
+                        name="treAtivo"
+                        checked={treinador.treAtivo}
+                        onChange={atualizaCampoAtivo}
+                        value={true}
+                    />
+                    <ComponenteImagem
+                        tamanho="col-md-4 mt-5"
+                        label="Imagem:"
+                        name="treImagem"
+                        type="file"
+                        urlImagem={treinadorUrlImagem + treinador.treImagem}
+                    />
                 </form>
             </FormEditar>
 

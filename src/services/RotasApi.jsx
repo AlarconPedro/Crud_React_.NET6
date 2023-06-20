@@ -1,2 +1,10 @@
-export const aluno = "aluno/";
-export const treinador = "treinador/";
+export const alunoUrl = "aluno/";
+export const alunoImagemUrl = "aluno/imagemAluno/";
+export const alunoAtividadeImagemUrl = "aluno/atividades/imagens/";
+export const treinadorUrl = "treinador/";
+export const desafioUrl = "desafio/";
+export const eventoUrl = "evento/";
+export const atividadeUrl = "aluno/atividades/";
+export const medalhaUrl = "medalha/";
+export const nivelUrl = "nivel/";
+export const modalidadeUrl = "modalidade/";

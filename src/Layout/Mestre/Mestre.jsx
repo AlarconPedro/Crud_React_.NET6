@@ -6,7 +6,7 @@ import Header from '../Estrutura/Header';
 import useIdle from '../Hooks/useIdle';
 import moment from 'moment';
 
-import Session from '../../../Session';
+import Session from '../../Session';
 
 export default props => {
 

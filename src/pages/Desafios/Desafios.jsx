@@ -3,27 +3,28 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
-import { desafioUrl, alunoUrl } from "../../services/Imagens";
+import { desafioUrlImagem, alunoUrlImagem } from "../../services/Imagens";
+import { desafioUrl } from "../../services/RotasApi";
 
 import { BsJustify } from "react-icons/bs";
 
 import "./Desafios.css";
 
-import FormInserir from "../../components/Forms/FormInserir";
-import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Forms/FormExcluir";
-import FormParticipantes from "../../components/Forms/FormParticipantes";
+import FormInserir from "../../Forms/FormInserir";
+import FormEditar from "../../Forms/FormEditar";
+import FormExcluir from "../../Forms/FormExcluir";
+import FormParticipantes from "../../Forms/FormParticipantes";
 // import FormParticipantes from "../../components/Crud/FormularioDesafio/FormParticipantes";
 
-import Modelo from "../../components/Layout/Modelo";
+import Modelo from "../../Forms/Modelo";
 
-import ConverteData from "../../funcoes/ConverteData";
-import ComponenteData from "../../components/Layout/Componentes/ComponenteData";
-import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
-import ComponenteAtivo from "../../components/Layout/Componentes/ComponenteAtivo";
-import ComponenteImagem from "../../components/Layout/Componentes/ComponenteImagem";
+import ConverteData from "../../Funcoes/ConverteData";
+import ComponenteData from "../../Layout/Componentes/ComponenteData";
+import ComponenteText from "../../Layout/Componentes/ComponenteText";
+import ComponenteAtivo from "../../Layout/Componentes/ComponenteAtivo";
+import ComponenteImagem from "../../Layout/Componentes/ComponenteImagem";
 
-import CheckBox from "../../components/Layout/Componentes/CheckBox";
+import CheckBox from "../../Layout/Componentes/CheckBox";
 
 class Desafio extends React.Component {
     constructor(props) {
@@ -155,7 +156,7 @@ class Desafio extends React.Component {
 
     getDesafios = async (skip = 0) => {
         this.setState({ carregando: true });
-        await Api.get(`desafio?skip=${skip}`).then(response => {
+        await Api.get(`${desafioUrl}?skip=${skip}`).then(response => {
             this.setState({ desafiosData: response.data });
         }).catch(error => {
             console.log(error);
@@ -165,7 +166,7 @@ class Desafio extends React.Component {
 
     getDesafioId = async (id) => {
         this.setState({ carregando: true });
-        await Api.get(`desafio/${id}`).then(response => {
+        await Api.get(`${desafioUrl}${id}`).then(response => {
             this.setState({ desafio: response.data });
         }).catch(error => {
             console.log(error);
@@ -183,7 +184,7 @@ class Desafio extends React.Component {
 
     getTreinadores = async (skip = 0) => {
         this.setState({ carregando: true });
-        await Api.get(`treinador?skip=${skip}`).then(response => {
+        await Api.get(`${desafioUrl}?skip=${skip}`).then(response => {
             this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
@@ -192,7 +193,7 @@ class Desafio extends React.Component {
     }
 
     getTreinadorId = async (id) => {
-        await Api.get(`treinador/${id}`).then(response => {
+        await Api.get(`${desafioUrl}/${id}`).then(response => {
             this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
@@ -201,7 +202,7 @@ class Desafio extends React.Component {
 
     postDesafio = async () => {
         // await dataInicio(dataAtual);
-        await Api.post("desafio/", this.state.desafio).then(response => {
+        await Api.post(desafioUrl, this.state.desafio).then(response => {
             this.setState({ desafio: response.data });
             this.setState({ updateDesafios: true });
             this.abrirFecharCadastroDesafios();
@@ -212,7 +213,7 @@ class Desafio extends React.Component {
     }
 
     updateDesafio = async () => {
-        await Api.put("desafio/" + this.state.desafio.desCodigo, this.state.desafio).then(response => {
+        await Api.put(desafioUrl + this.state.desafio.desCodigo, this.state.desafio).then(response => {
             var desafiosAuxiliar = this.state.desafiosData;
             desafiosAuxiliar.map(desafioMap => {
                 if (desafioMap.desCodigo === this.state.desafio.desCodigo) {
@@ -235,7 +236,7 @@ class Desafio extends React.Component {
     }
 
     deleteDesafio = async () => {
-        await Api.delete("desafio/" + this.state.desafio.desCodigo).then(response => {
+        await Api.delete(desafioUrl + this.state.desafio.desCodigo).then(response => {
             this.setState({ updateDesafios: true });
             this.abrirFecharExcluirDesafios(true);
         }).catch(error => {
@@ -246,7 +247,7 @@ class Desafio extends React.Component {
 
     getDesafioNome = async (nome) => {
         this.setState({ carregando: true });
-        await Api.get("desafio/" + nome).then(response => {
+        await Api.get(desafioUrl + nome).then(response => {
             this.setState({ desafiosData: response.data });
         }).catch(error => {
             console.log(error);
@@ -307,7 +308,7 @@ class Desafio extends React.Component {
         return (
             <React.Fragment>
                 <Modelo
-                    urlApi="desafio?skip="
+                    urlApi={`${desafioUrl}?skip=`}
                     titulo="Cadastro Desafios"
                     subtitulo="Painel Sou+Fit"
                     icone="trophy"
@@ -332,7 +333,7 @@ class Desafio extends React.Component {
                         <tbody>
                             {this.state.desafiosData.map((desafio) => (
                                 <tr key={desafio.desCodigo}>
-                                    <td className="pt-3"><img src={desafioUrl + desafio.desImagem} alt="" /></td>
+                                    <td className="pt-3"><img src={desafioUrlImagem + desafio.desImagem} alt="" /></td>
                                     <td className="pt-3">{desafio.desNome}</td>
                                     <td className="pt-3">{ConverteData(desafio.desDataInicio)}</td>
                                     <td className="pt-3">{ConverteData(desafio.desDataFim)}</td>
@@ -356,7 +357,7 @@ class Desafio extends React.Component {
                     abrir={this.state.abrirParticipantes}
                     funcAbrir={this.abrirFecharParticipantes}
                     codigoDesafio={this.state.desafio.desCodigo}
-                    alunoUrl={alunoUrl}
+                    alunoUrl={alunoUrlImagem}
                 />
 
                 <FormInserir
@@ -573,12 +574,13 @@ class Desafio extends React.Component {
                                 })
                             }
                         </div>
-                        <div className="col-md-5"></div>
+                        <div className="col-md-4"></div>
                         <ComponenteImagem 
                             tamanho="col-md-4 mt-5 logoDesafio"
                             label="Imagem:"
                             name="desImagem"
                             type="file"
+                            urlImagem={desafioUrlImagem + this.state.desafio.desImagem}
                         />
                     </form>
                 </FormEditar>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import { medalhaUrl } from "../../../../services/Imagens";
+import { medalhaUrlImagem } from "../../services/Imagens";
 
 export default function FormEditarNivelMedalha(props) {
 
@@ -44,7 +44,7 @@ export default function FormEditarNivelMedalha(props) {
                     <div className="col-md-12 mt-5 imgEditar">
                         <label className="form-label mb-0">Imagem:</label>
                         {/* <input type="image" alt="imagem" className="container border-dark" /> */}
-                        <img src={medalhaUrl + niveis.medNivImagem} alt="" />
+                        <img src={medalhaUrlImagem + niveis.medNivImagem} alt="" />
                     </div>
                 </form>
             </ModalBody>

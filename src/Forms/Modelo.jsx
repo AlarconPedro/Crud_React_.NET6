@@ -1,8 +1,8 @@
 import React from "react";
 
-import Mestre from "./Mestre/Mestre";
-import Busca from "./Componentes/Busca";
-import ControlePaginas from "../../funcoes/ControlePagina";
+import Mestre from "../Layout/Mestre/Mestre";
+import Busca from "../Layout/Componentes/Busca";
+import ControlePaginas from "../Funcoes/ControlePagina";
 
 class Modelo extends React.Component {
     constructor(props) {

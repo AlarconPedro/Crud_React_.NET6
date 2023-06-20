@@ -3,22 +3,20 @@ import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
-import { modalidadeUrl } from "../../services/Imagens";
+import { modalidadeUrlImagem } from "../../services/Imagens";
+import { modalidadeUrl } from "../../services/RotasApi";
 
-import FormInserir from "../../components/Forms/FormInserir";
-import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Forms/FormExcluir";
+import FormInserir from "../../Forms/FormInserir";
+import FormEditar from "../../Forms/FormEditar";
+import FormExcluir from "../../Forms/FormExcluir";
 
-import Modelo from "../../components/Layout/Modelo";
+import Modelo from "../../Forms/Modelo";
 
-import TipoModalidade from "../../funcoes/TipoDesafio"
+import TipoModalidade from "../../Funcoes/TipoDesafio"
 
-import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
-import ComponenteAtivo from "../../components/Layout/Componentes/ComponenteAtivo";
-import ComponenteComboBox from "../../components/Layout/Componentes/ComponenteComboBox";
+import ComponenteText from "../../Layout/Componentes/ComponenteText";
 
 import "./ModalidadesCrud.css";
-import tipoDesafio from "../../funcoes/TipoDesafio";
 
 class Modalidade extends React.Component {
     constructor(props) {
@@ -123,7 +121,7 @@ class Modalidade extends React.Component {
 
     getModalidades = async (skip = 0) => {
         this.setState({ carregando: true });
-        await Api.get(`modalidade?skip=${skip}`).then(response => {
+        await Api.get(`${modalidadeUrl}?skip=${skip}`).then(response => {
             this.setState({ modalidadesData: response.data });
         }).catch(error => {
             console.log(error);
@@ -133,7 +131,7 @@ class Modalidade extends React.Component {
 
     getModalidadeById = async (id) => {
         this.setState({ carregando: true });
-        await Api.get(`modalidade/${id}`).then(response => {
+        await Api.get(`${modalidadeUrl}${id}`).then(response => {
             this.setState({ modalidade: response.data });
         }).catch(error => {
             console.log(error);
@@ -143,7 +141,7 @@ class Modalidade extends React.Component {
 
     getTreinadores = async (skip = 0) => {
         this.setState({ carregando: true });
-        await Api.get(`treinador?skip=${skip}`).then(response => {
+        await Api.get(`${modalidadeUrl}?skip=${skip}`).then(response => {
             this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
@@ -152,7 +150,7 @@ class Modalidade extends React.Component {
     }
 
     postModalidades = async () => {
-        await Api.post("modalidade/", this.state.modalidade).then(response => {
+        await Api.post(modalidadeUrl, this.state.modalidade).then(response => {
             // this.setState({ modalidade: response.data });
             this.setState({ updateModalidades: true });
             this.abrirFecharCadastroModalidades(true);
@@ -163,7 +161,7 @@ class Modalidade extends React.Component {
     }
 
     putModalidade = async (codigo = this.state.modalidade.modCodigo) => {
-        await Api.put("modalidade/" + codigo, this.state.modalidade).then(response => {
+        await Api.put(modalidadeUrl + codigo, this.state.modalidade).then(response => {
             var modalidadesAuxiliar = this.state.modalidadesData;
             modalidadesAuxiliar.map(modalidadeMap => {
                 if (modalidadeMap.modCodigo === this.state.modalidade.modCodigo) {
@@ -186,7 +184,7 @@ class Modalidade extends React.Component {
     }
 
     deleteModalidade = async () => {
-        await Api.delete("modalidade/" + this.state.modalidade.modCodigo).then(response => {
+        await Api.delete(modalidadeUrl + this.state.modalidade.modCodigo).then(response => {
             this.setState({ updateModalidades: true });
             this.abrirFecharExcluirModalidades(true);
         }).catch(error => {
@@ -196,7 +194,7 @@ class Modalidade extends React.Component {
 
     getModalidadeNome = async (busca) => {
         this.setState({ carregando: true });
-        await Api.get("modalidade/" + busca).then(response => {
+        await Api.get(modalidadeUrl + busca).then(response => {
             this.setState({ modalidadesData: response.data });
         }).catch(error => {
             console.log(error);
@@ -236,7 +234,7 @@ class Modalidade extends React.Component {
         return (
             <React.Fragment>
                 <Modelo
-                    urlApi="modalidade?skip="
+                    urlApi={`${modalidadeUrl}?skip=`}
                     titulo="Cadastro Modalidades"
                     subtitulo="Painel Sou+Fit"
                     icone="bookmark"
@@ -257,7 +255,7 @@ class Modalidade extends React.Component {
                         <tbody>
                             {this.state.modalidadesData.map((modalidade) => (
                                 <tr key={modalidade.modCodigo}>
-                                    <td><img src={modalidadeUrl + modalidade.modImagem} alt="" /></td>
+                                    <td><img src={modalidadeUrlImagem + modalidade.modImagem} alt="" /></td>
                                     <td>{modalidade.modNome}</td>
                                     <td className="justify-content-end">
                                         <button className="btn btn-warning" onClick={() => this.selecionarModalidade(modalidade, "Editar")}>
@@ -384,7 +382,7 @@ class Modalidade extends React.Component {
                         <div className="col-md-4 mt-5">
                             <label className="form-label mb-0">Imagem:</label>
                             {/* <input type="image" alt="imagem" className="container border-dark" /> */}
-                            <img src={modalidadeUrl + this.state.modalidade.modImagem} alt="" />
+                            <img src={modalidadeUrlImagem + this.state.modalidade.modImagem} alt="" />
                         </div>
                     </form>
                 </FormEditar>

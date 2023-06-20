@@ -3,8 +3,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import "./Home.css";
-import Modelo from "../../components/Layout/Modelo";
-import Mestre from "../../components/Layout/Mestre/Mestre";
+import Mestre from "../../Layout/Mestre/Mestre";
 
 import Session from "../../Session";
 

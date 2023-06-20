@@ -3,28 +3,28 @@ import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
-import { aluno, treinador } from "../../services/RotasApi";
+import { alunoUrl, treinadorUrl, alunoImagemUrl, atividadeUrl } from "../../services/RotasApi";
 
-import FormInserir from "../../components/Forms/FormInserir";
-import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Forms/FormExcluir";
-import Modelo from "../../components/Layout/Modelo";
+import FormInserir from "../../Forms/FormInserir";
+import FormEditar from "../../Forms/FormEditar";
+import FormExcluir from "../../Forms/FormExcluir";
+import Modelo from "../../Forms/Modelo";
 
 import { BsJustify } from "react-icons/bs";
 
 import { Link } from "react-router-dom";
 
-import ConverteData from "../../funcoes/ConverteData";
-import MascaraTelefone from "../../funcoes/MascaraTelefone";
+import ConverteData from "../../Funcoes/ConverteData";
+import MascaraTelefone from "../../Funcoes/MascaraTelefone";
 
-import ComponenteData from "../../components/Layout/Componentes/ComponenteData";
-import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
-import ComponenteAtivo from "../../components/Layout/Componentes/ComponenteAtivo";
-import ComponenteImagem from "../../components/Layout/Componentes/ComponenteImagem";
-import ComponenteComboBox from "../../components/Layout/Componentes/ComponenteComboBox";
+import ComponenteData from "../../Layout/Componentes/ComponenteData";
+import ComponenteText from "../../Layout/Componentes/ComponenteText";
+import ComponenteAtivo from "../../Layout/Componentes/ComponenteAtivo";
+import ComponenteImagem from "../../Layout/Componentes/ComponenteImagem";
+import ComponenteComboBox from "../../Layout/Componentes/ComponenteComboBox";
 
 import "./Alunos.css";
-import { alunoUrl } from "../../services/Imagens";
+import { alunoUrlImagem } from "../../services/Imagens";
 
 class Aluno extends React.Component {
     constructor(props) {
@@ -138,7 +138,7 @@ class Aluno extends React.Component {
 
     getAlunos = async (skip = 0) => {
         this.setState({ carregando: true });
-        await Api.get(`${aluno}?skip=${skip}`).then(response => {
+        await Api.get(`${alunoUrl}?skip=${skip}`).then(response => {
             this.setState({ alunosData: response.data });
         }).catch(error => {
             console.log(error);
@@ -148,7 +148,7 @@ class Aluno extends React.Component {
 
     getAlunoId = async (id) => {
         this.setState({ carregando: true });
-        await Api.get(`${aluno}${id}`).then(response => {
+        await Api.get(`${alunoUrl}${id}`).then(response => {
             this.setState({ aluno: response.data });
         }).catch(error => {
             console.log(error);
@@ -158,7 +158,7 @@ class Aluno extends React.Component {
 
     getAlunoNome = async (busca) => {
         this.setState({ carregando: true });
-        await Api.get(aluno + busca).then(response => {
+        await Api.get(alunoUrl + busca).then(response => {
             this.setState({ alunosData: response.data });
         }).catch(error => {
             console.log(error);
@@ -168,7 +168,7 @@ class Aluno extends React.Component {
 
     getTreinadores = async () => {
         this.setState({ carregando: true });
-        await Api.get(`${treinador}treinadores`).then(response => {
+        await Api.get(`${treinadorUrl}treinadores`).then(response => {
             this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
@@ -178,7 +178,7 @@ class Aluno extends React.Component {
 
     getTreinadorId = async (id) => {
         this.setState({ carregando: true });
-        await Api.get(`${treinador}${id}`).then(response => {
+        await Api.get(`${treinadorUrl}${id}`).then(response => {
             this.setState({ treinadoresData: response.data });
         }).catch(error => {
             console.log(error);
@@ -193,7 +193,7 @@ class Aluno extends React.Component {
 
     postAluno = async (caminho) => {
         this.state.aluno.aluImagem = caminho;
-        await Api.post(aluno, this.state.aluno).then(response => {
+        await Api.post(alunoUrl, this.state.aluno).then(response => {
             this.setState({ aluno: response.data });
             this.setState({ updateAlunos: true });
             this.abrirFecharCadastro();
@@ -205,7 +205,7 @@ class Aluno extends React.Component {
 
     postImagemAluno = async () => {
         var imgUpload = null;
-        await Api.post("aluno/imagemAluno", this.state.imagemUpload).then(response => {
+        await Api.post(alunoImagemUrl, this.state.imagemUpload).then(response => {
             if (response.status == 200) {
                 imgUpload = response.data;
             } else {
@@ -215,10 +215,16 @@ class Aluno extends React.Component {
         return imgUpload;
     }
 
-    putAluno = async () => {
+    updateDados = async () => {
+        var retornoCaminho = await this.postImagemAluno();
+        await this.putAluno(retornoCaminho);
+    }
+
+    putAluno = async (caminho) => {
+        this.state.aluno.aluImagem = caminho;
         var data = await ConverteData(this.state.aluno.aluDataNasc);
         this.setState({ aluno: { ...this.state.aluno, aluDataNasc: data } });
-        await Api.put(aluno + this.state.aluno.aluCodigo, this.state.aluno).then(response => {
+        await Api.put(alunoUrl + this.state.aluno.aluCodigo, this.state.aluno).then(response => {
             this.setState({ updateAlunos: true });
             this.abrirFecharEditar();
         }).catch(error => {
@@ -229,7 +235,7 @@ class Aluno extends React.Component {
     }
 
     deleteAluno = async () => {
-        await Api.delete(aluno + this.state.aluno.aluCodigo).then(response => {
+        await Api.delete(alunoUrl + this.state.aluno.aluCodigo).then(response => {
             this.setState({ updateAlunos: true });
             this.abrirFecharExcluir();
         }).catch(error => {
@@ -277,7 +283,7 @@ class Aluno extends React.Component {
         return (
             <React.Fragment>
                 <Modelo
-                    urlApi="aluno?skip="
+                    urlApi={`${atividadeUrl}}?skip=`}
                     titulo="Cadastro Alunos"
                     subtitulo="Painel Sou+Fit"
                     icone="user"
@@ -302,8 +308,8 @@ class Aluno extends React.Component {
                         <tbody>
                             {this.state.alunosData.map((aluno) => (
                                 <tr key={aluno.aluCodigo}>
-                                    {/* <td className=""><img src={alunoUrl + aluno.aluImagem} alt="" /></td> */}
-                                    <td className=""><img src={"file:///D:/Desenvolvimento/C%23/API%20Alunos/API%20Alunos/" + aluno.aluImagem.replace("\\", "/")} alt="" /></td>
+                                    <td className=""><img src={alunoUrlImagem + aluno.aluImagem} alt="" /></td>
+                                    {/* <td className=""><img src={"D:/Desenvolvimento/C%23/API%20Alunos/API%20Alunos/" + aluno.aluImagem} alt="" /></td> */}
                                     <td className="pt-3">{aluno.aluNome}</td>
                                     <td className="pt-3">{aluno.aluFone}</td>
                                     <td className="pt-3"><div className="idade">{this.converterDataToIdade(aluno.aluDataNasc ?? "")}</div></td>
@@ -537,7 +543,7 @@ class Aluno extends React.Component {
                             label="Imagem:"
                             name="aluImagem"
                             type="file"
-                            urlImagem={alunoUrl + this.state.aluno.aluImagem}
+                            urlImagem={alunoUrlImagem + this.state.aluno.aluImagem}
                         />
                     </form>
                 </FormEditar>

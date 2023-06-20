@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import "./Estilos/ComponenteImagem.css"
 
-import Api from "../../../services/Api";
-
 import FormData from 'form-data';
 
 const initialState = {
@@ -73,42 +71,6 @@ export default class ComponenteImagem extends Component {
         }
     }
 
-    // var resize = new window.resizeBy();
-    // resize.init();
-    // if (this.state.imagePreviewUrl == '' || this.state.imagePreviewUrl == null) {
-    //     resize.photo(this.state.imagens, 600, 'dataURL', async function (dataUri) {
-    //         var retorno = await Api.post('/imagem', dataUri).then(response => {
-    //             console.log(response.data);
-    //             return response.data;
-    //         });
-    //         // this.setState({
-    //         //     imagens: dataUri
-    //         // })
-    //         console.log(dataUri);
-    //     });
-    // } else {
-    //     resize.photo(this.state.imagePreviewUrl, 600, 'dataURL', function (dataUri) {
-    //         // this.setState({
-    //         //     imagens: dataUri
-    //         // })
-    //         console.log(dataUri);
-    //     });
-    // }
-
-    // selecionarImagem(e) {
-    //     // e.preventDefault();
-
-    //     // const reader = new FileReader();
-    //     // reader.readAsDataURL(e.target.files[0]);
-    //     // reader.onload = () => {
-    //     //     if (reader.readyState === 1) {
-    //     //         this.setState({
-    //     //             imagens: reader.result
-    //     //         })
-    //     //     }
-    //     // }
-    // }
-
     _handleSubmit(e) {
         e.preventDefault();
     }
@@ -118,18 +80,9 @@ export default class ComponenteImagem extends Component {
 
         var response = null;
 
-        // let reader = new FileReader();
         this.state.file = e.target.files[0];
-        // console.log(this.state.file);
         const form = new FormData();
-        form.append('AluImagem', this.state.file);
-        // Api.post('Aluno/imagemAluno', form).then(response => {
-        //     console.log(response.data);
-        //     this.setState({
-        //         imagens: response.data
-        //     });
-        //     this.props.selecionaImagem(response.data);
-        // });
+        form.append(this.props.name, this.state.file);
         this.state.reader.onloadend = async () => {
             this.setState({
                 file: this.state.file,
@@ -149,7 +102,6 @@ export default class ComponenteImagem extends Component {
     render() {
         let { imagePreviewUrl } = this.state;
         let $imagePreview = null;
-        // imagePreviewUrl = this.state == null ? this.state.urlImagem : this.state;
         if (imagePreviewUrl = this.state.urlImagem != '' && imagePreviewUrl == null ? this.state.urlImagem : imagePreviewUrl) {
             $imagePreview = <img src={imagePreviewUrl} alt="preview" />;
         } else {
@@ -188,17 +140,6 @@ export default class ComponenteImagem extends Component {
                     </React.Fragment>
                     : null}
             </div>
-            // <div className="form-group">
-            //     <label htmlFor={this.state.name}>{this.state.label}</label>
-            //     <input
-            //         type={this.state.type}
-            //         name={this.state.name}
-            //         className={this.state.tamanho}
-            //         onChange={this.selecionarImagem.bind(this)}
-            //     />
-            //     <button type="button" className="btn btn-primary" onClick={this.postarImagem.bind(this)}>Postar</button>
-            //     <img src={this.state.urlImagem} alt="" />
-            // </div>
         )
     }
 }

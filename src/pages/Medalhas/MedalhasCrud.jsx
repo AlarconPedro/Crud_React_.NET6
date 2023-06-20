@@ -10,17 +10,14 @@ import { BsJustify } from "react-icons/bs";
 
 import Api from "../../services/Api";
 
-import FormNivelMedalha from "../../components/Crud/FormularioMedalhas/Niveis/FormNivelMedalha";
+import FormNivelMedalha from "../../Forms/Niveis/FormNivelMedalha";
 
-import FormInserir from "../../components/Forms/FormInserir";
-import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Forms/FormExcluir";
+import FormInserir from "../../Forms/FormInserir";
+import FormEditar from "../../Forms/FormEditar";
+import FormExcluir from "../../Forms/FormExcluir";
 
-import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
-import ComponenteComboBox from "../../components/Layout/Componentes/ComponenteComboBox";
-
-import Modelo from "../../components/Layout/Modelo";
-import CheckBox from "../../components/Layout/Componentes/CheckBox";
+import Modelo from "../../Forms/Modelo";
+import CheckBox from "../../Layout/Componentes/CheckBox";
 
 import "./MedalhasCrud.css";
 

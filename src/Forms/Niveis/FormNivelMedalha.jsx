@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import { medalhaUrl } from "../../../../services/Imagens";
+import { medalhaUrlImagem } from "../../services/Imagens";
 
 import FormEditarNivel from "./NiveisEditar";
 
-import Api from "../../../../services/Api";
+import Api from "../../services/Api";
 
 export default function FormNivelMedalha(props) {
 
@@ -96,7 +96,7 @@ export default function FormNivelMedalha(props) {
                         : <tbody>
                             {niveisData.map((nivel) => (
                                 <tr key={nivel.MedCodigo}>
-                                    <td className=""><img src={medalhaUrl + nivel.medNivImagem} alt="" /></td>
+                                    <td className=""><img src={medalhaUrlImagem + nivel.medNivImagem} alt="" /></td>
                                     <td className="pt-3">{nivel.medNivMinimo}</td>
                                     <td>
                                         <button className="btn btn-warning" onClick={() => selecionarNivel(nivel, "Editar")}>

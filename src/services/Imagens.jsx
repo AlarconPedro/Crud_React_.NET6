@@ -1,7 +1,7 @@
-export const alunoUrl = "http://painel.soumaisfit.com.br/imgAluno/";
-export const treinadorUrl = "http://painel.soumaisfit.com.br/imgTreinador/";
-export const desafioUrl = "http://painel.soumaisfit.com.br/imgDesafio/";
-export const eventoUrl = "http://painel.soumaisfit.com.br/imgEvento/";
-export const atividadeUrl = "http://painel.soumaisfit.com.br/imgAtividade/";
-export const medalhaUrl = "http://painel.soumaisfit.com.br/imgMedalha/";
-export const modalidadeUrl = "http://painel.soumaisfit.com.br/imgModalidade/";
+export const alunoUrlImagem = "http://painel.soumaisfit.com.br/imgAluno/";
+export const treinadorUrlImagem = "http://painel.soumaisfit.com.br/imgTreinador/";
+export const desafioUrlImagem = "http://painel.soumaisfit.com.br/imgDesafio/";
+export const eventoUrlImagem = "http://painel.soumaisfit.com.br/imgEvento/";
+export const atividadeUrlImagem = "http://painel.soumaisfit.com.br/imgAtividade/";
+export const medalhaUrlImagem = "http://painel.soumaisfit.com.br/imgMedalha/";
+export const modalidadeUrlImagem = "http://painel.soumaisfit.com.br/imgModalidade/";

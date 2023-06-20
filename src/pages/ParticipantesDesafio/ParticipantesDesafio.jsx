@@ -1,6 +1,6 @@
 import React from "react";
 
-import Mestre from "../../components/Layout/Mestre/Mestre";
+import Mestre from "../../Layout/Mestre/Mestre";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -14,7 +14,6 @@ import Api from "../../services/Api";
 // import { BsJustify } from "react-icons/bs";
 
 import "./ParticipantesDesafio.css";
-import { alunoUrl, treinadorUrl } from "../../services/Imagens";
 
 class ParticipantesDesafio extends React.Component {
     constructor(props) {

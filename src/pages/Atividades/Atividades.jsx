@@ -5,23 +5,24 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import FormInserir from "../../components/Forms/FormInserir";
-import FormEditar from "../../components/Forms/FormEditar";
-import FormExcluir from "../../components/Forms/FormExcluir";
-import FormImagens from "../../components/Forms/FormImagens";
+import { atividadeUrl, alunoUrl } from "../../services/RotasApi";
+
+import FormInserir from "../../Forms/FormInserir";
+import FormEditar from "../../Forms/FormEditar";
+import FormExcluir from "../../Forms/FormExcluir";
+import FormImagens from "../../Forms/FormImagens";
 
 import { BsJustify } from "react-icons/bs";
 
-import ConverteData from "../../funcoes/ConverteData";
-import ConverteTempo from "../../funcoes/ConverteTempo";
-import ConverteDistancia from "../../funcoes/ConverteDistancia";
+import ConverteData from "../../Funcoes/ConverteData";
+import ConverteTempo from "../../Funcoes/ConverteTempo";
+import ConverteDistancia from "../../Funcoes/ConverteDistancia";
 
-import ComponenteData from "../../components/Layout/Componentes/ComponenteData";
-import ComponenteText from "../../components/Layout/Componentes/ComponenteText";
+import ComponenteData from "../../Layout/Componentes/ComponenteData";
+import ComponenteText from "../../Layout/Componentes/ComponenteText";
 
 import "./Atividades.css";
-import Modelo from "../../components/Layout/Modelo";
-
+import Modelo from "../../Forms/Modelo";
 
 export default function Atividades(props) {
 
@@ -141,7 +142,7 @@ export default function Atividades(props) {
 
     const getAtividades = async (skip = 0) => {
         setCarregando(true);
-        await Api.get(`aluno/atividades/alunoid/${codigo}?skip=${skip}`).then(response => {
+        await Api.get(`${atividadeUrl}alunoid/${codigo}?skip=${skip}`).then(response => {
             setAtividadesData(response.data);
         }).catch(error => {
             console.log(error);
@@ -150,7 +151,7 @@ export default function Atividades(props) {
     }
 
     const getAtividadeId = async () => {
-        await Api.get(`aluno/atividades/${atividade.aluAtiCodigo}`).then(response => {
+        await Api.get(`${atividadeUrl}${atividade.aluAtiCodigo}`).then(response => {
             setAtividade(response.data);
             console.log(response.data);
         }).catch(error => {
@@ -160,7 +161,7 @@ export default function Atividades(props) {
 
     const postAtividade = async () => {
         await dataAuxiliar(dataAtual);
-        await Api.post("aluno/", atividade).then(response => {
+        await Api.post(alunoUrl, atividade).then(response => {
             setAtividade(response.data);
             setUpdateAtividades(true);
             // abrirFecharCadastroAlunos();
@@ -172,7 +173,7 @@ export default function Atividades(props) {
 
     const putAtividade = async () => {
         await dataAuxiliar(dataAtual);
-        await Api.put("aluno/" + codigo, atividade).then(response => {
+        await Api.put(alunoUrl + codigo, atividade).then(response => {
             var alunosAuxiliar = atividadesData;
             alunosAuxiliar.map(alunoMap => {
                 if (alunoMap.aluCodigo === atividade.aluCodigo) {
@@ -208,7 +209,7 @@ export default function Atividades(props) {
 
     const getAtividadesNome = async (nome) => {
         setCarregando(true);
-        await Api.get(`aluno/atividades/alunoid/${codigo}/` + nome).then(response => {
+        await Api.get(`${atividadeUrl}alunoid/${codigo}/` + nome).then(response => {
             setAtividadesData(response.data);
         }).catch(error => {
             console.log(error);
@@ -217,7 +218,7 @@ export default function Atividades(props) {
     }
 
     const deleteAtividade = async () => {
-        await Api.delete("aluno/" + codigo).then(response => {
+        await Api.delete(alunoUrl + codigo).then(response => {
             setUpdateAtividades(true);
             // abrirFecharExcluirAlunos();
         }).catch(error => {
@@ -239,7 +240,7 @@ export default function Atividades(props) {
     return (
         <React.Fragment>
             <Modelo
-                urlApi={`aluno/atividades/${codigo}?skip=`}
+                urlApi={`${atividadeUrl}${codigo}?skip=`}
                 titulo="Cadastro Atividades"
                 subtitulo="Painel Sou+Fit"
                 icone="user"

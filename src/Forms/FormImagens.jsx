@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import { atividadeUrl } from "../../services/Imagens";
+import { atividadeUrlImagem } from "../services/Imagens";
 
-import Api from "../../services/Api";
+import Api from "../services/Api";
+import { alunoAtividadeImagemUrl } from "../services/RotasApi";
 
 export default function FormImagens(props) {
 
@@ -23,7 +24,7 @@ export default function FormImagens(props) {
     }
 
     const buscarImagem = async () => {
-        await Api.get("aluno/atividades/imagens/" + props.codigo).then(response => {
+        await Api.get(alunoAtividadeImagemUrl + props.codigo).then(response => {
             setImagemData(response.data);
         }).catch(error => {
             console.log(error);
@@ -40,7 +41,7 @@ export default function FormImagens(props) {
                         {imagemData.map((imagem) => {
                             console.log(imagem);
                             return (
-                                <img key={imagem.aluAtiImgCodigo} className="imagem" src={atividadeUrl + imagem.aluAtiImgImagem} alt="" />
+                                <img key={imagem.aluAtiImgCodigo} className="imagem" src={atividadeUrlImagem + imagem.aluAtiImgImagem} alt="" />
                             )
                         })
                         }

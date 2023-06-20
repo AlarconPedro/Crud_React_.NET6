@@ -2,7 +2,7 @@ import React from "react";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
-import "../../estilos/FormularioEditar.css"
+import "../Estilos/FormularioEditar.css"
 
 class FormEditar extends React.Component {
     constructor(props) {
