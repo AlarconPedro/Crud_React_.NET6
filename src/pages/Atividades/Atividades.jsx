@@ -302,7 +302,78 @@ export default function Atividades(props) {
                 funcPost={postAtividade}
             >
                 <form className="row g-3 form-group">
-                    <ComponenteText 
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Modalidade:"
+                        name="modNome"
+                        type="text"
+                        placeholder="Modalidade"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-6"
+                        label="Descrição:"
+                        name="aluNome"
+                        type="text"
+                        placeholder="Descrição"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteData
+                        tamanho="col-md-3"
+                        label="Data/Hora:"
+                        name="aluDataNasc"
+                        selected={new Date(dataAtual)}
+                        selecionaData={date => atualizaCampo(date)}
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Medida:"
+                        name="aluAtiMedida"
+                        type="text"
+                        placeholder="Nome Sobrenome"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Duração:"
+                        name="aluAtiDuracaoSeg"
+                        type="text"
+                        placeholder="Nome Sobrenome"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Intensidade:"
+                        name="aluAtiIntensidade"
+                        type="text"
+                        placeholder="Nome Sobrenome"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-3"
+                        label="Cidade:"
+                        name="aluAtiCidade"
+                        type="text"
+                        placeholder="Umuarama - PR"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-1"
+                        label="UF:"
+                        name="aluAtiEstado"
+                        type="text"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    <ComponenteText
+                        tamanho="col-md-12"
+                        label="Observação:"
+                        name="aluAtiObs"
+                        type="text"
+                        // placeholder="Nome Sobrenome"
+                        onChange={e => atualizaCampo(e)}
+                    />
+                    {/* <ComponenteText 
                         tamanho="col-md-12"
                         label="Nome:"
                         name="aluNome"
@@ -354,7 +425,7 @@ export default function Atividades(props) {
                         placeholder="Obs."
                         value={atividade.aluNome}
                         onChange={e => atualizaCampo(e)}
-                    />
+                    /> */}
                 </form>
             </FormInserir>
 
@@ -371,7 +442,7 @@ export default function Atividades(props) {
                             value={atividade.aluAtiCodigo}
                         />
                     </div> */}
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-6"
                         label="Modalidade:"
                         name="modNome"
@@ -380,7 +451,7 @@ export default function Atividades(props) {
                         value={atividade.modNome}
                         onChange={e => atualizaCampo(e)}
                     />
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-6"
                         label="Descrição:"
                         name="aluNome"
@@ -398,16 +469,16 @@ export default function Atividades(props) {
                         selecionaData={date => atualizaCampo(date)}
                         onChange={e => atualizaCampo(e)}
                     />
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-3"
                         label="Medida:"
-                        name="aluNome"
+                        name="aluAtiMedida"
                         type="text"
                         placeholder="Nome Sobrenome"
                         value={atividade.aluAtiMedida}
                         onChange={e => atualizaCampo(e)}
                     />
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-3"
                         label="Duração:"
                         name="aluAtiDuracaoSeg"
@@ -416,7 +487,7 @@ export default function Atividades(props) {
                         value={atividade.aluAtiDuracaoSeg}
                         onChange={e => atualizaCampo(e)}
                     />
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-3"
                         label="Intensidade:"
                         name="aluAtiIntensidade"
@@ -425,7 +496,7 @@ export default function Atividades(props) {
                         value={atividade.aluAtiIntensidade}
                         onChange={e => atualizaCampo(e)}
                     />
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-3"
                         label="Cidade:"
                         name="aluAtiCidade"
@@ -434,7 +505,7 @@ export default function Atividades(props) {
                         value={atividade.aluAtiCidade}
                         onChange={e => atualizaCampo(e)}
                     />
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-1"
                         label="UF:"
                         name="aluAtiEstado"
@@ -442,7 +513,7 @@ export default function Atividades(props) {
                         value={atividade.aluAtiEstado}
                         onChange={e => atualizaCampo(e)}
                     />
-                    <ComponenteText 
+                    <ComponenteText
                         tamanho="col-md-12"
                         label="Observação:"
                         name="aluAtiObs"

@@ -459,7 +459,7 @@ class Desafio extends React.Component {
                                 })
                             }
                         </div>
-                        <div className="col-md-5"></div>
+                        <div className="col-md-4"></div>
                         <ComponenteImagem 
                             tamanho="col-md-4 mt-5"
                             label="Imagem:"
