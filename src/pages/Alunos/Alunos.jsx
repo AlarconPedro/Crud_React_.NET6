@@ -384,7 +384,7 @@ class Aluno extends React.Component {
                             maxLength="15"
                             type="tel"
                             selected={this.state.aluno.aluPeso}
-                            atualizaCampo={(e) => this.atualizaCampo(e)}
+                            onChange={(e) => this.atualizaCampo(e)}
                             adicionarMascara={this.adicionarMascara}
                         />
                         <ComponenteText
@@ -491,8 +491,7 @@ class Aluno extends React.Component {
                             maxLength="15"
                             type="tel"
                             value={this.state.aluno.aluFone}
-                            selected={this.state.aluno.aluPeso}
-                            atualizaCampo={(e) => this.atualizaCampo(e)}
+                            onChange={(e) => this.atualizaCampo(e)}
                             adicionarMascara={this.adicionarMascara}
                         />
                         <ComponenteText

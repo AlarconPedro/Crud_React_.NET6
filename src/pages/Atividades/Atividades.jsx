@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Api from "../../services/Api";
 
-import { atividadeUrl, alunoUrl } from "../../services/RotasApi";
+import { atividadeUrl, alunoUrl, modalidadeUrl } from "../../services/RotasApi";
 
 import FormInserir from "../../Forms/FormInserir";
 import FormEditar from "../../Forms/FormEditar";
@@ -20,6 +20,7 @@ import ConverteDistancia from "../../Funcoes/ConverteDistancia";
 
 import ComponenteData from "../../Layout/Componentes/ComponenteData";
 import ComponenteText from "../../Layout/Componentes/ComponenteText";
+import ComponenteComboBox from "../../Layout/Componentes/ComponenteComboBox";
 
 import "./Atividades.css";
 import Modelo from "../../Forms/Modelo";
@@ -34,6 +35,7 @@ export default function Atividades(props) {
     const [dataAtual, setDataAtual] = useState(new Date());
 
     const [atividadesData, setAtividadesData] = useState([]);
+    const [modalidades, setModalidades] = useState([]);
 
     const [atividadeInitialState] = useState({
         modCodigo: 0,
@@ -93,10 +95,12 @@ export default function Atividades(props) {
     const abrirFecharCadastroAtividades = (abrirCadastroAtividades) => {
         setAbrirCadastroAtividades(!abrirCadastroAtividades);
         setAtividade(atividadeInitialState);
+        getModalidades();
     }
 
     const abrirFecharEditarAtividades = (abrirEditarAtividades) => {
         setAbrirEditarAtividades(!abrirEditarAtividades);
+        getModalidades();
     }
 
     const abrirFecharExcluirAtividades = (abrirExcluirAtividades) => {
@@ -110,10 +114,6 @@ export default function Atividades(props) {
     const selecionarAtividade = (atividade, opcao) => {
         setAtividade(atividade);
         if (opcao === "Imagens") {
-            // setAtividade({
-            //     ...atividade,
-            //     aluAtiCodigo: atividade.aluAtiCodigo
-            // });
             abrirFecharImagens();
         } else if (opcao === "Editar") {
             abrirFecharEditarAtividades();
@@ -150,6 +150,14 @@ export default function Atividades(props) {
         setCarregando(false);
     }
 
+    const getModalidades = async () => {
+        setCarregando(true);
+        await Api.get(modalidadeUrl + "modalidades/").then(response => {
+            setModalidades(response.data);
+        });
+        setCarregando(false);
+    }
+
     const getAtividadeId = async () => {
         await Api.get(`${atividadeUrl}${atividade.aluAtiCodigo}`).then(response => {
             setAtividade(response.data);
@@ -164,7 +172,6 @@ export default function Atividades(props) {
         await Api.post(alunoUrl, atividade).then(response => {
             setAtividade(response.data);
             setUpdateAtividades(true);
-            // abrirFecharCadastroAlunos();
         }).catch(error => {
             console.log(error);
         });
@@ -199,9 +206,7 @@ export default function Atividades(props) {
                 return alunoMap;
             });
             setAtividadesData(alunosAuxiliar);
-            // setAluno(response.data);
             setUpdateAtividades(true);
-            // abrirFecharEditarAlunos();
         }).catch(error => {
             console.log(error);
         });
@@ -220,7 +225,6 @@ export default function Atividades(props) {
     const deleteAtividade = async () => {
         await Api.delete(alunoUrl + codigo).then(response => {
             setUpdateAtividades(true);
-            // abrirFecharExcluirAlunos();
         }).catch(error => {
             console.log(error);
         });
@@ -270,8 +274,6 @@ export default function Atividades(props) {
                                 <td className="pt-3">{ConverteDistancia(atividade.aluAtiMedida)}</td>
                                 <td className="pt-3">{ConverteTempo(atividade.aluAtiDuracaoSeg)}</td>
                                 <td className="pt-3">{atividade.aluAtiIntensidade}</td>
-                                {/* <td className="pt-3">{atividade.modNome}</td> */}
-                                {/* <td className=""><img src={alunoUrl + atividade.aluAtiImgImagem} alt="" /></td> */}
                                 <td className="pt-3 listar" onClick={() => selecionarAtividade(atividade, "Imagens")}><BsJustify /></td>
                                 <td>
                                     <button className="btn btn-warning" onClick={() => selecionarAtividade(atividade, "Editar")}>
@@ -292,7 +294,6 @@ export default function Atividades(props) {
                 abrir={abrirImagens}
                 codigo={atividade.aluAtiCodigo}
                 funcAbrir={abrirFecharImagens}
-            // imagens={atividade.aluAtiImgImagem}
             />
 
             <FormInserir
@@ -302,12 +303,20 @@ export default function Atividades(props) {
                 funcPost={postAtividade}
             >
                 <form className="row g-3 form-group">
-                    <ComponenteText
+                    {/* <ComponenteText
                         tamanho="col-md-6"
                         label="Modalidade:"
                         name="modNome"
                         type="text"
                         placeholder="Modalidade"
+                        onChange={e => atualizaCampo(e)}
+                    /> */}
+                    <ComponenteComboBox
+                        tamanho="col-md-6"
+                        label="Modalidade:"
+                        name="modCodigo"
+                        options={modalidades}
+                        value={atividade.modCodigo}
                         onChange={e => atualizaCampo(e)}
                     />
                     <ComponenteText
@@ -331,7 +340,7 @@ export default function Atividades(props) {
                         label="Medida:"
                         name="aluAtiMedida"
                         type="text"
-                        placeholder="Nome Sobrenome"
+                        placeholder="Medida"
                         onChange={e => atualizaCampo(e)}
                     />
                     <ComponenteText
@@ -339,7 +348,7 @@ export default function Atividades(props) {
                         label="Duração:"
                         name="aluAtiDuracaoSeg"
                         type="text"
-                        placeholder="Nome Sobrenome"
+                        placeholder="Duração"
                         onChange={e => atualizaCampo(e)}
                     />
                     <ComponenteText
@@ -347,7 +356,7 @@ export default function Atividades(props) {
                         label="Intensidade:"
                         name="aluAtiIntensidade"
                         type="text"
-                        placeholder="Nome Sobrenome"
+                        placeholder="Intensidade"
                         onChange={e => atualizaCampo(e)}
                     />
                     <ComponenteText
@@ -370,62 +379,8 @@ export default function Atividades(props) {
                         label="Observação:"
                         name="aluAtiObs"
                         type="text"
-                        // placeholder="Nome Sobrenome"
                         onChange={e => atualizaCampo(e)}
                     />
-                    {/* <ComponenteText 
-                        tamanho="col-md-12"
-                        label="Nome:"
-                        name="aluNome"
-                        type="text"
-                        placeholder="Nome Sobrenome"
-                        value={atividade.aluNome}
-                        onChange={e => atualizaCampo(e)}
-                    />
-                    <ComponenteData
-                        tamanho="col-md-3"
-                        label="Data/Hora:"
-                        name="aluDataNasc"
-                        value={atividade.aluDataNasc}
-                        selected={new Date(dataAtual)}
-                        selecionaData={date => atualizaCampo(date)}
-                    />
-                    <ComponenteText 
-                        tamanho="col-md-3"
-                        label="Medida:"
-                        name="aluNome"
-                        type="text"
-                        placeholder="Nome Sobrenome"
-                        value={atividade.aluNome}
-                        onChange={e => atualizaCampo(e)}
-                    />
-                    <ComponenteText 
-                        tamanho="col-md-3"
-                        label="Duração:"
-                        name="aluEmail"
-                        type="text"
-                        placeholder="Nome Sobrenome"
-                        value={atividade.aluNome}
-                        onChange={e => atualizaCampo(e)}
-                    />
-                    <ComponenteText 
-                        tamanho="col-md-3"
-                        label="Intensidade:"
-                        name="aluEmail"
-                        type="text"
-                        placeholder="Nome Sobrenome"
-                        value={atividade.aluNome}
-                        onChange={e => atualizaCampo(e)}
-                    />
-                    <ComponenteText 
-                        tamanho="col-md-12"
-                        label="Observação:"
-                        name="aluObs"
-                        type="text"
-                        placeholder="Obs."
-                        value={atividade.aluNome}
-                        onChange={e => atualizaCampo(e)}
-                    /> */}
                 </form>
             </FormInserir>
 
