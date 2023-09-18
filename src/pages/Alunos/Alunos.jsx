@@ -262,7 +262,7 @@ class Aluno extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ carregando: true });
+        this.setState({ carregando: false });
         this.getAlunos();
     }
 
